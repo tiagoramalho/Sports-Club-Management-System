@@ -7,38 +7,50 @@ using System.Threading.Tasks;
 
 namespace CluSys
 {
-    class Athletes
-    {
-    }
-
     /// TEMPLATES/EXAMPLES
-    public class Customer
+    public class Athelete
     {
-        public String FirstName { get; set; }
-        public String LastName { get; set; }
-        public String Address { get; set; }
-
-        public Customer(String firstName, String lastName, String address)
+        public Athelete(String firstName, String lastName, String modality)
         {
             this.FirstName = firstName;
             this.LastName = lastName;
-            this.Address = address;
+            this.Modality = modality;
         }
 
+        public String FirstName { get; set; }
+        public String LastName { get; set; }
+        public String Modality { get; set; }
     }
 
-    public class Customers : ObservableCollection<Customer>
+    public class Modality
     {
-        public Customers()
+        public Modality(String name)
         {
-            Add(new Customer("Michael", "Anderberg",
-                    "12 North Third Street, Apartment 45"));
-            Add(new Customer("Chris", "Ashton",
-                    "34 West Fifth Street, Apartment 67"));
-            Add(new Customer("Cassie", "Hicks",
-                    "56 East Seventh Street, Apartment 89"));
-            Add(new Customer("Guido", "Pica",
-                    "78 South Ninth Street, Apartment 10"));
+            this.Name = name;
+        }
+
+        public String Name { get; set; }
+    }
+
+    public class Favorites : ObservableCollection<Athelete>
+    {
+        public Favorites()
+        {
+            Add(new Athelete("Michael", "Anderberg", "12 North Third Street"));
+            Add(new Athelete("Chris", "Ashton", "34 West Fifth Street"));
+            Add(new Athelete("Cassie", "Hicks", "56 East Seventh Street"));
+            Add(new Athelete("Guido", "Pica", "78 South Ninth Street"));
+        }
+    }
+
+    public class Modalities : ObservableCollection<Modality>
+    {
+        public Modalities()
+        {
+            Add(new Modality("Futeball"));
+            Add(new Modality("Basketball"));
+            Add(new Modality("Volleyball"));
+            Add(new Modality("Swimming"));
         }
     }
 }

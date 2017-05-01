@@ -16,21 +16,41 @@
         <Thickness x:Key="MarginDefault">10</Thickness>
 
         <DataTemplate x:Key="UserMiniature">
-            <StackPanel>
-                <TextBlock Text="{Binding Path=FirstName}" />
-                <TextBlock Text="{Binding Path=LastName}" />
-                <TextBlock Text="{Binding Path=Address}" />
-            </StackPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="ColumnSize" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Ellipse Height="48" Width="48" Grid.Row="0">
+                    <Ellipse.Fill>
+                        <ImageBrush ImageSource="App.ico" Stretch="UniformToFill" />
+                    </Ellipse.Fill>
+                </Ellipse>
+                <TextBlock HorizontalAlignment="Center" Grid.Row="1">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0} {1}">
+                            <Binding Path="FirstName" />
+                            <Binding Path="LastName" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock HorizontalAlignment="Center" Grid.Row="2" Text="{Binding Path=Modality}" />
+            </Grid>
         </DataTemplate>
     </Window.Resources>
 
-    <Grid x:Name="Layout" Background="White">
+    <Grid x:Name="Layout">
         <Grid.RowDefinitions>
             <RowDefinition Height="50px" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Grid x:Name="TopBar" Background="White" Grid.Row="0">
+        <Grid x:Name="TopBar" Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="75px" />
                 <ColumnDefinition Width="0.7*" />
@@ -42,7 +62,7 @@
             <TextBlock Grid.Column="2" Margin="{DynamicResource MarginDefault}" HorizontalAlignment="Center" VerticalAlignment="Center">Menu to utilizador</TextBlock>
         </Grid>
 
-        <Grid x:Name="Body" Background="White" Grid.Row="1">
+        <Grid x:Name="Body" Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="75px" />
                 <ColumnDefinition Width="*" />
@@ -57,28 +77,52 @@
 
             <Grid x:Name="Content" Grid.Column="1">
                 <Grid.Resources>
-                    <src:Customers x:Key="customers" />
+                    <src:Favorites x:Key="favorites" />
+                    <src:Modalities x:Key="modalities" />
                 </Grid.Resources>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="0.3*" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
                 <ListBox x:Name="Favorites" Grid.Row="0"
+                         BorderThickness="0"
+                         Grid.IsSharedSizeScope="True"
                          Margin="{DynamicResource MarginDefault}"
-                         ItemsSource="{Binding Source={StaticResource customers}}"
-                         ItemTemplate="{StaticResource UserMiniature}">
+                         ItemTemplate="{StaticResource UserMiniature}"
+                         ItemsSource="{Binding Source={StaticResource favorites}}">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel IsItemsHost="True" />
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
                 </ListBox>
-                <StackPanel x:Name="Lists" Grid.Row="1" Orientation="Horizontal" Margin="{DynamicResource MarginDefault}">
-                    <TextBlock>Lista 1</TextBlock>
-                    <TextBlock>Lista 2</TextBlock>
-                    <TextBlock>...</TextBlock>
-                </StackPanel>
+
+                <ItemsControl Grid.Row="1"
+                              Grid.IsSharedSizeScope="True"
+                              Margin="{DynamicResource MarginDefault}"
+                              ItemsSource="{Binding Source={StaticResource modalities}}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel IsItemsHost="True" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="ColumnSize" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock>
+                                    <TextBlock.Text>
+                                        <Binding Path="Name" />
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </Grid>
         </Grid>
     </Grid>
