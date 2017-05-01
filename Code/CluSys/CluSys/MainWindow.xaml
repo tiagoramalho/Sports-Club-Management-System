@@ -6,6 +6,16 @@
         xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:src="clr-namespace:CluSys"
         mc:Ignorable="d"
+
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal" 
+        TextOptions.TextRenderingMode="Auto"        
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+
         Icon="App.ico"
         Title="CluSys"
         MinHeight="650"
@@ -26,7 +36,7 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <Ellipse Height="48" Width="48" Grid.Row="0">
+                <Ellipse Height="48" Width="48" Grid.Row="0" Margin="8">
                     <Ellipse.Fill>
                         <ImageBrush ImageSource="App.ico" Stretch="UniformToFill" />
                     </Ellipse.Fill>
@@ -52,7 +62,7 @@
 
         <Grid x:Name="TopBar" Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="75px" />
+                <ColumnDefinition Width="100px" />
                 <ColumnDefinition Width="0.7*" />
                 <ColumnDefinition Width="0.2*" />
             </Grid.ColumnDefinitions>
@@ -64,16 +74,19 @@
 
         <Grid x:Name="Body" Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="75px" />
+                <ColumnDefinition Width="100px" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="0" HorizontalAlignment="Center" Margin="{DynamicResource MarginDefault}">
-                <fa:FontAwesome x:Name="Home" Icon="Home" FontSize="40" />
+            <ListBox Grid.Column="0" Margin="{DynamicResource MarginDefault}" HorizontalContentAlignment="Stretch">
+                <Button x:Name="Home" Style="{StaticResource MaterialDesignToolButton}" Width="30" Padding="2 0 2 0"
+                        materialDesign:RippleAssist.IsCentered="True">
+                    <materialDesign:PackIcon Kind="Home" />
+                </Button>
                 <TextBlock>Paciente 1</TextBlock>
                 <TextBlock>Paciente 2</TextBlock>
                 <TextBlock>...</TextBlock>
-            </StackPanel>
+            </ListBox>
 
             <Grid x:Name="Content" Grid.Column="1">
                 <Grid.Resources>
@@ -109,17 +122,69 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" SharedSizeGroup="ColumnSize" />
-                                </Grid.ColumnDefinitions>
+                            <materialDesign:Card Margin="4" Width="240">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
 
-                                <TextBlock>
-                                    <TextBlock.Text>
-                                        <Binding Path="Name" />
-                                    </TextBlock.Text>
-                                </TextBlock>
-                            </Grid>
+                                    <TextBlock Background="{DynamicResource PrimaryHueMidBrush}" Foreground="White" Padding="8 24 8 0" FontWeight="Bold" Text="{Binding Path=Name}" />
+                                    <ListBox Grid.Row="1" Margin="8 24 8 0">
+                                        <TextBlock Text="Athelets go here..." />
+                                        <TextBlock Text="Athelets go here..." />
+                                        <TextBlock Text="Athelets go here..." />
+                                        <TextBlock Text="Athelets go here..." />
+                                        <TextBlock Text="Athelets go here..." />
+                                        <TextBlock Text="Athelets go here..." />
+                                        <TextBlock Text="Athelets go here..." />
+                                        <TextBlock Text="Athelets go here..." />
+                                        <TextBlock Text="Athelets go here..." />
+                                        <TextBlock Text="Athelets go here..." />
+                                        <TextBlock Text="Athelets go here..." />
+                                        <TextBlock Text="Athelets go here..." />
+                                        <TextBlock Text="Athelets go here..." />
+                                        <TextBlock Text="Athelets go here..." />
+                                        <TextBlock Text="Athelets go here..." />
+                                        <TextBlock Text="Athelets go here..." />
+                                        <TextBlock Text="Athelets go here..." />
+                                        <TextBlock Text="Athelets go here..." />
+                                        <TextBlock Text="Athelets go here..." />
+                                        <TextBlock Text="Athelets go here..." />
+                                        <TextBlock Text="Athelets go here..." />
+                                        <TextBlock Text="Athelets go here..." />
+                                        <TextBlock Text="Athelets go here..." />
+                                        <TextBlock Text="Athelets go here..." />
+                                        <TextBlock Text="Athelets go here..." />
+                                        <TextBlock Text="Athelets go here..." />
+                                        <TextBlock Text="Athelets go here..." />
+                                        <TextBlock Text="Athelets go here..." />
+                                        <TextBlock Text="Athelets go here..." />
+                                    </ListBox>
+                                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="8">
+                                        <Border Background="White" MaxHeight="30" CornerRadius="3" ToolTip="Enter to search, ignore case">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+
+                                                <Button Style="{DynamicResource MaterialDesignToolButton}"
+                                                        Command="{Binding SearchCommand}" x:Name="SearchButton"
+                                                        CommandParameter="{Binding ElementName=SearchBox, Path=Text}"
+                                                        Height="24" Width="24">
+                                                    <materialDesign:PackIcon Kind="Magnify" Opacity=".56" />
+                                                </Button>
+                                                <TextBox Grid.Column="1" Margin="5 0 0 0" KeyDown="Search_OnKeyDown"
+                                                         materialDesign:HintAssist.Hint="Search" x:Name="SearchBox"
+                                                         materialDesign:TextFieldAssist.DecorationVisibility="Hidden" BorderThickness="0"
+                                                         MinWidth="100" VerticalAlignment="Center" />
+                                            </Grid>
+                                        </Border>
+                                    </StackPanel>
+                                </Grid>
+                            </materialDesign:Card>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

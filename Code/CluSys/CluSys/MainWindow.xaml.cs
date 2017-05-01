@@ -24,5 +24,10 @@ namespace CluSys
         {
             InitializeComponent();
         }
+
+        private void Search_OnKeyDown(object sender, KeyEventArgs e)
+        {
+
+        }
     }
 }
