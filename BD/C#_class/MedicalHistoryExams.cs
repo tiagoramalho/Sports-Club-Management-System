@@ -18,7 +18,7 @@ public class MedicalHistoryExams
         get { return MHId; }
         set { MHId = value; }
     }
-    public string Exam
+    public String Exam
     {
         get { return Exam;}
         set { Exam = value; }
