@@ -14,13 +14,14 @@ namespace CluSys.lib
         public String name { get; set; }
         public int recognitionYear { get; set; }
 
+        private ObservableCollection<Athlete> athletes = new ObservableCollection<Athlete>();
+
         public ObservableCollection<Athlete> GetAthletes(SqlConnection cn)
         {
-            ObservableCollection<Athlete> athletes = new ObservableCollection<Athlete>();
-
             SqlCommand cmd = new SqlCommand(String.Format("SELECT * FROM Athlete WHERE ModalityId='{0}'", name), cn);
             SqlDataReader reader = cmd.ExecuteReader();
 
+            athletes.Clear();
             while (reader.Read())
                 athletes.Add(new Athlete()
                 {

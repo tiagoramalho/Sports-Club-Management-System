@@ -18,6 +18,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Globalization;
+using System.ComponentModel;
 
 namespace CluSys
 {
@@ -56,8 +57,36 @@ namespace CluSys
             return conn;
         }
 
-        private void Search_OnKeyDown(Object sender, KeyEventArgs e)
+        private void SearchBox_KeyDown(Object sender, KeyEventArgs e)
         {
+            System.Console.WriteLine(e.Key.ToString());
+        }
+
+        private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ListBox lb = null;
+            Visual v = (Visual)e.Source;
+            var filterText = ((TextBox)sender).Text;
+
+            while (v != null)
+            {
+                for(int i = 0; i < VisualTreeHelper.GetChildrenCount(v); i++)
+                {
+                    var c = VisualTreeHelper.GetChild(v, i);
+                    if (c is ListBox)
+                    {
+                        lb = (ListBox)c;
+                        goto done;
+                    }
+                }
+                v = VisualTreeHelper.GetParent(v) as Visual;
+            }
+
+            done: if (lb == null)
+                return;
+
+            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(lb.ItemsSource);
+            view.Filter = (a) => { return (a as Athlete).Name.Contains(filterText); };
         }
     }
 

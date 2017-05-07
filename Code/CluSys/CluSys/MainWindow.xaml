@@ -23,6 +23,9 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}">
     <Window.Resources>
+        <src:OpenAthletes x:Key="openAthletes" />
+        <src:Favorites x:Key="Favorites" />
+        <src:ModalityDotGetAthletesConverter x:Key="ModalityDotGetAthletesConverter" />
     </Window.Resources>
 
     <Grid>
@@ -55,9 +58,6 @@
         </Grid>
 
         <Grid Grid.Row="1">
-            <Grid.Resources>
-                <src:OpenAthletes x:Key="openAthletes" />
-            </Grid.Resources>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100px" />
                 <ColumnDefinition Width="*" />
@@ -88,9 +88,6 @@
             </StackPanel>
 
             <Grid Grid.Column="1" Margin="8">
-                <Grid.Resources>
-                    <src:Favorites x:Key="Favorites" />
-                </Grid.Resources>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
@@ -137,6 +134,7 @@
 
                 <ItemsControl x:Name="ModalityList"
                               Grid.Row="1"
+                              ItemsSource="{Binding Source=Fallback}"
                               Grid.IsSharedSizeScope="True">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -147,9 +145,6 @@
                         <DataTemplate>
                             <materialDesign:Card Margin="4" Width="240">
                                 <Grid>
-                                    <Grid.Resources>
-                                        <src:ModalityDotGetAthletesConverter x:Key="ModalityDotGetAthletesConverter" />
-                                    </Grid.Resources>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="*" />
@@ -168,18 +163,16 @@
                                         </ItemsControl.ItemTemplate>
                                     </ListBox>
                                     <Border Grid.Row="2" Margin="8" Background="White" CornerRadius="3" ToolTip="Enter to search, ignore case">
-                                        <StackPanel Orientation="Horizontal">
+                                        <DockPanel LastChildFill="True">
                                             <Button Style="{DynamicResource MaterialDesignToolButton}"
-                                                    Command="{Binding SearchCommand}" x:Name="SearchButton"
-                                                    CommandParameter="{Binding ElementName=SearchBox, Path=Text}"
                                                     Height="24" Width="24">
                                                 <materialDesign:PackIcon Kind="Magnify" Opacity=".56" />
                                             </Button>
-                                            <TextBox Margin="4 0 0 0" KeyDown="Search_OnKeyDown"
+                                            <TextBox Margin="4 0 0 0" TextChanged="SearchBox_TextChanged"
                                                      materialDesign:HintAssist.Hint="Search" x:Name="SearchBox"
                                                      materialDesign:TextFieldAssist.DecorationVisibility="Hidden" BorderThickness="0"
-                                                     MinWidth="100" VerticalAlignment="Center" />
-                                        </StackPanel>
+                                                     VerticalAlignment="Center" />
+                                        </DockPanel>
                                     </Border>
                                 </Grid>
                             </materialDesign:Card>
