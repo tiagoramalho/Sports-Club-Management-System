@@ -25,7 +25,7 @@ DROP TABLE	Modality;
 
 CREATE TABLE Modality(
 	Name		VARCHAR(20)		NOT NULL,
-	Recognition_year	TINYINT	NOT NULL,
+	Recognition_year	SMALLINT	NOT NULL,
 	PRIMARY KEY(Name));
 
 CREATE TABLE Class(
