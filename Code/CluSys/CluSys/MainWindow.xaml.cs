@@ -1,6 +1,10 @@
-﻿using System;
+﻿using CluSys.lib;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,67 +17,67 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Globalization;
 
 namespace CluSys
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
+        private SqlConnection cn;
+        private Modalities modalities { get; set; }
+
         public MainWindow()
         {
+            // Get a connection to CluSys' database
+            OpenSGBDConnection();
+
+            modalities = Modalities.LoadSQL(cn);
+
             InitializeComponent();
+
+            ModalityList.ItemsSource = modalities;
+        }
+
+        private bool OpenSGBDConnection()
+        {
+            if (cn == null)
+                cn = GetSGBDConnection();
+
+            if (cn.State != ConnectionState.Open)
+                cn.Open();
+
+            return cn.State == ConnectionState.Open;
+        }
+
+        public static SqlConnection GetSGBDConnection()
+        {
+            SqlConnection conn = new SqlConnection("data source= RJ-JESUS\\SQLEXPRESS2014;integrated security=true;initial catalog=CluSys");
+            conn.Open();
+            return conn;
         }
 
         private void Search_OnKeyDown(Object sender, KeyEventArgs e)
         {
-            ListBox lb;
-            var treeVisitor = sender;
-
-            while(true)
-            {
-
-                try
-                {
-                    var children = treeVisitor.GetType().GetProperty("Children").GetValue(treeVisitor);
-                    foreach(var item in (IEnumerable)children)
-                        if((string)item.GetType().GetProperty("Name").GetValue(item) == "SearchableAthletesList")
-                        {
-                            lb = (ListBox)item;
-                            goto Done;
-                        }
-                }
-                catch (NullReferenceException) { }
-
-                try
-                {
-                    if((treeVisitor = treeVisitor.GetType().GetProperty("Parent").GetValue(treeVisitor)) == null)
-                        return;
-                }
-                catch (NullReferenceException)
-                {
-                    return;
-                }
-            }
-            Done:
-            List<String> itemList = new List<string>();
-            foreach(var item in lb.Items)
-            {
-                itemList.Add(((TextBlock)item).Text);
-            }
-            if (itemList.Count > 0)
-            {
-                //clear the items from the list
-                lb.Items.Clear();
-
-                //filter the items and add them to the list
-                foreach(var item in itemList)
-                {
-                    if (item.Contains(((TextBox)sender).Text))
-                        lb.Items.Add(item);
-                }
-            }
         }
+    }
+
+    public sealed class ModalityDotGetAthletesConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var methodName = parameter as string;
+
+            if (value == null || methodName == null)
+                return value;
+
+            var methodInfo = value.GetType().GetMethod(methodName, new Type[1] { typeof(SqlConnection) });
+
+            if (methodInfo == null)
+                return value;
+
+            return methodInfo.Invoke(value, new object[1] { MainWindow.GetSGBDConnection() } );
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) { throw new NotSupportedException(); }
     }
 }

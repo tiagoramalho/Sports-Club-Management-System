@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:src="clr-namespace:CluSys"
+        xmlns:lib="clr-namespace:CluSys.lib"
         mc:Ignorable="d"
 
         Icon="App.ico"
@@ -68,33 +69,19 @@
                         materialDesign:RippleAssist.IsCentered="True">
                     <materialDesign:PackIcon Kind="Home" />
                 </Button>
-                <ListBox Grid.IsSharedSizeScope="True"
+                <ListBox HorizontalContentAlignment="Center"
                          ItemsSource="{Binding Source={StaticResource openAthletes}}">
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel IsItemsHost="True" />
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" SharedSizeGroup="ColumnSize" />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-
+                            <StackPanel>
                                 <Ellipse Width="24" Height="24" Margin="0 0 0 4">
                                     <Ellipse.Fill>
                                         <ImageBrush ImageSource="App.ico" Stretch="UniformToFill" />
                                     </Ellipse.Fill>
                                 </Ellipse>
-                                <TextBlock Grid.Row="1" Margin="0 4 0 0" Text="{Binding Path=FirstName}" HorizontalAlignment="Center" />
-                                <TextBlock Grid.Row="2" Margin="0 0 0 4" Text="{Binding Path=LastName}" HorizontalAlignment="Center" />
-                            </Grid>
+                                <TextBlock Margin="0 4 0 0" Text="{Binding Path=FirstName}" HorizontalAlignment="Center" />
+                                <TextBlock Margin="0 0 0 4" Text="{Binding Path=LastName}" HorizontalAlignment="Center" />
+                            </StackPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ListBox>
@@ -103,7 +90,6 @@
             <Grid Grid.Column="1" Margin="8">
                 <Grid.Resources>
                     <src:Favorites x:Key="Favorites" />
-                    <src:Modalities x:Key="Modalities" />
                 </Grid.Resources>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -149,9 +135,9 @@
                     </ItemsControl.ItemTemplate>
                 </ListBox>
 
-                <ItemsControl Grid.Row="1"
-                              Grid.IsSharedSizeScope="True"
-                              ItemsSource="{Binding Source={StaticResource Modalities}}">
+                <ItemsControl x:Name="ModalityList"
+                              Grid.Row="1"
+                              Grid.IsSharedSizeScope="True">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel IsItemsHost="True" />
@@ -161,45 +147,27 @@
                         <DataTemplate>
                             <materialDesign:Card Margin="4" Width="240">
                                 <Grid>
+                                    <Grid.Resources>
+                                        <src:ModalityDotGetAthletesConverter x:Key="ModalityDotGetAthletesConverter" />
+                                    </Grid.Resources>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="*" />
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
 
-                                    <TextBlock Background="{DynamicResource PrimaryHueMidBrush}" Foreground="White" Padding="8 24 8 0" FontWeight="Bold" Text="{Binding Path=Name}" />
-                                    <ListBox x:Name="SearchableAthletesList" Grid.Row="1" Margin="8 24 8 0">
-                                        <TextBlock Text="Athelets go here..." />
-                                        <TextBlock Text="Athelets go here..." />
-                                        <TextBlock Text="Athelets go here..." />
-                                        <TextBlock Text="Athelets go here..." />
-                                        <TextBlock Text="Athelets go here..." />
-                                        <TextBlock Text="Athelets go here..." />
-                                        <TextBlock Text="Athelets go here..." />
-                                        <TextBlock Text="Athelets go here..." />
-                                        <TextBlock Text="Athelets go here..." />
-                                        <TextBlock Text="Athelets go here..." />
-                                        <TextBlock Text="Athelets go here..." />
-                                        <TextBlock Text="Athelets go here..." />
-                                        <TextBlock Text="Athelets go here..." />
-                                        <TextBlock Text="Athelets go here..." />
-                                        <TextBlock Text="Athelets go here..." />
-                                        <TextBlock Text="Athelets go here..." />
-                                        <TextBlock Text="Athelets go here..." />
-                                        <TextBlock Text="Athelets go here..." />
-                                        <TextBlock Text="Athelets go here..." />
-                                        <TextBlock Text="Athelets go here..." />
-                                        <TextBlock Text="Athelets go here..." />
-                                        <TextBlock Text="Athelets go here..." />
-                                        <TextBlock Text="Athelets go here..." />
-                                        <TextBlock Text="Athelets go here..." />
-                                        <TextBlock Text="Athelets go here..." />
-                                        <TextBlock Text="Athelets go here..." />
-                                        <TextBlock Text="Athelets go here..." />
-                                        <TextBlock Text="Athelets go here..." />
-                                        <TextBlock Text="Athelets go here..." />
+                                    <TextBlock Text="{Binding Path=name}"
+                                               Foreground="White" Background="{DynamicResource PrimaryHueMidBrush}"
+                                               FontWeight="Bold" Padding="8 24 8 0" />
+                                    <ListBox Grid.Row="1" Margin="8 24 8 0"
+                                             ItemsSource="{Binding Converter={StaticResource ModalityDotGetAthletesConverter}, ConverterParameter='GetAthletes'}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Path=Name}" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
                                     </ListBox>
-                                    <Border Grid.Row="2" Margin="8" Background="White" MaxHeight="30" CornerRadius="3" ToolTip="Enter to search, ignore case">
+                                    <Border Grid.Row="2" Margin="8" Background="White" CornerRadius="3" ToolTip="Enter to search, ignore case">
                                         <StackPanel Orientation="Horizontal">
                                             <Button Style="{DynamicResource MaterialDesignToolButton}"
                                                     Command="{Binding SearchCommand}" x:Name="SearchButton"
