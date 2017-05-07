@@ -3,9 +3,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:src="clr-namespace:CluSys"
         mc:Ignorable="d"
+
+        Icon="App.ico"
+        Title="CluSys"
+        MinHeight="650"
+        MinWidth="1024"
+        WindowState="Maximized"
+        WindowStartupLocation="CenterScreen"
 
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -14,107 +20,138 @@
         TextOptions.TextFormattingMode="Ideal" 
         TextOptions.TextRenderingMode="Auto"        
         Background="{DynamicResource MaterialDesignPaper}"
-        FontFamily="{DynamicResource MaterialDesignFont}"
-
-        Icon="App.ico"
-        Title="CluSys"
-        MinHeight="650"
-        MinWidth="1024"
-        WindowState="Maximized"
-        WindowStartupLocation="CenterScreen">
+        FontFamily="{DynamicResource MaterialDesignFont}">
     <Window.Resources>
-        <Thickness x:Key="MarginDefault">10</Thickness>
+    </Window.Resources>
 
-        <DataTemplate x:Key="UserMiniature">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" SharedSizeGroup="ColumnSize" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-                <Ellipse Height="48" Width="48" Grid.Row="0" Margin="8">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100px" />
+                <ColumnDefinition Width="0.7*" />
+                <ColumnDefinition Width="0.3*" />
+            </Grid.ColumnDefinitions>
+
+            <Image Source="App.ico" Width="24" Height="24" Margin="8" />
+            <!--<TextBlock Grid.Column="1" VerticalAlignment="Center" />-->
+            <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="8" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Ellipse Width="24" Height="24" Margin="4">
                     <Ellipse.Fill>
                         <ImageBrush ImageSource="App.ico" Stretch="UniformToFill" />
                     </Ellipse.Fill>
                 </Ellipse>
-                <TextBlock HorizontalAlignment="Center" Grid.Row="1">
-                    <TextBlock.Text>
-                        <MultiBinding StringFormat="{}{0} {1}">
-                            <Binding Path="FirstName" />
-                            <Binding Path="LastName" />
-                        </MultiBinding>
-                    </TextBlock.Text>
-                </TextBlock>
-                <TextBlock HorizontalAlignment="Center" Grid.Row="2" Text="{Binding Path=Modality}" />
-            </Grid>
-        </DataTemplate>
-    </Window.Resources>
-
-    <Grid x:Name="Layout">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="50px" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-
-        <Grid x:Name="TopBar" Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100px" />
-                <ColumnDefinition Width="0.7*" />
-                <ColumnDefinition Width="0.2*" />
-            </Grid.ColumnDefinitions>
-
-            <Image Source="App.ico" Grid.Column="0" Margin="{DynamicResource MarginDefault}" />
-            <TextBlock Grid.Column="1" Margin="{DynamicResource MarginDefault}" VerticalAlignment="Center">Nome</TextBlock>
-            <TextBlock Grid.Column="2" Margin="{DynamicResource MarginDefault}" HorizontalAlignment="Center" VerticalAlignment="Center">Menu to utilizador</TextBlock>
+                <TextBlock Grid.Column="2" Margin="4" HorizontalAlignment="Center" VerticalAlignment="Center">Menu to utilizador</TextBlock>
+                <Button Style="{StaticResource MaterialDesignToolButton}" Margin="4"
+                        materialDesign:RippleAssist.IsDisabled="True">
+                    <materialDesign:PackIcon Kind="ChevronDown" />
+                </Button>
+            </StackPanel>
         </Grid>
 
-        <Grid x:Name="Body" Grid.Row="1">
+        <Grid Grid.Row="1">
+            <Grid.Resources>
+                <src:OpenAthletes x:Key="openAthletes" />
+            </Grid.Resources>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100px" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <ListBox Grid.Column="0" Margin="{DynamicResource MarginDefault}" HorizontalContentAlignment="Stretch">
-                <Button x:Name="Home" Style="{StaticResource MaterialDesignToolButton}" Width="30" Padding="2 0 2 0"
+            <StackPanel Margin="8">
+                <Button Width="48" Height="48"
+                        Style="{StaticResource MaterialDesignToolButton}"
                         materialDesign:RippleAssist.IsCentered="True">
                     <materialDesign:PackIcon Kind="Home" />
                 </Button>
-                <TextBlock>Paciente 1</TextBlock>
-                <TextBlock>Paciente 2</TextBlock>
-                <TextBlock>...</TextBlock>
-            </ListBox>
+                <ListBox Grid.IsSharedSizeScope="True"
+                         ItemsSource="{Binding Source={StaticResource openAthletes}}">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel IsItemsHost="True" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="ColumnSize" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
 
-            <Grid x:Name="Content" Grid.Column="1">
+                                <Ellipse Width="24" Height="24" Margin="0 0 0 4">
+                                    <Ellipse.Fill>
+                                        <ImageBrush ImageSource="App.ico" Stretch="UniformToFill" />
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                                <TextBlock Grid.Row="1" Margin="0 4 0 0" Text="{Binding Path=FirstName}" HorizontalAlignment="Center" />
+                                <TextBlock Grid.Row="2" Margin="0 0 0 4" Text="{Binding Path=LastName}" HorizontalAlignment="Center" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+
+            <Grid Grid.Column="1" Margin="8">
                 <Grid.Resources>
-                    <src:Favorites x:Key="favorites" />
-                    <src:Modalities x:Key="modalities" />
+                    <src:Favorites x:Key="Favorites" />
+                    <src:Modalities x:Key="Modalities" />
                 </Grid.Resources>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <ListBox x:Name="Favorites" Grid.Row="0"
-                         BorderThickness="0"
+                <ListBox Margin="8"
                          Grid.IsSharedSizeScope="True"
-                         Margin="{DynamicResource MarginDefault}"
-                         ItemTemplate="{StaticResource UserMiniature}"
-                         ItemsSource="{Binding Source={StaticResource favorites}}">
+                         ItemsSource="{Binding Source={StaticResource Favorites}}">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel IsItemsHost="True" />
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="ColumnSize" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <Ellipse Height="48" Width="48" Grid.Row="0" Margin="8">
+                                    <Ellipse.Fill>
+                                        <ImageBrush ImageSource="App.ico" Stretch="UniformToFill" />
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                                <TextBlock HorizontalAlignment="Center" Grid.Row="1">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0} {1}">
+                                            <Binding Path="FirstName" />
+                                            <Binding Path="LastName" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                                <TextBlock HorizontalAlignment="Center" Grid.Row="2" Text="{Binding Path=Modality}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
                 </ListBox>
 
                 <ItemsControl Grid.Row="1"
                               Grid.IsSharedSizeScope="True"
-                              Margin="{DynamicResource MarginDefault}"
-                              ItemsSource="{Binding Source={StaticResource modalities}}">
+                              ItemsSource="{Binding Source={StaticResource Modalities}}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel IsItemsHost="True" />
@@ -131,7 +168,7 @@
                                     </Grid.RowDefinitions>
 
                                     <TextBlock Background="{DynamicResource PrimaryHueMidBrush}" Foreground="White" Padding="8 24 8 0" FontWeight="Bold" Text="{Binding Path=Name}" />
-                                    <ListBox Grid.Row="1" Margin="8 24 8 0">
+                                    <ListBox x:Name="SearchableAthletesList" Grid.Row="1" Margin="8 24 8 0">
                                         <TextBlock Text="Athelets go here..." />
                                         <TextBlock Text="Athelets go here..." />
                                         <TextBlock Text="Athelets go here..." />
@@ -162,27 +199,20 @@
                                         <TextBlock Text="Athelets go here..." />
                                         <TextBlock Text="Athelets go here..." />
                                     </ListBox>
-                                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="8">
-                                        <Border Background="White" MaxHeight="30" CornerRadius="3" ToolTip="Enter to search, ignore case">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto" />
-                                                    <ColumnDefinition Width="*" />
-                                                </Grid.ColumnDefinitions>
-
-                                                <Button Style="{DynamicResource MaterialDesignToolButton}"
-                                                        Command="{Binding SearchCommand}" x:Name="SearchButton"
-                                                        CommandParameter="{Binding ElementName=SearchBox, Path=Text}"
-                                                        Height="24" Width="24">
-                                                    <materialDesign:PackIcon Kind="Magnify" Opacity=".56" />
-                                                </Button>
-                                                <TextBox Grid.Column="1" Margin="5 0 0 0" KeyDown="Search_OnKeyDown"
-                                                         materialDesign:HintAssist.Hint="Search" x:Name="SearchBox"
-                                                         materialDesign:TextFieldAssist.DecorationVisibility="Hidden" BorderThickness="0"
-                                                         MinWidth="100" VerticalAlignment="Center" />
-                                            </Grid>
-                                        </Border>
-                                    </StackPanel>
+                                    <Border Grid.Row="2" Margin="8" Background="White" MaxHeight="30" CornerRadius="3" ToolTip="Enter to search, ignore case">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Style="{DynamicResource MaterialDesignToolButton}"
+                                                    Command="{Binding SearchCommand}" x:Name="SearchButton"
+                                                    CommandParameter="{Binding ElementName=SearchBox, Path=Text}"
+                                                    Height="24" Width="24">
+                                                <materialDesign:PackIcon Kind="Magnify" Opacity=".56" />
+                                            </Button>
+                                            <TextBox Margin="4 0 0 0" KeyDown="Search_OnKeyDown"
+                                                     materialDesign:HintAssist.Hint="Search" x:Name="SearchBox"
+                                                     materialDesign:TextFieldAssist.DecorationVisibility="Hidden" BorderThickness="0"
+                                                     MinWidth="100" VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </Border>
                                 </Grid>
                             </materialDesign:Card>
                         </DataTemplate>

@@ -32,6 +32,17 @@ namespace CluSys
         public String Name { get; set; }
     }
 
+    public class OpenAthletes : ObservableCollection<Athelete>
+    {
+        public OpenAthletes()
+        {
+            Add(new Athelete("Michael", "Anderberg", "12 North Third Street"));
+            Add(new Athelete("Chris", "Ashton", "34 West Fifth Street"));
+            Add(new Athelete("Cassie", "Hicks", "56 East Seventh Street"));
+            Add(new Athelete("Guido", "Pica", "78 South Ninth Street"));
+        }
+    }
+
     public class Favorites : ObservableCollection<Athelete>
     {
         public Favorites()
