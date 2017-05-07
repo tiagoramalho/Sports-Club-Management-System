@@ -1,4 +1,4 @@
-use DepartamentoClinico;
+USE CluSys;
 
 INSERT INTO  Modality VALUES
 	('Futebol', '1914'),

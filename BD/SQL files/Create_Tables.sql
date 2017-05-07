@@ -1,31 +1,13 @@
-use DepartamentoClinico;
---CREATE DATABASE DepartamentoClinico;--
---TER EM ATENÇAO AOS ID's auto incrementados--
-DROP TABLE	SessionObs;
-DROP TABLE	TreatmentPlan;
-DROP TABLE	MajorProblem;
-DROP TABLE	FunctionalTestResult;
-DROP TABLE	FunctionalTestSet;
-DROP TABLE	BodyAnnotation;
-DROP TABLE	BocyChartMark;
-DROP TABLE	BodyChartView;
-DROP TABLE	Annotation;
-DROP TABLE	EvaluationSession;
-DROP TABLE	MedicalEvaluation;
-DROP TABLE	MedicalHistoryMedication;
-DROP TABLE  MedicalHistoryExams;
-DROP TABLE	MedicalHistory;
-DROP TABLE	Trains;
-DROP TABLE	Coach;
-DROP TABLE	Physiotherapist;
-DROP TABLE	Athlete;
-DROP TABLE	Class;
-DROP TABLE	Modality;
+-- Start clean
+USE master;
+DROP DATABASE CluSys;
+CREATE DATABASE CluSys;
+USE CluSys;
 
-
+-- Create tables
 CREATE TABLE Modality(
 	Name		VARCHAR(20)		NOT NULL,
-	Recognition_year	SMALLINT	NOT NULL,
+	RecognitionYear	SMALLINT	NOT NULL,
 	PRIMARY KEY(Name));
 
 CREATE TABLE Class(
