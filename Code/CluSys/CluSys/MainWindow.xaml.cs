@@ -34,11 +34,9 @@ namespace CluSys
             OpenSGBDConnection();
             openAthletes = new ObservableCollection<Athlete>();
 
-            var modalities = Modalities.LoadSQL(cn);
-
             InitializeComponent();
 
-            ModalityList.ItemsSource = modalities;
+            ModalityList.ItemsSource = Modalities.LoadSQL(cn);
             OpenAthletesList.ItemsSource = openAthletes;
         }
 
@@ -96,17 +94,21 @@ namespace CluSys
                 return;
 
             athlete = item.Content as Athlete;
+            AthleteContent.ItemsSource = new [] {  athlete  };
 
-            // Do more things
+            if (!openAthletes.Contains(athlete))
+                openAthletes.Insert(0, athlete);
 
-            if(!openAthletes.Contains(athlete))
-                openAthletes.Add(athlete);
+            HomeContent.Visibility = Visibility.Hidden;
+            AthleteContent.Visibility = Visibility.Visible;
         }
 
         private void GoHome(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine("Opening the 'Home' view...");
-            this.Show();
+
+            AthleteContent.Visibility = Visibility.Hidden;
+            HomeContent.Visibility = Visibility.Visible;
         }
     }
 

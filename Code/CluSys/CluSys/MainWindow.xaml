@@ -70,6 +70,7 @@
                     <materialDesign:PackIcon Kind="Home" />
                 </Button>
                 <ListBox x:Name="OpenAthletesList"
+                         PreviewMouseUp="OpenAthlete"
                          HorizontalContentAlignment="Center"
                          ItemsSource="{Binding Source=Fallback}">
                     <ItemsControl.ItemTemplate>
@@ -88,7 +89,7 @@
                 </ListBox>
             </StackPanel>
 
-            <Grid Grid.Column="1" Margin="8">
+            <Grid x:Name="HomeContent" Visibility="Hidden" Grid.Column="1" Margin="8">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
@@ -181,6 +182,34 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </Grid>
+
+            <ItemsControl x:Name="AthleteContent" Visibility="Visible" Grid.Column="1" Margin="8"
+                          ItemsSource="{Binding Source=Fallback}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Orientation="Horizontal" Margin="8" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Ellipse Width="48" Height="48" Margin="8">
+                                    <Ellipse.Fill>
+                                        <ImageBrush ImageSource="App.ico" Stretch="UniformToFill" />
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                                <TextBlock Margin="8" VerticalAlignment="Center" 
+                                           Style="{StaticResource MaterialDesignHeadlineTextBlock}"
+                                           Text="{Binding Path=Name, FallbackValue='FirstName LastName'}"/>
+                            </StackPanel>
+
+                        </Grid>
+
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </Grid>
     </Grid>
 </Window>
