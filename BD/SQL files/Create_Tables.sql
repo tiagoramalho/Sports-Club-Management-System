@@ -20,7 +20,9 @@ CREATE TABLE Class(
 
 CREATE TABLE Athlete(
 	CC			VARCHAR(12)	NOT NULL,
-	Name		VARCHAR(50)	NOT NULL,
+	FirstName	VARCHAR(15) NOT NULL,
+	MiddleName	VARCHAR(25) ,
+	LastName	VARCHAR(15) NOT NULL,
 	Birthdate	DATE		NOT NULL,
 	Photo		VARCHAR,
 	Phone		VARCHAR(15)	NOT NULL,
@@ -35,7 +37,9 @@ CREATE TABLE Athlete(
 
 CREATE TABLE Physiotherapist(
 	CC			VARCHAR(12)	NOT NULL,
-	Name		VARCHAR(50)	NOT NULL,
+	FirstName	VARCHAR(15) NOT NULL,
+	MiddleName	VARCHAR(25) ,
+	LastName	VARCHAR(15) NOT NULL,
 	Birthdate	DATE		NOT NULL,
 	Photo		VARCHAR(100),
 	Phone		VARCHAR(15)	NOT NULL,
@@ -47,7 +51,9 @@ CREATE TABLE Physiotherapist(
 
 CREATE TABLE Coach(
 	CC			VARCHAR(12)	NOT NULL,
-	Name		VARCHAR(50)	NOT NULL,
+	FirstName	VARCHAR(15) NOT NULL,
+	MiddleName	VARCHAR(25) ,
+	LastName	VARCHAR(15) NOT NULL,
 	Birthdate	DATE		NOT NULL,
 	Photo		VARCHAR,
 	Phone		VARCHAR(15)	NOT NULL,
