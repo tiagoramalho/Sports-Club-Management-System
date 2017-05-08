@@ -23,7 +23,6 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}">
     <Window.Resources>
-        <src:OpenAthletes x:Key="openAthletes" />
         <src:Favorites x:Key="Favorites" />
         <src:ModalityDotGetAthletesConverter x:Key="ModalityDotGetAthletesConverter" />
     </Window.Resources>
@@ -65,12 +64,14 @@
 
             <StackPanel Margin="8">
                 <Button Width="48" Height="48"
+                        Click="GoHome"
                         Style="{StaticResource MaterialDesignToolButton}"
                         materialDesign:RippleAssist.IsCentered="True">
                     <materialDesign:PackIcon Kind="Home" />
                 </Button>
-                <ListBox HorizontalContentAlignment="Center"
-                         ItemsSource="{Binding Source={StaticResource openAthletes}}">
+                <ListBox x:Name="OpenAthletesList"
+                         HorizontalContentAlignment="Center"
+                         ItemsSource="{Binding Source=Fallback}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
@@ -79,8 +80,8 @@
                                         <ImageBrush ImageSource="App.ico" Stretch="UniformToFill" />
                                     </Ellipse.Fill>
                                 </Ellipse>
-                                <TextBlock Margin="0 4 0 0" Text="{Binding Path=FirstName}" HorizontalAlignment="Center" />
-                                <TextBlock Margin="0 0 0 4" Text="{Binding Path=LastName}" HorizontalAlignment="Center" />
+                                <TextBlock Margin="0 4 0 0" Text="{Binding Path=Name}" HorizontalAlignment="Center" />
+                                <!-- <TextBlock Margin="0 0 0 4" Text="{Binding Path=LastName}" HorizontalAlignment="Center" /> -->
                             </StackPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
@@ -154,7 +155,7 @@
                                     <TextBlock Text="{Binding Path=name}"
                                                Foreground="White" Background="{DynamicResource PrimaryHueMidBrush}"
                                                FontWeight="Bold" Padding="8 24 8 0" />
-                                    <ListBox Grid.Row="1" Margin="8 24 8 0"
+                                    <ListBox Grid.Row="1" Margin="8 24 8 0" PreviewMouseUp="OpenAthlete"
                                              ItemsSource="{Binding Converter={StaticResource ModalityDotGetAthletesConverter}, ConverterParameter='GetAthletes'}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>

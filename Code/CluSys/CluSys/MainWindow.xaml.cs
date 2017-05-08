@@ -19,24 +19,27 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Globalization;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace CluSys
 {
     public partial class MainWindow : Window
     {
         private SqlConnection cn;
-        private Modalities modalities { get; set; }
+        private ObservableCollection<Athlete> openAthletes;
 
         public MainWindow()
         {
-            // Get a connection to CluSys' database
+            // Init
             OpenSGBDConnection();
+            openAthletes = new ObservableCollection<Athlete>();
 
-            modalities = Modalities.LoadSQL(cn);
+            var modalities = Modalities.LoadSQL(cn);
 
             InitializeComponent();
 
             ModalityList.ItemsSource = modalities;
+            OpenAthletesList.ItemsSource = openAthletes;
         }
 
         private bool OpenSGBDConnection()
@@ -55,11 +58,6 @@ namespace CluSys
             SqlConnection conn = new SqlConnection("data source= RJ-JESUS\\SQLEXPRESS2014;integrated security=true;initial catalog=CluSys");
             conn.Open();
             return conn;
-        }
-
-        private void SearchBox_KeyDown(Object sender, KeyEventArgs e)
-        {
-            System.Console.WriteLine(e.Key.ToString());
         }
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -87,6 +85,28 @@ namespace CluSys
 
             CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(lb.ItemsSource);
             view.Filter = (a) => { return (a as Athlete).Name.Contains(filterText); };
+        }
+
+        private void OpenAthlete(object sender, MouseButtonEventArgs e)
+        {
+            Athlete athlete;
+            var item = ItemsControl.ContainerFromElement(sender as ListBox, e.OriginalSource as DependencyObject) as ListBoxItem;
+
+            if (item == null)
+                return;
+
+            athlete = item.Content as Athlete;
+
+            // Do more things
+
+            if(!openAthletes.Contains(athlete))
+                openAthletes.Add(athlete);
+        }
+
+        private void GoHome(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine("Opening the 'Home' view...");
+            this.Show();
         }
     }
 

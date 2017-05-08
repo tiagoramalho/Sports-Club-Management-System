@@ -71,7 +71,6 @@
     <Compile Include="lib\Athlete.cs" />
     <Compile Include="lib\athletes.cs" />
     <Compile Include="lib\Modality.cs" />
-    <Compile Include="lib\utils.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
