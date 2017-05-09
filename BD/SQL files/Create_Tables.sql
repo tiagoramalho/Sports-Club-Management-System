@@ -1,7 +1,10 @@
 -- Start clean
 USE master;
+GO
 DROP DATABASE CluSys;
+GO
 CREATE DATABASE CluSys;
+GO
 USE CluSys;
 GO
 
@@ -25,7 +28,7 @@ CREATE TABLE Athlete(
 	MiddleName	VARCHAR(25) ,
 	LastName	VARCHAR(15) NOT NULL,
 	Birthdate	DATE		NOT NULL,
-	Photo		VARCHAR,
+	Photo		VARCHAR(100),
 	Phone		VARCHAR(15)	NOT NULL,
 	Email		VARCHAR(40)	NOT NULL,
 	PWD			VARCHAR(20) NOT NULL,

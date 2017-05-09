@@ -43,11 +43,11 @@ namespace CluSys.lib
         }
     }
 
-    class Modalities : ObservableCollection<Modality>
+    class Modalities
     {
-        public static Modalities LoadSQL(SqlConnection cn)
+        public static ObservableCollection<Modality> LoadSQL(SqlConnection cn)
         {
-            Modalities modalities = new Modalities();
+            var modalities = new ObservableCollection<Modality>();
 
             SqlCommand cmd = new SqlCommand("SELECT * FROM Modality", cn);
             SqlDataReader reader = cmd.ExecuteReader();
@@ -58,6 +58,8 @@ namespace CluSys.lib
                     name = reader["Name"].ToString(),
                     recognitionYear = int.Parse(reader["RecognitionYear"].ToString()),
                 });
+
+            reader.Close();
 
             return modalities;
         }

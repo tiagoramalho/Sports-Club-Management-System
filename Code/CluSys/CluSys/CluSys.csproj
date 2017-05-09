@@ -51,12 +51,6 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="TimelineExLib, Version=2.0.2.41912, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Timeline.2.0.2.41912\lib\net40\TimelineExLib.dll</HintPath>
-    </Reference>
-    <Reference Include="TimelineLibrary, Version=2.0.2.41912, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Timeline.2.0.2.41912\lib\net40\TimelineLibrary.dll</HintPath>
-    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -75,7 +69,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="lib\Athlete.cs" />
-    <Compile Include="lib\athletes.cs" />
+    <Compile Include="lib\MedicalEvaluation.cs" />
     <Compile Include="lib\Modality.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -115,6 +109,28 @@
   <ItemGroup>
     <Folder Include="Fonts\" />
     <Folder Include="windows\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="assets\img\14.jpg" />
+    <Resource Include="assets\img\17.jpg" />
+    <Resource Include="assets\img\2.jpg" />
+    <Resource Include="assets\img\25.jpg" />
+    <Resource Include="assets\img\27.jpg" />
+    <Resource Include="assets\img\3.jpg" />
+    <Resource Include="assets\img\37.jpg" />
+    <Resource Include="assets\img\64.jpg" />
+    <Resource Include="assets\img\66.jpg" />
+    <Resource Include="assets\img\68.jpg" />
+    <Resource Include="assets\img\74.jpg" />
+    <Resource Include="assets\img\77.jpg" />
+    <Resource Include="assets\img\79.jpg" />
+    <Resource Include="assets\img\85.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="assets\img\11.jpg" />
+    <Resource Include="assets\img\35.jpg" />
+    <Resource Include="assets\img\61.jpg" />
+    <Resource Include="assets\img\7.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

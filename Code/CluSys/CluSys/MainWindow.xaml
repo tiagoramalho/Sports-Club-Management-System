@@ -23,7 +23,8 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}">
     <Window.Resources>
-        <src:Favorites x:Key="Favorites" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <src:StringConverter x:Key="StringConverter" />
         <src:ModalityDotGetAthletesConverter x:Key="ModalityDotGetAthletesConverter" />
     </Window.Resources>
 
@@ -62,8 +63,8 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <StackPanel Margin="8">
-                <Button Click="GoHome" Width="48" Height="48"
+            <DockPanel Margin="8">
+                <Button Click="GoHome" DockPanel.Dock="Top" Width="48" Height="48"
                         Style="{StaticResource MaterialDesignToolButton}"
                         materialDesign:RippleAssist.IsCentered="True">
                     <materialDesign:PackIcon Kind="Home" />
@@ -71,14 +72,13 @@
                 <ListBox x:Name="OpenAthletesList"
                          PreviewMouseUp="OpenAthlete"
                          HorizontalContentAlignment="Center"
-                         >
-                    <!--ItemsSource="{Binding Source=Fallback}"> -->
+                         ScrollViewer.VerticalScrollBarVisibility="Hidden">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
                                 <Ellipse Width="24" Height="24" Margin="0 0 0 4">
                                     <Ellipse.Fill>
-                                        <ImageBrush ImageSource="App.ico" Stretch="UniformToFill" />
+                                        <ImageBrush ImageSource="{Binding Path=Photo}" Stretch="UniformToFill" />
                                     </Ellipse.Fill>
                                 </Ellipse>
                                 <TextBlock Margin="0 4 0 0" Text="{Binding Path=FirstName}" HorizontalAlignment="Center" />
@@ -87,7 +87,7 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ListBox>
-            </StackPanel>
+            </DockPanel>
 
             <Grid x:Name="HomeContent" Visibility="Hidden" Grid.Column="1" Margin="8">
                 <Grid.RowDefinitions>
@@ -95,9 +95,11 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <ListBox Margin="8"
+                <ListBox x:Name="OpenEvaluations"
+                         Margin="8"
+                         PreviewMouseUp="OpenAthlete"
                          Grid.IsSharedSizeScope="True"
-                         ItemsSource="{Binding Source={StaticResource Favorites}}">
+                         ItemsSource="{Binding Source=Fallback}">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel IsItemsHost="True" />
@@ -117,7 +119,7 @@
 
                                 <Ellipse Height="48" Width="48" Grid.Row="0" Margin="8">
                                     <Ellipse.Fill>
-                                        <ImageBrush ImageSource="App.ico" Stretch="UniformToFill" />
+                                        <ImageBrush ImageSource="{Binding Path=Photo}" Stretch="UniformToFill" />
                                     </Ellipse.Fill>
                                 </Ellipse>
                                 <TextBlock HorizontalAlignment="Center" Grid.Row="1">
@@ -199,12 +201,13 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
                             <StackPanel Orientation="Horizontal" Margin="8" HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <Ellipse Width="48" Height="48" Margin="8">
                                     <Ellipse.Fill>
-                                        <ImageBrush ImageSource="App.ico" Stretch="UniformToFill" />
+                                        <ImageBrush ImageSource="{Binding Path=Photo}" Stretch="UniformToFill" />
                                     </Ellipse.Fill>
                                 </Ellipse>
                                 <TextBlock Margin="8" VerticalAlignment="Center"
@@ -220,19 +223,204 @@
                             </StackPanel>
 
                             <DockPanel Grid.Row="1" Margin="8" LastChildFill="True">
-                                <TextBlock x:Name="InTreatment" Margin="8" Text="" DockPanel.Dock="Right" Style="{StaticResource MaterialDesignSubheadingTextBlock}" />
-                                <TextBlock x:Name="Weight" Margin="8" Text="Peso: N/A" DockPanel.Dock="Left" Style="{StaticResource MaterialDesignSubheadingTextBlock}" />
-                                <TextBlock x:Name="Height" Margin="8" Text="Altura: N/A" DockPanel.Dock="Left" Style="{StaticResource MaterialDesignSubheadingTextBlock}" />
+                                <materialDesign:Chip Visibility="{Binding Path=activeEvaluation, Converter={StaticResource BooleanToVisibilityConverter}}" Content="Em tratamento de lesão" Margin="4" DockPanel.Dock="Right" />
+                                <materialDesign:Chip Icon="A" Content="{Binding Path=Height, Converter={StaticResource StringConverter}, ConverterParameter='{}{0:N2} m'}" Margin="4" />
+                                <materialDesign:Chip Icon="P" Content="{Binding Path=Weight, Converter={StaticResource StringConverter}, ConverterParameter='{}{0:N2} kg'}" Margin="4" />
                             </DockPanel>
 
-                            <Grid Grid.Row="2" Margin="96 48 96 48">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
-                                
-                                
-                            </Grid>
+                            <ScrollViewer Grid.Row="2" Margin="24"
+                                          HorizontalScrollBarVisibility="Auto"
+                                          VerticalScrollBarVisibility="Disabled">
+                                <ItemsControl>
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel IsItemsHost="True" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}"
+                                                     Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+                                        <StackPanel>
+                                            <TextBlock Margin="16 16 16 4"
+                                                       Text="{Binding Path=Height, StringFormat={}Avaliação #{0}}"
+                                                       Style="{StaticResource MaterialDesignHeadlineTextBlock}" />
+                                            <Separator Grid.Row="1" Style="{StaticResource MaterialDesignLightSeparator}"/>
+                                            <TextBlock Grid.Row="2" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignBody2TextBlock}">March 19, 2016</TextBlock>
+                                            <Button Click="Button_Click" Grid.Row="3" Style="{StaticResource MaterialDesignToolButton}">
+                                                <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
+                                            </Button>
+                                        </StackPanel>
+                                    </materialDesign:Card>
+
+                                    <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}"
+                                                     Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+                                        <StackPanel>
+                                            <TextBlock Margin="16 16 16 4" Style="{StaticResource MaterialDesignHeadlineTextBlock}">Avaliação #</TextBlock>
+                                            <Separator Grid.Row="1" Style="{StaticResource MaterialDesignLightSeparator}"/>
+                                            <TextBlock Grid.Row="2" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignBody2TextBlock}">March 19, 2016</TextBlock>
+                                            <Button Grid.Row="3" Style="{StaticResource MaterialDesignToolButton}">
+                                                <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
+                                            </Button>
+                                        </StackPanel>
+                                    </materialDesign:Card>
+
+                                    <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}"
+                                                     Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+                                        <StackPanel>
+                                            <TextBlock Margin="16 16 16 4" Style="{StaticResource MaterialDesignHeadlineTextBlock}">Avaliação #</TextBlock>
+                                            <Separator Grid.Row="1" Style="{StaticResource MaterialDesignLightSeparator}"/>
+                                            <TextBlock Grid.Row="2" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignBody2TextBlock}">March 19, 2016</TextBlock>
+                                            <Button Grid.Row="3" Style="{StaticResource MaterialDesignToolButton}">
+                                                <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
+                                            </Button>
+                                        </StackPanel>
+                                    </materialDesign:Card>
+
+                                    <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}"
+                                                     Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+                                        <StackPanel>
+                                            <TextBlock Margin="16 16 16 4" Style="{StaticResource MaterialDesignHeadlineTextBlock}">Avaliação #</TextBlock>
+                                            <Separator Grid.Row="1" Style="{StaticResource MaterialDesignLightSeparator}"/>
+                                            <TextBlock Grid.Row="2" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignBody2TextBlock}">March 19, 2016</TextBlock>
+                                            <Button Grid.Row="3" Style="{StaticResource MaterialDesignToolButton}">
+                                                <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
+                                            </Button>
+                                        </StackPanel>
+                                    </materialDesign:Card>
+
+                                    <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}"
+                                                     Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+                                        <StackPanel>
+                                            <TextBlock Margin="16 16 16 4" Style="{StaticResource MaterialDesignHeadlineTextBlock}">Avaliação #</TextBlock>
+                                            <Separator Grid.Row="1" Style="{StaticResource MaterialDesignLightSeparator}"/>
+                                            <TextBlock Grid.Row="2" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignBody2TextBlock}">March 19, 2016</TextBlock>
+                                            <Button Grid.Row="3" Style="{StaticResource MaterialDesignToolButton}">
+                                                <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
+                                            </Button>
+                                        </StackPanel>
+                                    </materialDesign:Card>
+
+                                    <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}"
+                                                     Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+                                        <StackPanel>
+                                            <TextBlock Margin="16 16 16 4" Style="{StaticResource MaterialDesignHeadlineTextBlock}">Avaliação #</TextBlock>
+                                            <Separator Grid.Row="1" Style="{StaticResource MaterialDesignLightSeparator}"/>
+                                            <TextBlock Grid.Row="2" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignBody2TextBlock}">March 19, 2016</TextBlock>
+                                            <Button Grid.Row="3" Style="{StaticResource MaterialDesignToolButton}">
+                                                <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
+                                            </Button>
+                                        </StackPanel>
+                                    </materialDesign:Card>
+
+                                    <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}"
+                                                     Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+                                        <StackPanel>
+                                            <TextBlock Margin="16 16 16 4" Style="{StaticResource MaterialDesignHeadlineTextBlock}">Avaliação #</TextBlock>
+                                            <Separator Grid.Row="1" Style="{StaticResource MaterialDesignLightSeparator}"/>
+                                            <TextBlock Grid.Row="2" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignBody2TextBlock}">March 19, 2016</TextBlock>
+                                            <Button Grid.Row="3" Style="{StaticResource MaterialDesignToolButton}">
+                                                <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
+                                            </Button>
+                                        </StackPanel>
+                                    </materialDesign:Card>
+                                </ItemsControl>
+                            </ScrollViewer>
+
+                            <Expander Panel.ZIndex="-1" Margin="8 -48 8 16" x:Name="expander" Grid.Row="3" HorizontalAlignment="Stretch">
+                                <StackPanel Margin="24,8,24,8" TextBlock.Foreground="{DynamicResource MaterialDesignBody}">
+                                    <TextBlock Text="Your Content" />
+                                    <TextBlock Opacity=".68" TextWrapping="Wrap" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."/>
+                                </StackPanel>
+                            </Expander>
+
+<!--
+                            <materialDesign:DialogHost Grid.Row="3" >
+                                <materialDesign:DialogHost.DialogContent>
+                                    <ScrollViewer MaxHeight="100" VerticalScrollBarVisibility="Auto">
+                                        <StackPanel>
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                    <TextBlock Text="hgajs" />
+                                        </StackPanel>
+                                    </ScrollViewer>
+                                </materialDesign:DialogHost.DialogContent>
+                                <StackPanel>
+                                    <TextBlock Text="kdja" />
+                                    <TextBlock Text="kdja" />
+                                    <TextBlock Text="kdja" />
+                                    <TextBlock Text="kdja" />
+                                    <TextBlock Text="kdja" />
+                                    <Button Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" />
+                                </StackPanel>
+                            </materialDesign:DialogHost>
+                            -->
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

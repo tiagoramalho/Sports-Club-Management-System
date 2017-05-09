@@ -20,6 +20,7 @@ using System.Windows.Shapes;
 using System.Globalization;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Collections.Specialized;
 
 namespace CluSys
 {
@@ -37,7 +38,8 @@ namespace CluSys
             InitializeComponent();
 
             ModalityList.ItemsSource = Modalities.LoadSQL(cn);
-            OpenAthletesList.ItemsSource = openAthletes;
+            OpenEvaluations.ItemsSource = Athletes.OpenEvaluations(cn);
+            OpenAthletesList.ItemsSource = openAthletes;  // empty on start
         }
 
         private bool OpenSGBDConnection()
@@ -85,7 +87,7 @@ namespace CluSys
             view.Filter = (a) => {
                 var athlete = a as Athlete;
 
-                return (athlete.FirstName + athlete.LastName).Contains(filterText);
+                return (athlete.FirstName + " " + athlete.LastName).Contains(filterText);
             };
         }
 
@@ -97,7 +99,7 @@ namespace CluSys
             if (item == null)
                 return;
 
-            athlete = item.Content as Athlete;
+            athlete = new AthleteWithBody(cn, item.Content as Athlete);
             AthleteContent.ItemsSource = new [] {  athlete  };
 
             if (!openAthletes.Contains(athlete))
@@ -114,6 +116,28 @@ namespace CluSys
             AthleteContent.Visibility = Visibility.Hidden;
             HomeContent.Visibility = Visibility.Visible;
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            var expander = FindName("expander") as Expander;
+        }
+    }
+
+    public sealed class StringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var format = parameter as string;
+
+            if (value == null || format == null)
+                return value;
+            else if (value is Double && Double.IsNaN((Double)value))
+                return "n/a";
+
+            return String.Format(format, value);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) { throw new NotSupportedException(); }
     }
 
     public sealed class ModalityDotGetAthletesConverter : IValueConverter
