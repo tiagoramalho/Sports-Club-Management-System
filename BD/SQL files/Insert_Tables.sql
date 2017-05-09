@@ -31,23 +31,24 @@ INSERT INTO Class Values
 	('Andebol', 'Seniores',19,50);
 
 INSERT INTO Athlete Values
-	('1231', 'Tiago', 'Antunes', 'Pereira', '19960622', NULL, '931111111', 'ramalho@ua.pt', 'ramalho', 'estudante', 'destro', 'Futebol'),
-	('1232', 'Andre', 'Gomes', 'Gomes', '19960402', NULL, '931111112', 'andre@ua.pt', 'andre', 'estudante', 'destro', 'Futebol'),
-	('1233', 'Joao', 'Tiago', 'Branquinho', '19930402', NULL, '931111113', 'joao@ua.pt', 'joao', 'professor', 'esquerdino', 'Futebol'),
-	('1234', 'Pedro', 'Jorge', 'Moreira', '19960622', NULL, '931111114', 'pedro@ua.pt', 'pedro', 'estudante', 'destro', 'Futebol'),
-	('1235', 'Gabriel', 'Soares', 'Patricio', '19960402', NULL, '931111115', 'gabriel@ua.pt', 'gabriel', 'engenheiro agronomo', 'destro', 'Futebol'),
-	('1236', 'Jorge', 'Miguel', 'Silva', '19930402', NULL, '931111116', 'jorge@ua.pt', 'jorge', 'estudante', 'destro', 'Basquetebol'),
-	('1237', 'Samuel', 'Antunes', 'Biscaia', '19960622', NULL, '931111117', 'samuel@ua.pt', 'samuel', 'estudante', 'destro', 'Basquetebol'),
-	('1238', 'Joao', 'Ferreira', 'Gomes', '19960402', NULL, '931111118', 'ferreira@ua.pt', 'ferreira', 'estudante', 'destro', 'Basquetebol'),
-	('1239', 'Diogo', 'Filipe', 'Catraio', '19930402', NULL, '931111119', 'diogo@ua.pt', 'diogo', 'estudante', 'destro', 'Basquetebol'),
-	('1241', 'Cilio', NULL, 'Sousa', '19960622', NULL, '931111121', 'cilio@ua.pt', 'cilio', 'estudante', 'destro', 'Futebol'),
-	('1242', 'Jose', 'Pedro', 'Ribeiro', '19960402', NULL, '931111122', 'jose@ua.pt', 'jose', 'estudante', 'esquerdino', 'Futebol'),
-	('1243', 'Fabio', 'Miguel', 'Maio', '19930402', NULL, '931111123', 'fabio@ua.pt', 'fabio', 'vendedor', 'esquerdino', 'Basquetebol'),
-	('1244', 'Filipe', NULL, 'Santos', '19960622', NULL, '931111124', 'filipe@ua.pt', 'filipe', 'professor', 'esquerdino', 'Basquetebol'),
-	('1245', 'Nuno', 'Silva', 'Cruz', '19960402', NULL, '931111125', 'nuno@ua.pt', 'nuno', 'arquiteto', 'esquerdino', 'Futebol'),
-	('1246', 'Cristiano', 'Rolando', 'Santos', '19930402', NULL, '931111126', 'cristiano@ua.pt', 'cristiano', 'estudante', 'destro', 'Basquetebol'),
-	('1247', 'Tiago', 'André Ribeiro', 'Ramalho', '19930402', NULL, '931111127', 'ribeiro@ua.pt', 'ribeiro', 'designer', 'destro', 'Futebol'),
-	('1248', 'Ricardo', NULL, 'Jesus', '19930402', NULL, '931111128', 'ricardo@ua.pt', 'ricardo', 'estudante', 'destro', 'Futebol');
+	('1231', 'Tiago', 'Antunes', 'Pereira', '19960622', '/assets/img/2.jpg', '931111111', 'ramalho@ua.pt', 'ramalho', 'estudante', 'destro', 'Futebol'),
+	('1232', 'Andre', 'Gomes', 'Gomes', '19960402', '/assets/img/3.jpg', '931111112', 'andre@ua.pt', 'andre', 'estudante', 'destro', 'Futebol'),
+	('1233', 'Joao', 'Tiago', 'Branquinho', '19930402', '/assets/img/14.jpg', '931111113', 'joao@ua.pt', 'joao', 'professor', 'esquerdino', 'Futebol'),
+	('1234', 'Pedro', 'Jorge', 'Moreira', '19960622', '/assets/img/17.jpg', '931111114', 'pedro@ua.pt', 'pedro', 'estudante', 'destro', 'Futebol'),
+	('1235', 'Gabriel', 'Soares', 'Patricio', '19960402', '/assets/img/25.jpg', '931111115', 'gabriel@ua.pt', 'gabriel', 'engenheiro agronomo', 'destro', 'Futebol'),
+	('1236', 'Jorge', 'Miguel', 'Silva', '19930402', '/assets/img/27.jpg', '931111116', 'jorge@ua.pt', 'jorge', 'estudante', 'destro', 'Basquetebol'),
+	('1237', 'Samuel', 'Antunes', 'Biscaia', '19960622', '/assets/img/37.jpg', '931111117', 'samuel@ua.pt', 'samuel', 'estudante', 'destro', 'Basquetebol'),
+	('1238', 'Joao', 'Ferreira', 'Gomes', '19960402', '/assets/img/64.jpg', '931111118', 'ferreira@ua.pt', 'ferreira', 'estudante', 'destro', 'Basquetebol'),
+	('1239', 'Diogo', 'Filipe', 'Catraio', '19930402', '/assets/img/66.jpg', '931111119', 'diogo@ua.pt', 'diogo', 'estudante', 'destro', 'Basquetebol'),
+	('1241', 'Cilio', NULL, 'Sousa', '19960622', '/assets/img/68.jpg', '931111121', 'cilio@ua.pt', 'cilio', 'estudante', 'destro', 'Futebol'),
+	('1242', 'Jose', 'Pedro', 'Ribeiro', '19960402', '/assets/img/74.jpg', '931111122', 'jose@ua.pt', 'jose', 'estudante', 'esquerdino', 'Futebol'),
+	('1243', 'Fabio', 'Miguel', 'Maio', '19930402', '/assets/img/77.jpg', '931111123', 'fabio@ua.pt', 'fabio', 'vendedor', 'esquerdino', 'Basquetebol'),
+	('1244', 'Filipe', NULL, 'Santos', '19960622', '/assets/img/79.jpg', '931111124', 'filipe@ua.pt', 'filipe', 'professor', 'esquerdino', 'Basquetebol'),
+	('1245', 'Nuno', 'Silva', 'Cruz', '19960402', '/assets/img/85.jpg', '931111125', 'nuno@ua.pt', 'nuno', 'arquiteto', 'esquerdino', 'Futebol'),
+	('1246', 'Cristiano', 'Rolando', 'Santos', '19930402', '/assets/img/7.jpg', '931111126', 'cristiano@ua.pt', 'cristiano', 'estudante', 'destro', 'Basquetebol'),
+	('1247', 'Tiago', 'André Ribeiro', 'Ramalho', '19930402', '/assets/img/61.jpg', '931111127', 'ribeiro@ua.pt', 'ribeiro', 'designer', 'destro', 'Futebol'),
+	('1248', 'Ricardo', NULL, 'Jesus', '19930402', '/assets/img/35.jpg', '931111128', 'ricardo@ua.pt', 'ricardo', 'estudante', 'destro', 'Futebol');
+
 
 
 INSERT INTO Physiotherapist Values
