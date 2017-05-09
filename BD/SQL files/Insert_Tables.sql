@@ -68,9 +68,12 @@ INSERT INTO MedicalEvaluation VALUES
 	('82.5', '1.84', NULL, '20170521', NULL, NULL, '1241', '12123');
 
 INSERT INTO EvaluationSession VALUES
+    ('1', '20170422'),
+    ('1', '20170423'),
+    ('1', '20170424'),
+    ('2', '20170424'),
 	('3', '20170422');
 
-USE CluSys;
 INSERT INTO MajorProblem VALUES 
 	('Dores no ombro', '1', '1'),
 	('Clavícula deslocada', '1', '1'),
