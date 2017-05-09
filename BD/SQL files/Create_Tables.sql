@@ -98,8 +98,8 @@ CREATE TABLE MedicalHistoryMedication(
 
 CREATE TABLE MedicalEvaluation(
 	ID			INT			NOT NULL IDENTITY(1,1),
-	Weightt		DECIMAL(5,2),
-	Height		DECIMAL(3,2),
+	Weightt		DECIMAL(5,2) NOT NULL,
+	Height		DECIMAL(3,2) NOT NULL,
 	Story		VARCHAR(200),
 	OpeningDate	DATE		NOT NULL,
 	ClosingDATE	DATE,
@@ -112,8 +112,8 @@ CREATE TABLE MedicalEvaluation(
 
 CREATE TABLE EvaluationSession(
 	EvalId		INT			NOT NULL,
-	ID			INT			NOT NULL,
 	dateSession	DATE		NOT NULL,
+	ID			INT			NOT NULL IDENTITY(1,1),
 	PRIMARY KEY(EvalId,ID),
 	FOREIGN KEY(EvalId) REFERENCES MedicalEvaluation (ID));
 

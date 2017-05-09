@@ -2,20 +2,9 @@
 
 public class Annotation
 {
-    private Char Symbol;
-    private String Meaning;
+    public Char Symbol { get; set; }
+    public String Meaning { get; set; }
 
-    public Char Symbol
-    {
-        get { return Symbol; }
-        set { Symbol = value; }
-    }
-
-    public String Meaning
-    {
-        get { return Meaning; }
-        set { Meaning = value; }
-    }
     
 
     public Annotation()

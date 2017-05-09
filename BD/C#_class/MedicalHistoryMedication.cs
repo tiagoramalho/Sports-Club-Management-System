@@ -2,20 +2,10 @@
 
 public class MedicalHistoryMedication
 {
-    private int MHId;
-    private String Medication;
+    public int MHId { get; set; }
+    public String Medication { get; set; }
 
-    public int MHId
-    {
-        get { return MHId; }
-        set { MHId = value; }
-    }
-    public String Medication
-    {
-        get { return Medication; }
-        set { Medication = value; }
-    }
-
+   
 
     public MedicalHistoryMedication()
 	{

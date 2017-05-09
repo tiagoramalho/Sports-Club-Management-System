@@ -2,29 +2,8 @@
 
 public class BodyChartView
 {
-    private int ID;
-    private String ImageBody;
-    private int OrderImage;
-
-    public int ID
-    {
-        get { return ID; }
-        set { ID = value; }
-
-    }
-    public String ImageBody
-    {
-        get { return ImageBody; }
-        set { ImageBody = value; }
-
-    }
-    public int OrderImage
-    {
-        get { return OrderImage; }
-        set { OrderImage = value; }
-
-    }
-
+    public String ImageBody { get; set; }
+    public int OrderImage { get; set; }
 
 
     public BodyChartView()

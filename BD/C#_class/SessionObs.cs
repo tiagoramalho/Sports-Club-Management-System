@@ -2,46 +2,11 @@
 
 public class SessionObs
 {
-    private int ID;
-    private String Obs;
-    private DateTime DateClosed;
-    private int EvalId;
-    private int SessionId;
+    public String Obs { get; set; }
+    public DateTime DateClosed { get; set; }
+    public int EvalId { get; set; }
+    public int SessionId { get; set; }
 
-    public int ID
-    {
-        get { return ID; }
-        set { ID = value; }
-
-    }
-
-    public String Obs
-    {
-        get { return Obs; }
-        set { Obs = value; }
-
-    }
-
-    public DateTime DateClosed
-    {
-        get { return DateClosed; }
-        set { DateClosed = value; }
-
-    }
-
-    public int EvalId
-    {
-        get { return EvalId; }
-        set { EvalId = value; }
-
-    }
-
-    public int SessionId
-    {
-        get { return SessionId; }
-        set { SessionId = value; }
-
-    }
     
 
     public SessionObs()

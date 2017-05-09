@@ -2,22 +2,10 @@
 
 public class BodyAnnotation
 {
-    private int BodyId;
-    private char AnnotSym;
+    public int BodyId { get; set; }
+    public char AnnotSym { get; set; }
 
-    public int BodyId
-    {
-        get { return BodyId; }
-        set { BodyId = value; }
-
-    }
-
-    public Char AnnotSym
-    {
-        get { return AnnotSym; }
-        set { AnnotSym = value; }
-
-    }
+ 
 
     public BodyAnnotation()
 	{

@@ -3,7 +3,10 @@ USE CluSys;
 INSERT INTO  Modality VALUES
 	('Futebol', '1914'),
 	('Basquetebol', '1927'),
-	('Andebol', '1939');
+	('Andebol', '1939'),
+	('Hóquei em patins', '1933'),
+	('Voleibol', '1947'),
+	('Futsal','1914');
 
 INSERT INTO Class Values
 	('Futebol', 'Petizes', 4,6),
@@ -56,3 +59,28 @@ INSERT INTO Coach Values
 
 INSERT INTO Trains Values
 	('Futebol', 'Seniores', '123123', 1);
+
+INSERT INTO MedicalEvaluation VALUES 
+	('81.5', '1.85', NULL, '20170412', '20170509', NULL, '1247', '12123'),
+	('82.5', '1.87', NULL, '20170511', NULL, NULL, '1247', '12123'),
+	('72.5', '1.70', NULL, '20170506', NULL, NULL, '1248', '12123'),
+	('50.5', '1.60', NULL, '20170411', '20170511', NULL, '1245', '12123'),
+	('82.5', '1.84', NULL, '20170521', NULL, NULL, '1241', '12123');
+
+INSERT INTO EvaluationSession VALUES
+	('3', '20170422');
+
+USE CluSys;
+INSERT INTO MajorProblem VALUES 
+	('Dores no ombro', '1', '1'),
+	('Clavícula deslocada', '1', '1'),
+	('Clavícula deslocada', '1', '2'),
+	('Clavícula com poucas alteraçoes', '1', '3'),
+	('Pé partido', '2', '4');
+
+INSERT INTO TreatmentPlan Values
+	('Repouso total', null, '2','4','5'),
+	('Fazer gelo', 'Aliviar a dor no ombro', '1', '1', '1'),
+	('Ligadura na zona do ombro e clavicula', null, '1', '1','2');
+
+	

@@ -3,56 +3,15 @@
 public class TreatmentPlan
 {
 
-    private int ID;
-    private String Obs;
-    private String Obs;
-    private int EvalId;
-    private int SessionId;
-    private int ProbId;
+    public String Obs { get; set; }
+    public String Obs { get; set; }
+    public int EvalId { get; set; }
+    public int SessionId { get; set; }
+    public int ProbId { get; set; }
 
 
 
-    public int ID
-    {
-        get { return ID; }
-        set { ID = value; }
-
-    }
-
-    public String Obs
-    {
-        get { return Obs; }
-        set { Obs = value; }
-
-    }
-
-    public String objective
-    {
-        get { return objective; }
-        set { objective = value; }
-
-    }
-
-    public int EvalId
-    {
-        get { return EvalId; }
-        set { EvalId = value; }
-
-    }
-
-    public int SessionId
-    {
-        get { return SessionId; }
-        set { SessionId = value; }
-
-    }
-
-    public int ProbId
-    {
-        get { return ProbId; }
-        set { ProbId = value; }
-
-    }
+   
 
 
     public TreatmentPlan()

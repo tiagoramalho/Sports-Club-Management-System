@@ -1,45 +1,12 @@
 ﻿using System;
 
 
-
-
-[Serializable()]
 public class MedicalHistory
 {
-    private int ID;
-    private String Obs;
-    private DateTime dateM;
-    private String AthleteCC;
-    private String PhysiotherapistCC;
-
-    public int ID {
-        get { return ID; }
-        set { ID = value; }
-
-    }
-
-    public String Obs{
-        get { return Obs;}
-        set { Obs = value; }
-
-    }
-    public DateTime dateM{
-        get { return dateM; } 
-        set { dateM = value; }
-
-    }
-    public String AthleteCC
-    {
-        get { return AthleteCC; }
-        set { AthleteCC = value; }
-
-    }
-    public String PhysiotherapistCC
-    {
-        get { return PhysiotherapistCC; }
-        set { PhysiotherapistCC = value; }
-
-    }
+    public String Obs { get; set; }
+    public DateTime dateM { get; set; }
+    public String AthleteCC { get; set; }
+    public String PhysiotherapistCC { get; set; }
 
 
     public MedicalHistory()

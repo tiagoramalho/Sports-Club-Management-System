@@ -10,19 +10,10 @@ using System.Data.SqlClient;
 
 public class MedicalHistoryExams
 {
-    private int MHId;
-    private String Exam;
+    public int MHId { get; set; }
+    public String Exam { get; set; }
 
-    public int MHId
-    {
-        get { return MHId; }
-        set { MHId = value; }
-    }
-    public String Exam
-    {
-        get { return Exam;}
-        set { Exam = value; }
-    }
+
 
     public MedicalHistoryExams()
 	{

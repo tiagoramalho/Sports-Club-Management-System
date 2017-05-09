@@ -2,29 +2,10 @@
 
 public class EvaluationSession
 {
-    private int EvalId;
-    private int ID;
-    private DateTime dateSession;
-
-    public int EvalId
-    {
-        get { return EvalId; }
-        set { EvalId = value; }
-
-    }
-
-    public int ID
-    {
-        get { return ID; }
-        set { ID = value; }
-
-    }
-    public DateTime dateSession
-    {
-        get { return dateSession; }
-        set { dateSession = value; }
-    }
-
+    public int EvalId { get; set; }
+    public int ID { get; set; }
+    public DateTime dateSession { get; set; }
+    
 
     public EvaluationSession()
 	{

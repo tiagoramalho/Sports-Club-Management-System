@@ -2,76 +2,40 @@
 
 public class MedicalEvaluation
 {
-    private int ID;
-    private Double Weightt;
-    private Double Height;
-    private String Story;
-    private DateTime OpeningDate;
-    private DateTime ClosingDATE;
-    private DateTime ExpectedRecovery;
-    private String AthleteCC;
-    private String PhysiotherapistCC;
+   
+    public Double Weightt { get; set; }
+    public Double Height { get; set; }
+    public String Story { get; set; }
+    public DateTime OpeningDate { get; set; }
+    public DateTime ClosingDATE { get; set; }
+    public DateTime ExpectedRecovery { get; set; }
+    public String AthleteCC { get; set; }
+    public String PhysiotherapistCC { get; set; }
 
-    public int ID
-    {
-        get { return ID; }
-        set { ID = value; }
-    }
-
-    public double Weightt
-    {
-        get { return Weightt; }
-        set { Weightt = value; }
-    }
-
-    public double Height
-    {
-        get { return Height; }
-        set { Height = value; }
-    }
-
-    public string Story
-    {
-        get { return Story; }
-        set { Story = value; }
-    }
-
-    public DateTime OpeningDate
-    {
-        get { return OpeningDate; }
-        set { OpeningDate = value; }
-    }
-
-    public DateTime ClosingDATE
-    {
-        get { return ClosingDATE; }
-        set { ClosingDATE = value; }
-    }
-
-    public DateTime ExpectedRecovery
-    {
-        get { return ExpectedRecovery; }
-        set { ExpectedRecovery = value; }
-    }
-
-    public string AthleteCC
-    {
-        get { return AthleteCC; }
-        set { AthleteCC = value; }
-    }
-
-    public string PhysiotherapistCC
-    {
-        get { return PhysiotherapistCC; }
-        set { PhysiotherapistCC = value; }
-    }
 
 
     public MedicalEvaluation()
 	{
 	}
+    private List<EvaluationSession> Sessions(SqlConnection conn, int EvalId)
+    {
+        List<EvaluationSession> list = new List<EvaluationSession>();
+        SqlCommand cmd = new SqlCommand("SELECT * FROM EvaluationSession WHERE EvalId =" + EvalId + ";", conn);
+        SqlDataReader reader = cmd.ExecuteReader();
+        while (reader.Read())
+            list.Add(new EvaluationSession()
+            {
+                ID = int.Parse(reader["ID"].ToString()),
+                EvalId = int.Parse(reader["EvalId"].ToString()),
+                dateSession = DateTime.Parse(reader["dateSession"].ToString()),
 
-    private void submitMedicalEvaluation(MedicalEvaluation ME)
+
+            });
+        reader.Close();
+        return list;
+
+    }
+    /*private void submitMedicalEvaluation(MedicalEvaluation ME)
     {
         if (!verifySGBDConnection())
             return;
@@ -131,6 +95,7 @@ public class MedicalEvaluation
 
 
 
-    }
+    }*/
+
 
 }

@@ -2,76 +2,15 @@
 
 public class BocyChartMark
 {
-    private int ID;
-    private double x;
-    private double y;
-    private int PainLevel;
-    private String Obs;
-    private int EvalId;
-    private int SessionId;
-    private int ViewId;
+    public double x { get; set; }
+    public double y { get; set; }
+    public int PainLevel { get; set; }
+    public String Obs { get; set; }
+    public int EvalId { get; set; }
+    public int SessionId { get; set; }
+    public int ViewId { get; set; }
 
-    public int ID
-    {
-        get { return ID; }
-        set { ID = value; }
-
-    }
-
-    public double x
-    {
-        get { return x; }
-        set { x = value; }
-
-    }
-
-    public double y
-    {
-        get { return y; }
-        set { y = value; }
-
-    }
-
-    public int PainLevel
-    {
-        get { return PainLevel; }
-        set { PainLevel = value; }
-
-    }
-
-    public String Obs
-    {
-        get { return Obs; }
-        set { Obs = value; }
-
-    }
-
-    public int EvalId
-    {
-        get { return EvalId; }
-        set { EvalId = value; }
-
-    }
-
-    public int SessionId
-    {
-        get { return SessionId; }
-        set { SessionId = value; }
-
-    }
-
-    public int ViewId
-    {
-        get { return ViewId; }
-        set { ViewId = value; }
-
-    }
-
-  
-    public BocyChartMark()
-	{
-	}
-
+    
     private void submitBocyChartMark(BocyChartMark BM)
     {
         if (!verifySGBDConnection())

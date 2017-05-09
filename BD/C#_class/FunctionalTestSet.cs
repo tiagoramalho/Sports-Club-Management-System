@@ -2,22 +2,10 @@
 
 public class FunctionalTestSet
 {
-    private String Name;
-    private String Obs;
+    public String Name { get; set; }
+    public String Obs { get; set; }
 
-    public String Name
-    {
-        get { return Name; }
-        set { Name = value; }
-
-    }
-
-    public String Obs
-    {
-        get { return Obs; }
-        set { Obs = value; }
-
-    }
+    
 
     public FunctionalTestSet()
 	{

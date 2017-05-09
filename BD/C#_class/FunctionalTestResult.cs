@@ -2,46 +2,13 @@
 
 public class FunctionalTestResult
 {
-    private int ID;
-    private String Result;
-    private int EvalId;
-    private int SessionId;
-    private String TestName;
+   
+    public String Result { get; set; }
+    public int EvalId { get; set; }
+    public int SessionId { get; set; }
+    public String TestName { get; set; }
 
-    public int ID
-    {
-        get { return ID; }
-        set { ID = value; }
-
-    }
-
-    public String Result
-    {
-        get { return Result; }
-        set { Result = value; }
-
-    }
-
-    public int EvalId
-    {
-        get { return EvalId; }
-        set { EvalId = value; }
-
-    }
-
-    public int SessionId
-    {
-        get { return SessionId; }
-        set { SessionId = value; }
-
-    }
-
-    public String TestName
-    {
-        get { return TestName; }
-        set { TestName = value; }
-
-    }
+    
 
     public FunctionalTestResult()
 	{

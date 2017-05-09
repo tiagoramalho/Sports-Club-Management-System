@@ -3,39 +3,13 @@
 public class MajorProblem
 {
 
-    private int ID;
-    private String Obs;
-    private int EvalId;
-    private int SessionId;
+   
+    public String Obs { get; set; }
+    public int EvalId { get; set; }
+    public int SessionId { get; set; }
 
 
-    public int ID
-    {
-        get { return ID; }
-        set { ID = value; }
-
-    }
-
-    public String Obs
-    {
-        get { return Obs; }
-        set { Obs = value; }
-
-    }
-
-    public int EvalId
-    {
-        get { return EvalId; }
-        set { EvalId = value; }
-
-    }
-
-    public int SessionId
-    {
-        get { return SessionId; }
-        set { SessionId = value; }
-
-    }
+    
 
 
     public MajorProblem()
