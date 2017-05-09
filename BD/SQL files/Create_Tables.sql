@@ -3,6 +3,7 @@ USE master;
 DROP DATABASE CluSys;
 CREATE DATABASE CluSys;
 USE CluSys;
+GO
 
 -- Create tables
 CREATE TABLE Modality(
