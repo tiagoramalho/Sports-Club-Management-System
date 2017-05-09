@@ -82,7 +82,11 @@ namespace CluSys
                 return;
 
             CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(lb.ItemsSource);
-            view.Filter = (a) => { return (a as Athlete).Name.Contains(filterText); };
+            view.Filter = (a) => {
+                var athlete = a as Athlete;
+
+                return (athlete.FirstName + athlete.LastName).Contains(filterText);
+            };
         }
 
         private void OpenAthlete(object sender, MouseButtonEventArgs e)

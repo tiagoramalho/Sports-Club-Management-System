@@ -26,7 +26,9 @@ namespace CluSys.lib
                 athletes.Add(new Athlete()
                 {
                     CC = reader["CC"].ToString(),
-                    Name = reader["Name"].ToString(),
+                    FirstName = reader["FirstName"].ToString(),
+                    MiddleName = reader["MiddleName"].ToString(),
+                    LastName = reader["LastName"].ToString(),
                     Birthdate = DateTime.Parse(reader["Birthdate"].ToString()),
                     Photo = reader["Photo"].ToString(),
                     Phone = reader["Phone"].ToString(),

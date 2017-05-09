@@ -51,6 +51,12 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="TimelineExLib, Version=2.0.2.41912, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Timeline.2.0.2.41912\lib\net40\TimelineExLib.dll</HintPath>
+    </Reference>
+    <Reference Include="TimelineLibrary, Version=2.0.2.41912, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Timeline.2.0.2.41912\lib\net40\TimelineLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />

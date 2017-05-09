@@ -63,8 +63,7 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Margin="8">
-                <Button Width="48" Height="48"
-                        Click="GoHome"
+                <Button Click="GoHome" Width="48" Height="48"
                         Style="{StaticResource MaterialDesignToolButton}"
                         materialDesign:RippleAssist.IsCentered="True">
                     <materialDesign:PackIcon Kind="Home" />
@@ -72,7 +71,8 @@
                 <ListBox x:Name="OpenAthletesList"
                          PreviewMouseUp="OpenAthlete"
                          HorizontalContentAlignment="Center"
-                         ItemsSource="{Binding Source=Fallback}">
+                         >
+                    <!--ItemsSource="{Binding Source=Fallback}"> -->
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
@@ -81,8 +81,8 @@
                                         <ImageBrush ImageSource="App.ico" Stretch="UniformToFill" />
                                     </Ellipse.Fill>
                                 </Ellipse>
-                                <TextBlock Margin="0 4 0 0" Text="{Binding Path=Name}" HorizontalAlignment="Center" />
-                                <!-- <TextBlock Margin="0 0 0 4" Text="{Binding Path=LastName}" HorizontalAlignment="Center" /> -->
+                                <TextBlock Margin="0 4 0 0" Text="{Binding Path=FirstName}" HorizontalAlignment="Center" />
+                                <TextBlock Margin="0 0 0 4" Text="{Binding Path=LastName}" HorizontalAlignment="Center" />
                             </StackPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
@@ -160,7 +160,14 @@
                                              ItemsSource="{Binding Converter={StaticResource ModalityDotGetAthletesConverter}, ConverterParameter='GetAthletes'}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding Path=Name}" />
+                                                <TextBlock>
+                                                    <TextBlock.Text>
+                                                        <MultiBinding StringFormat="{}{0} {1}">
+                                                            <Binding Path="FirstName" />
+                                                            <Binding Path="LastName" />
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ListBox>
@@ -200,13 +207,33 @@
                                         <ImageBrush ImageSource="App.ico" Stretch="UniformToFill" />
                                     </Ellipse.Fill>
                                 </Ellipse>
-                                <TextBlock Margin="8" VerticalAlignment="Center" 
-                                           Style="{StaticResource MaterialDesignHeadlineTextBlock}"
-                                           Text="{Binding Path=Name, FallbackValue='FirstName LastName'}"/>
+                                <TextBlock Margin="8" VerticalAlignment="Center"
+                                           Style="{StaticResource MaterialDesignHeadlineTextBlock}">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0} {1} {2}">
+                                            <Binding Path="FirstName" FallbackValue="FirstName"/>
+                                            <Binding Path="MiddleName" FallbackValue=""/>
+                                            <Binding Path="LastName" FallbackValue="LastName"/>
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
                             </StackPanel>
 
-                        </Grid>
+                            <DockPanel Grid.Row="1" Margin="8" LastChildFill="True">
+                                <TextBlock x:Name="InTreatment" Margin="8" Text="" DockPanel.Dock="Right" Style="{StaticResource MaterialDesignSubheadingTextBlock}" />
+                                <TextBlock x:Name="Weight" Margin="8" Text="Peso: N/A" DockPanel.Dock="Left" Style="{StaticResource MaterialDesignSubheadingTextBlock}" />
+                                <TextBlock x:Name="Height" Margin="8" Text="Altura: N/A" DockPanel.Dock="Left" Style="{StaticResource MaterialDesignSubheadingTextBlock}" />
+                            </DockPanel>
 
+                            <Grid Grid.Row="2" Margin="96 48 96 48">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                
+                                
+                            </Grid>
+                        </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
