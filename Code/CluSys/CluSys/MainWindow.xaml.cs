@@ -38,8 +38,8 @@ namespace CluSys
             InitializeComponent();
 
             ModalityList.ItemsSource = Modalities.LoadSQL(cn);
-            OpenEvaluations.ItemsSource = Athletes.OpenEvaluations(cn);
             OpenAthletesList.ItemsSource = openAthletes;  // empty on start
+            AthletesWithOpenEvaluations.ItemsSource = Athletes.OpenEvaluations(cn);
         }
 
         private bool OpenSGBDConnection()
@@ -100,10 +100,12 @@ namespace CluSys
                 return;
 
             athlete = new AthleteWithBody(cn, item.Content as Athlete);
-            AthleteContent.ItemsSource = new [] {  athlete  };
+            AthleteContent.DataContext = athlete;
 
             if (!openAthletes.Contains(athlete))
                 openAthletes.Insert(0, athlete);
+
+            EvaluationsList.ItemsSource = athlete.Evaluations(cn);
 
             HomeContent.Visibility = Visibility.Hidden;
             AthleteContent.Visibility = Visibility.Visible;
@@ -119,7 +121,31 @@ namespace CluSys
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var expander = FindName("expander") as Expander;
+            Expander expander = findByType<Expander>((Visual)e.Source);
+
+            if (expander == null)
+                return;
+
+            expander.IsExpanded = true;
+        }
+
+        private T findByType<T>(Visual v)
+        {
+            while (v != null)
+            {
+                for(int i = 0; i < VisualTreeHelper.GetChildrenCount(v); i++)
+                {
+                    var c = VisualTreeHelper.GetChild(v, i);
+                    if (c is T)
+                    {
+                        return (T)Convert.ChangeType(c, typeof(T));
+                    }
+                }
+
+                v = VisualTreeHelper.GetParent(v) as Visual;
+            }
+
+            return default(T);
         }
     }
 
