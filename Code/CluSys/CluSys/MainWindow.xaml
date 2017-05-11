@@ -1,8 +1,10 @@
-﻿<Window x:Class="CluSys.MainWindow"
+﻿<metro:MetroWindow x:Class="CluSys.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+
         xmlns:src="clr-namespace:CluSys"
         xmlns:lib="clr-namespace:CluSys.lib"
         mc:Ignorable="d"
@@ -21,7 +23,11 @@
         TextOptions.TextFormattingMode="Ideal" 
         TextOptions.TextRenderingMode="Auto"        
         Background="{DynamicResource MaterialDesignPaper}"
-        FontFamily="{DynamicResource MaterialDesignFont}">
+        FontFamily="{DynamicResource MaterialDesignFont}"
+
+        GlowBrush="{DynamicResource AccentColorBrush}"
+        BorderThickness="1"
+        >
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <src:StringConverter x:Key="StringConverter" />
@@ -197,6 +203,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
                     <StackPanel Orientation="Horizontal" Margin="8" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -222,7 +229,7 @@
                         <materialDesign:Chip Icon="P" Content="{Binding Path=Weight, Converter={StaticResource StringConverter}, ConverterParameter='{}{0:N2} kg'}" Margin="4" IsEnabled="False" />
                     </DockPanel>
 
-                    <ScrollViewer x:Name="EvaluationsViewer" Grid.Row="2" Margin="24" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
+                    <ScrollViewer Grid.Row="2" Margin="24" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
                         <ItemsControl x:Name="EvaluationsList">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -242,72 +249,21 @@
                                                 </Button>
                                             </StackPanel>
                                         </materialDesign:Card>
-
-                                        <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
-                                            <StackPanel>
-                                                <TextBlock Margin="16 16 16 4" Text="{Binding Path=ID, StringFormat={}Avaliação #{0}}" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" />
-                                                <Separator Style="{StaticResource MaterialDesignLightSeparator}"/>
-                                                <TextBlock Text="{Binding Path=OpeningDate, StringFormat=D, ConverterCulture=pt-PT}" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignBody2TextBlock}" />
-                                                <Button Click="Button_Click" Style="{DynamicResource MaterialDesignToolButton}">
-                                                    <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
-                                                </Button>
-                                            </StackPanel>
-                                        </materialDesign:Card>
-
-                                        <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
-                                            <StackPanel>
-                                                <TextBlock Margin="16 16 16 4" Text="{Binding Path=ID, StringFormat={}Avaliação #{0}}" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" />
-                                                <Separator Style="{StaticResource MaterialDesignLightSeparator}"/>
-                                                <TextBlock Text="{Binding Path=OpeningDate, StringFormat=D, ConverterCulture=pt-PT}" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignBody2TextBlock}" />
-                                                <Button Click="Button_Click" Style="{DynamicResource MaterialDesignToolButton}">
-                                                    <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
-                                                </Button>
-                                            </StackPanel>
-                                        </materialDesign:Card>
-
-                                        <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
-                                            <StackPanel>
-                                                <TextBlock Margin="16 16 16 4" Text="{Binding Path=ID, StringFormat={}Avaliação #{0}}" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" />
-                                                <Separator Style="{StaticResource MaterialDesignLightSeparator}"/>
-                                                <TextBlock Text="{Binding Path=OpeningDate, StringFormat=D, ConverterCulture=pt-PT}" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignBody2TextBlock}" />
-                                                <Button Click="Button_Click" Style="{DynamicResource MaterialDesignToolButton}">
-                                                    <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
-                                                </Button>
-                                            </StackPanel>
-                                        </materialDesign:Card>
-
-                                        <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
-                                            <StackPanel>
-                                                <TextBlock Margin="16 16 16 4" Text="{Binding Path=ID, StringFormat={}Avaliação #{0}}" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" />
-                                                <Separator Style="{StaticResource MaterialDesignLightSeparator}"/>
-                                                <TextBlock Text="{Binding Path=OpeningDate, StringFormat=D, ConverterCulture=pt-PT}" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignBody2TextBlock}" />
-                                                <Button Click="Button_Click" Style="{DynamicResource MaterialDesignToolButton}">
-                                                    <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
-                                                </Button>
-                                            </StackPanel>
-                                        </materialDesign:Card>
-
-                                        <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
-                                            <StackPanel>
-                                                <TextBlock Margin="16 16 16 4" Text="{Binding Path=ID, StringFormat={}Avaliação #{0}}" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" />
-                                                <Separator Style="{StaticResource MaterialDesignLightSeparator}"/>
-                                                <TextBlock Text="{Binding Path=OpeningDate, StringFormat=D, ConverterCulture=pt-PT}" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignBody2TextBlock}" />
-                                                <Button Click="Button_Click" Style="{DynamicResource MaterialDesignToolButton}">
-                                                    <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
-                                                </Button>
-                                            </StackPanel>
-                                        </materialDesign:Card>
-
                                     </StackPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </ScrollViewer>
 
-                    <Slider Grid.Row="3"
-                            Value="1000000" Minimum="1" Maximum="10" Style="{DynamicResource MaterialDesignDiscreteSlider}"
-                            PreviewMouseUp="EvaluationsViewer_Scroll"
-                            Margin="48" />
+                    <Expander Margin="8" Grid.Row="3" HorizontalAlignment="Stretch">
+                        <StackPanel Orientation="Vertical"
+                            TextBlock.Foreground="{DynamicResource MaterialDesignBody}"
+                            Margin="24,8,24,16">
+                            <TextBlock Text="Your Content" />
+                            <TextBlock Opacity=".68" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+                               TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Expander>
 
                     <!--
                     <Expander Margin="8" x:Name="expander" Grid.Row="3" HorizontalAlignment="Stretch">
@@ -317,6 +273,16 @@
                         </StackPanel>
                     </Expander>
                     -->
+
+                    <lib:DateRangeSlider x:Name="SliderRange"
+                                         Grid.Row="4" Margin="8"
+                                         Minimum="1" Maximum="100"
+                                         DataContext="{Binding RelativeSource={RelativeSource Self}}"
+                                         LowerValue="{Binding Path=LowerDateAsDouble}" UpperValue="{Binding Path=UpperDateAsDouble}"
+                                         AutoToolTipPlacement="TopLeft" MoveWholeRange="True"
+                                         AutoToolTipTextConverter="{Binding Path=TooltipToStringConverter}"
+                                         IsSnapToTickEnabled="True" IsMoveToPointEnabled="True" ExtendedMode="True"
+                                         LowerValueChanged="FilterEvaluations" UpperValueChanged="FilterEvaluations" />
                 </Grid>
             </ContentControl>
 
@@ -473,84 +439,12 @@
                                 <materialDesign:DialogHost.DialogContent>
                                     <ScrollViewer MaxHeight="100" VerticalScrollBarVisibility="Auto">
                                         <StackPanel>
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
-                                    <TextBlock Text="hgajs" />
+                                            <TextBlock Text="hgajs" />
+                                            <TextBlock Text="hgajs" />
                                         </StackPanel>
                                     </ScrollViewer>
                                 </materialDesign:DialogHost.DialogContent>
                                 <StackPanel>
-                                    <TextBlock Text="kdja" />
-                                    <TextBlock Text="kdja" />
-                                    <TextBlock Text="kdja" />
                                     <TextBlock Text="kdja" />
                                     <TextBlock Text="kdja" />
                                     <Button Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" />
@@ -563,4 +457,4 @@
             </ItemsControl>
         </Grid>
     </Grid>
-</Window>
+</metro:MetroWindow>

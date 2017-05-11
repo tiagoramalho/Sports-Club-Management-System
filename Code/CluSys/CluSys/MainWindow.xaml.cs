@@ -23,10 +23,11 @@ using System.Diagnostics;
 using System.Collections.Specialized;
 using System.Reflection;
 using System.Windows.Markup;
+using MahApps.Metro.Controls;
 
 namespace CluSys
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         private SqlConnection _cn;
         private readonly ObservableCollection<Athlete> _openAthletes;
@@ -86,13 +87,12 @@ namespace CluSys
 
         private void OpenAthlete(object sender, MouseButtonEventArgs e)
         {
-            Athlete athlete = null;
             var item = ItemsControl.ContainerFromElement(sender as ListBox, (DependencyObject) e.OriginalSource) as ListBoxItem;
 
             if (item == null)
                 return;
 
-            athlete = new AthleteWithBody(_cn, item.Content as Athlete);
+            var athlete = new AthleteWithBody(_cn, item.Content as Athlete);
             AthleteContent.DataContext = athlete;
 
             if (!_openAthletes.Contains(athlete))
@@ -100,6 +100,8 @@ namespace CluSys
 
             // Get this athlete's evaluations
             EvaluationsList.ItemsSource = athlete.Evaluations(_cn);
+            // Filter them based on date
+            FilterEvaluations(SliderRange, null);
 
             HomeContent.Visibility = Visibility.Hidden;
             AthleteContent.Visibility = Visibility.Visible;
@@ -108,6 +110,23 @@ namespace CluSys
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             //expander.IsExpanded = true;
+        }
+
+        private void FilterEvaluations(object sender, RangeParameterChangedEventArgs rangeParameterChangedEventArgs)
+        {
+            var dr = sender as DateRangeSlider;
+
+            if (dr == null || EvaluationsList.ItemsSource == null)
+                return;
+
+            var view = (CollectionView)CollectionViewSource.GetDefaultView(EvaluationsList.ItemsSource);
+            view.Filter = (medicalEvaluation) =>
+            {
+                var me = medicalEvaluation as MedicalEvaluation;
+
+                return me != null &&  (dr.LowerDate <= me.OpeningDate && me.OpeningDate <= dr.UpperDate
+                                       || dr.LowerDate <= me.ClosingDate && me.ClosingDate <= dr.UpperDate);
+            };
         }
 
         private static T FindByType<T>(Visual v)
@@ -126,12 +145,6 @@ namespace CluSys
             }
 
             return default(T);
-        }
-
-        private void EvaluationsViewer_Scroll(object sender, MouseButtonEventArgs e)
-        {
-            //EvalViewer.ScrollToHorizontalOffset(EvalViewer.HorizontalOffset + 10);
-            var itemsCount = EvaluationsList.Items.Count;
         }
     }
 
@@ -161,7 +174,7 @@ namespace CluSys
             if (value == null || methodName == null)
                 return value;
 
-            var methodInfo = value.GetType().GetMethod(methodName, new Type[] { typeof(SqlConnection) });
+            var methodInfo = value.GetType().GetMethod(methodName, new Type[1] { typeof(SqlConnection) });
 
             if (methodInfo == null)
                 return value;
