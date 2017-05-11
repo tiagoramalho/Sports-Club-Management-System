@@ -21,131 +21,117 @@ using System.Globalization;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Collections.Specialized;
+using System.Reflection;
+using System.Windows.Markup;
 
 namespace CluSys
 {
     public partial class MainWindow : Window
     {
-        private SqlConnection cn;
-        private ObservableCollection<Athlete> openAthletes;
+        private SqlConnection _cn;
+        private readonly ObservableCollection<Athlete> _openAthletes;
 
         public MainWindow()
         {
             // Init
-            OpenSGBDConnection();
-            openAthletes = new ObservableCollection<Athlete>();
+            OpenConnection();
+            _openAthletes = new ObservableCollection<Athlete>();
 
             InitializeComponent();
 
-            ModalityList.ItemsSource = Modalities.LoadSQL(cn);
-            OpenAthletesList.ItemsSource = openAthletes;  // empty on start
-            AthletesWithOpenEvaluations.ItemsSource = Athletes.OpenEvaluations(cn);
+            ModalityList.ItemsSource = Modalities.LoadSQL(_cn);
+            OpenAthletesList.ItemsSource = _openAthletes;  // empty on start
+            AthletesWithOpenEvaluations.ItemsSource = Athletes.OpenEvaluations(_cn);
         }
 
-        private bool OpenSGBDConnection()
+        private bool OpenConnection()
         {
-            if (cn == null)
-                cn = GetSGBDConnection();
+            if (_cn == null)
+                _cn = GetConnection();
 
-            if (cn.State != ConnectionState.Open)
-                cn.Open();
+            if (_cn.State != ConnectionState.Open)
+                _cn.Open();
 
-            return cn.State == ConnectionState.Open;
+            return _cn.State == ConnectionState.Open;
         }
 
-        public static SqlConnection GetSGBDConnection()
+        public static SqlConnection GetConnection()
         {
-            SqlConnection conn = new SqlConnection("data source= RJ-JESUS\\SQLEXPRESS2014;integrated security=true;initial catalog=CluSys");
+            var conn = new SqlConnection("data source= RJ-JESUS\\SQLEXPRESS2014;integrated security=true;initial catalog=CluSys");
             conn.Open();
             return conn;
         }
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            ListBox lb = null;
-            Visual v = (Visual)e.Source;
             var filterText = ((TextBox)sender).Text;
+            ListBox lb = FindByType<ListBox>((Visual)e.Source);
 
-            while (v != null)
-            {
-                for(int i = 0; i < VisualTreeHelper.GetChildrenCount(v); i++)
-                {
-                    var c = VisualTreeHelper.GetChild(v, i);
-                    if (c is ListBox)
-                    {
-                        lb = (ListBox)c;
-                        goto done;
-                    }
-                }
-                v = VisualTreeHelper.GetParent(v) as Visual;
-            }
-
-            done: if (lb == null)
+            if (lb == null)
                 return;
 
             CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(lb.ItemsSource);
             view.Filter = (a) => {
                 var athlete = a as Athlete;
 
-                return (athlete.FirstName + " " + athlete.LastName).Contains(filterText);
+                return (athlete?.FirstName + " " + athlete?.LastName).Contains(filterText);
             };
+        }
+
+        private void GoHome(object sender, RoutedEventArgs e)
+        {
+            AthleteContent.Visibility = Visibility.Hidden;
+            HomeContent.Visibility = Visibility.Visible;
         }
 
         private void OpenAthlete(object sender, MouseButtonEventArgs e)
         {
-            Athlete athlete;
-            var item = ItemsControl.ContainerFromElement(sender as ListBox, e.OriginalSource as DependencyObject) as ListBoxItem;
+            Athlete athlete = null;
+            var item = ItemsControl.ContainerFromElement(sender as ListBox, (DependencyObject) e.OriginalSource) as ListBoxItem;
 
             if (item == null)
                 return;
 
-            athlete = new AthleteWithBody(cn, item.Content as Athlete);
+            athlete = new AthleteWithBody(_cn, item.Content as Athlete);
             AthleteContent.DataContext = athlete;
 
-            if (!openAthletes.Contains(athlete))
-                openAthletes.Insert(0, athlete);
+            if (!_openAthletes.Contains(athlete))
+                _openAthletes.Insert(0, athlete);
 
-            EvaluationsList.ItemsSource = athlete.Evaluations(cn);
+            // Get this athlete's evaluations
+            EvaluationsList.ItemsSource = athlete.Evaluations(_cn);
 
             HomeContent.Visibility = Visibility.Hidden;
             AthleteContent.Visibility = Visibility.Visible;
         }
 
-        private void GoHome(object sender, RoutedEventArgs e)
-        {
-            Debug.WriteLine("Opening the 'Home' view...");
-
-            AthleteContent.Visibility = Visibility.Hidden;
-            HomeContent.Visibility = Visibility.Visible;
-        }
-
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Expander expander = findByType<Expander>((Visual)e.Source);
-
-            if (expander == null)
-                return;
-
-            expander.IsExpanded = true;
+            //expander.IsExpanded = true;
         }
 
-        private T findByType<T>(Visual v)
+        private static T FindByType<T>(Visual v)
         {
             while (v != null)
             {
-                for(int i = 0; i < VisualTreeHelper.GetChildrenCount(v); i++)
+                for(var i = 0; i < VisualTreeHelper.GetChildrenCount(v); i++)
                 {
                     var c = VisualTreeHelper.GetChild(v, i);
+
                     if (c is T)
-                    {
                         return (T)Convert.ChangeType(c, typeof(T));
-                    }
                 }
 
                 v = VisualTreeHelper.GetParent(v) as Visual;
             }
 
             return default(T);
+        }
+
+        private void EvaluationsViewer_Scroll(object sender, MouseButtonEventArgs e)
+        {
+            //EvalViewer.ScrollToHorizontalOffset(EvalViewer.HorizontalOffset + 10);
+            var itemsCount = EvaluationsList.Items.Count;
         }
     }
 
@@ -157,10 +143,10 @@ namespace CluSys
 
             if (value == null || format == null)
                 return value;
-            else if (value is Double && Double.IsNaN((Double)value))
+            else if (value is double && double.IsNaN((double)value))
                 return "n/a";
 
-            return String.Format(format, value);
+            return string.Format(format, value);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) { throw new NotSupportedException(); }
@@ -175,12 +161,11 @@ namespace CluSys
             if (value == null || methodName == null)
                 return value;
 
-            var methodInfo = value.GetType().GetMethod(methodName, new Type[1] { typeof(SqlConnection) });
+            var methodInfo = value.GetType().GetMethod(methodName, new Type[] { typeof(SqlConnection) });
 
             if (methodInfo == null)
                 return value;
-
-            return methodInfo.Invoke(value, new object[1] { MainWindow.GetSGBDConnection() } );
+            return methodInfo.Invoke(value, new object[1] { MainWindow.GetConnection() } );
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) { throw new NotSupportedException(); }

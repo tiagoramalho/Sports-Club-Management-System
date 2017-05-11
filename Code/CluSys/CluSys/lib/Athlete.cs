@@ -24,27 +24,23 @@ namespace CluSys.lib
         public string DominantSide { get; set; }
         public string ModalityId { get; set; }
 
-        public ObservableCollection<MedicalEvaluation> evaluations = null;
+        private readonly ObservableCollection<MedicalEvaluation> _evaluations = new ObservableCollection<MedicalEvaluation>();
 
         public ObservableCollection<MedicalEvaluation> Evaluations(SqlConnection conn)
         {
-            if(evaluations == null)
-                evaluations = new ObservableCollection<MedicalEvaluation>();
-            else
-                evaluations.Clear();
-
             SqlCommand cmd = new SqlCommand("SELECT * FROM MedicalEvaluation WHERE AthleteCC=" + CC + ";", conn);
             SqlDataReader reader = cmd.ExecuteReader();
 
+            _evaluations.Clear();
             while (reader.Read())
-                evaluations.Add(new MedicalEvaluation()
+                _evaluations.Add(new MedicalEvaluation()
                 {
                     ID = int.Parse(reader["ID"].ToString()),
                     Weightt = double.Parse(reader["Weightt"].ToString()),
                     Height = double.Parse(reader["Height"].ToString()),
                     Story = reader["Story"].ToString(),
                     OpeningDate = DateTime.Parse(reader["OpeningDate"].ToString()),
-                    ClosingDATE = reader["ClosingDATE"].ToString() != "" ? (DateTime?)DateTime.Parse(reader["ClosingDATE"].ToString()) : null,
+                    ClosingDate = reader["ClosingDATE"].ToString() != "" ? (DateTime?)DateTime.Parse(reader["ClosingDATE"].ToString()) : null,
                     ExpectedRecovery = reader["ExpectedRecovery"].ToString() != "" ? (DateTime?)DateTime.Parse(reader["ExpectedRecovery"].ToString()) : null,
                     AthleteCC = reader["AthleteCC"].ToString(),
                     PhysiotherapistCC = reader["PhysiotherapistCC"].ToString(),
@@ -52,22 +48,25 @@ namespace CluSys.lib
 
             reader.Close();
 
-            return evaluations;
+            return _evaluations;
+        }
+
+        private bool Equals(Athlete other)
+        {
+            return string.Equals(CC, other.CC, StringComparison.OrdinalIgnoreCase);
         }
 
         public override bool Equals(object obj)
         {
-            if (obj == null || GetType() != obj.GetType())
-            {
-                return false;
-            }
-
-            return CC == (obj as Athlete).CC;
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((Athlete) obj);
         }
 
         public override int GetHashCode()
         {
-            return int.Parse(CC);
+            return (CC != null ? StringComparer.OrdinalIgnoreCase.GetHashCode(CC) : 0);
         }
     }
 
@@ -100,14 +99,14 @@ namespace CluSys.lib
 
             if (reader.Read())
             {
-                Weight = Double.Parse(reader["Weightt"].ToString());
-                Height = Double.Parse(reader["Height"].ToString());
+                Weight = double.Parse(reader["Weightt"].ToString());
+                Height = double.Parse(reader["Height"].ToString());
                 activeEvaluation = reader["ClosingDATE"].ToString() == "";
             }
             else
             {
-                Weight = Double.NaN;
-                Height = Double.NaN;
+                Weight = double.NaN;
+                Height = double.NaN;
                 activeEvaluation = false;
             }
             reader.Close();

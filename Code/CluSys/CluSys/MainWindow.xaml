@@ -42,15 +42,14 @@
             </Grid.ColumnDefinitions>
 
             <Image Source="App.ico" Width="24" Height="24" Margin="8" />
-            <!--<TextBlock Grid.Column="1" VerticalAlignment="Center" />-->
             <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="8" HorizontalAlignment="Right" VerticalAlignment="Center">
                 <Ellipse Width="24" Height="24" Margin="4">
                     <Ellipse.Fill>
                         <ImageBrush ImageSource="App.ico" Stretch="UniformToFill" />
                     </Ellipse.Fill>
                 </Ellipse>
-                <TextBlock Grid.Column="2" Margin="4" HorizontalAlignment="Center" VerticalAlignment="Center">Menu to utilizador</TextBlock>
-                <Button Style="{StaticResource MaterialDesignToolButton}" Margin="4"
+                <TextBlock Margin="4" HorizontalAlignment="Center" VerticalAlignment="Center">Menu to utilizador</TextBlock>
+                <Button Style="{DynamicResource MaterialDesignToolButton}" Margin="4"
                         materialDesign:RippleAssist.IsDisabled="True">
                     <materialDesign:PackIcon Kind="ChevronDown" />
                 </Button>
@@ -65,7 +64,7 @@
 
             <DockPanel Margin="8">
                 <Button Click="GoHome" DockPanel.Dock="Top" Width="48" Height="48"
-                        Style="{StaticResource MaterialDesignToolButton}"
+                        Style="{DynamicResource MaterialDesignToolButton}"
                         materialDesign:RippleAssist.IsCentered="True">
                     <materialDesign:PackIcon Kind="Home" />
                 </Button>
@@ -74,7 +73,7 @@
                          HorizontalContentAlignment="Center"
                          ScrollViewer.VerticalScrollBarVisibility="Hidden">
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate DataType="lib:Athlete">
                             <StackPanel>
                                 <Ellipse Width="24" Height="24" Margin="0 0 0 4">
                                     <Ellipse.Fill>
@@ -98,15 +97,14 @@
                 <ListBox x:Name="AthletesWithOpenEvaluations"
                          Margin="8"
                          PreviewMouseUp="OpenAthlete"
-                         Grid.IsSharedSizeScope="True"
-                         ItemsSource="{Binding Source=Fallback}">
+                         Grid.IsSharedSizeScope="True">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel IsItemsHost="True" />
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate DataType="lib:Athlete">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" SharedSizeGroup="ColumnSize" />
@@ -130,7 +128,7 @@
                                         </MultiBinding>
                                     </TextBlock.Text>
                                 </TextBlock>
-                                <TextBlock HorizontalAlignment="Center" Grid.Row="2" Text="{Binding Path=Modality}" />
+                                <TextBlock HorizontalAlignment="Center" Grid.Row="2" Text="{Binding Path=ModalityId}" />
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
@@ -138,7 +136,6 @@
 
                 <ItemsControl x:Name="ModalityList"
                               Grid.Row="1"
-                              ItemsSource="{Binding Source=Fallback}"
                               Grid.IsSharedSizeScope="True">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -146,7 +143,7 @@
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate DataType="lib:Modality">
                             <materialDesign:Card Margin="4" Width="240">
                                 <Grid>
                                     <Grid.RowDefinitions>
@@ -161,7 +158,7 @@
                                     <ListBox Grid.Row="1" Margin="8 24 8 0" PreviewMouseUp="OpenAthlete"
                                              ItemsSource="{Binding Converter={StaticResource ModalityDotGetAthletesConverter}, ConverterParameter='GetAthletes'}">
                                         <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
+                                            <DataTemplate DataType="lib:Athlete">
                                                 <TextBlock>
                                                     <TextBlock.Text>
                                                         <MultiBinding StringFormat="{}{0} {1}">
@@ -192,7 +189,8 @@
                 </ItemsControl>
             </Grid>
 
-            <ContentControl x:Name="AthleteContent" Visibility="Visible" Grid.Column="1" Margin="8">
+            <ContentControl x:Name="AthleteContent" Visibility="Visible" Grid.Column="1" Margin="8"
+                            d:DataContext="{d:DesignInstance lib:AthleteWithBody}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -207,7 +205,7 @@
                                 <ImageBrush ImageSource="{Binding Path=Photo}" Stretch="UniformToFill" />
                             </Ellipse.Fill>
                         </Ellipse>
-                        <TextBlock Margin="8" VerticalAlignment="Center" Style="{StaticResource MaterialDesignHeadlineTextBlock}">
+                        <TextBlock Margin="8" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignHeadlineTextBlock}">
                             <TextBlock.Text>
                                 <MultiBinding StringFormat="{}{0} {1} {2}">
                                     <Binding Path="FirstName" FallbackValue="FirstName"/>
@@ -224,7 +222,7 @@
                         <materialDesign:Chip Icon="P" Content="{Binding Path=Weight, Converter={StaticResource StringConverter}, ConverterParameter='{}{0:N2} kg'}" Margin="4" IsEnabled="False" />
                     </DockPanel>
 
-                    <ScrollViewer Grid.Row="2" Margin="24" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
+                    <ScrollViewer x:Name="EvaluationsViewer" Grid.Row="2" Margin="24" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
                         <ItemsControl x:Name="EvaluationsList">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -232,30 +230,97 @@
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
-                                        <StackPanel>
-                                            <TextBlock Margin="16 16 16 4" Text="{Binding Path=ID, StringFormat={}Avaliação #{0}}" Style="{StaticResource MaterialDesignHeadlineTextBlock}" />
-                                            <Separator Grid.Row="1" Style="{StaticResource MaterialDesignLightSeparator}"/>
-                                            <TextBlock Grid.Row="2" Text="{Binding Path=OpeningDate, StringFormat=D, ConverterCulture=pt-PT}" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignBody2TextBlock}" />
-                                            <Button Click="Button_Click" Grid.Row="3" Style="{StaticResource MaterialDesignToolButton}">
-                                                <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
-                                            </Button>
-                                        </StackPanel>
-                                    </materialDesign:Card>
+                                <DataTemplate DataType="lib:MedicalEvaluation">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+                                            <StackPanel>
+                                                <TextBlock Margin="16 16 16 4" Text="{Binding Path=ID, StringFormat={}Avaliação #{0}}" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" />
+                                                <Separator Style="{StaticResource MaterialDesignLightSeparator}"/>
+                                                <TextBlock Text="{Binding Path=OpeningDate, StringFormat=D, ConverterCulture=pt-PT}" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignBody2TextBlock}" />
+                                                <Button Click="Button_Click" Style="{DynamicResource MaterialDesignToolButton}">
+                                                    <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
+                                                </Button>
+                                            </StackPanel>
+                                        </materialDesign:Card>
+
+                                        <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+                                            <StackPanel>
+                                                <TextBlock Margin="16 16 16 4" Text="{Binding Path=ID, StringFormat={}Avaliação #{0}}" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" />
+                                                <Separator Style="{StaticResource MaterialDesignLightSeparator}"/>
+                                                <TextBlock Text="{Binding Path=OpeningDate, StringFormat=D, ConverterCulture=pt-PT}" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignBody2TextBlock}" />
+                                                <Button Click="Button_Click" Style="{DynamicResource MaterialDesignToolButton}">
+                                                    <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
+                                                </Button>
+                                            </StackPanel>
+                                        </materialDesign:Card>
+
+                                        <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+                                            <StackPanel>
+                                                <TextBlock Margin="16 16 16 4" Text="{Binding Path=ID, StringFormat={}Avaliação #{0}}" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" />
+                                                <Separator Style="{StaticResource MaterialDesignLightSeparator}"/>
+                                                <TextBlock Text="{Binding Path=OpeningDate, StringFormat=D, ConverterCulture=pt-PT}" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignBody2TextBlock}" />
+                                                <Button Click="Button_Click" Style="{DynamicResource MaterialDesignToolButton}">
+                                                    <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
+                                                </Button>
+                                            </StackPanel>
+                                        </materialDesign:Card>
+
+                                        <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+                                            <StackPanel>
+                                                <TextBlock Margin="16 16 16 4" Text="{Binding Path=ID, StringFormat={}Avaliação #{0}}" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" />
+                                                <Separator Style="{StaticResource MaterialDesignLightSeparator}"/>
+                                                <TextBlock Text="{Binding Path=OpeningDate, StringFormat=D, ConverterCulture=pt-PT}" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignBody2TextBlock}" />
+                                                <Button Click="Button_Click" Style="{DynamicResource MaterialDesignToolButton}">
+                                                    <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
+                                                </Button>
+                                            </StackPanel>
+                                        </materialDesign:Card>
+
+                                        <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+                                            <StackPanel>
+                                                <TextBlock Margin="16 16 16 4" Text="{Binding Path=ID, StringFormat={}Avaliação #{0}}" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" />
+                                                <Separator Style="{StaticResource MaterialDesignLightSeparator}"/>
+                                                <TextBlock Text="{Binding Path=OpeningDate, StringFormat=D, ConverterCulture=pt-PT}" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignBody2TextBlock}" />
+                                                <Button Click="Button_Click" Style="{DynamicResource MaterialDesignToolButton}">
+                                                    <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
+                                                </Button>
+                                            </StackPanel>
+                                        </materialDesign:Card>
+
+                                        <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+                                            <StackPanel>
+                                                <TextBlock Margin="16 16 16 4" Text="{Binding Path=ID, StringFormat={}Avaliação #{0}}" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" />
+                                                <Separator Style="{StaticResource MaterialDesignLightSeparator}"/>
+                                                <TextBlock Text="{Binding Path=OpeningDate, StringFormat=D, ConverterCulture=pt-PT}" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignBody2TextBlock}" />
+                                                <Button Click="Button_Click" Style="{DynamicResource MaterialDesignToolButton}">
+                                                    <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
+                                                </Button>
+                                            </StackPanel>
+                                        </materialDesign:Card>
+
+                                    </StackPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </ScrollViewer>
 
+                    <Slider Grid.Row="3"
+                            Value="1000000" Minimum="1" Maximum="10" Style="{DynamicResource MaterialDesignDiscreteSlider}"
+                            PreviewMouseUp="EvaluationsViewer_Scroll"
+                            Margin="48" />
+
+                    <!--
                     <Expander Margin="8" x:Name="expander" Grid.Row="3" HorizontalAlignment="Stretch">
                         <StackPanel Margin="24,8,24,8" TextBlock.Foreground="{DynamicResource MaterialDesignBody}">
                             <TextBlock Text="Your Content" />
                             <TextBlock Opacity=".68" TextWrapping="Wrap" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."/>
                         </StackPanel>
                     </Expander>
+                    -->
                 </Grid>
             </ContentControl>
+
+            <!-- -->
 
             <ItemsControl x:Name="AthleteContent2" Visibility="Hidden" Grid.Column="1" Margin="8"
                           ItemsSource="{Binding Source=Fallback}">
@@ -304,23 +369,23 @@
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                    <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}"
+                                            <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}"
                                                      Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
-                                        <StackPanel>
-                                            <TextBlock Margin="16 16 16 4"
+                                                <StackPanel>
+                                                    <TextBlock Margin="16 16 16 4"
                                                        Text="{Binding Path=Height, StringFormat={}Avaliação #{0}}"
                                                        Style="{StaticResource MaterialDesignHeadlineTextBlock}" />
-                                            <Separator Grid.Row="1" Style="{StaticResource MaterialDesignLightSeparator}"/>
-                                            <TextBlock Grid.Row="2" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignBody2TextBlock}">March 19, 2016</TextBlock>
-                                            <Button Click="Button_Click" Grid.Row="3" Style="{StaticResource MaterialDesignToolButton}">
-                                                <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
-                                            </Button>
-                                        </StackPanel>
-                                    </materialDesign:Card>
+                                                    <Separator Grid.Row="1" Style="{StaticResource MaterialDesignLightSeparator}"/>
+                                                    <TextBlock Grid.Row="2" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignBody2TextBlock}">March 19, 2016</TextBlock>
+                                                    <Button Click="Button_Click" Grid.Row="3" Style="{StaticResource MaterialDesignToolButton}">
+                                                        <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
+                                                    </Button>
+                                                </StackPanel>
+                                            </materialDesign:Card>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
 
-<!--
+                                    <!--
                                     <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}"
                                                      Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
                                         <StackPanel>
@@ -403,7 +468,7 @@
                                 </StackPanel>
                             </Expander>
 
-<!--
+                            <!--
                             <materialDesign:DialogHost Grid.Row="3" >
                                 <materialDesign:DialogHost.DialogContent>
                                     <ScrollViewer MaxHeight="100" VerticalScrollBarVisibility="Auto">

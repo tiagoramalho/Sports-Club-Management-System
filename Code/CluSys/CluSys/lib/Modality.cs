@@ -14,16 +14,16 @@ namespace CluSys.lib
         public String name { get; set; }
         public int recognitionYear { get; set; }
 
-        private ObservableCollection<Athlete> athletes = new ObservableCollection<Athlete>();
+        private readonly ObservableCollection<Athlete> _athletes = new ObservableCollection<Athlete>();
 
         public ObservableCollection<Athlete> GetAthletes(SqlConnection cn)
         {
-            SqlCommand cmd = new SqlCommand(String.Format("SELECT * FROM Athlete WHERE ModalityId='{0}'", name), cn);
+            SqlCommand cmd = new SqlCommand($"SELECT * FROM Athlete WHERE ModalityId='{name}'", cn);
             SqlDataReader reader = cmd.ExecuteReader();
 
-            athletes.Clear();
+            _athletes.Clear();
             while (reader.Read())
-                athletes.Add(new Athlete()
+                _athletes.Add(new Athlete()
                 {
                     CC = reader["CC"].ToString(),
                     FirstName = reader["FirstName"].ToString(),
@@ -39,11 +39,11 @@ namespace CluSys.lib
                     ModalityId = reader["ModalityId"].ToString(),
                 });
 
-            return athletes;
+            return _athletes;
         }
     }
 
-    class Modalities
+    static class Modalities
     {
         public static ObservableCollection<Modality> LoadSQL(SqlConnection cn)
         {
