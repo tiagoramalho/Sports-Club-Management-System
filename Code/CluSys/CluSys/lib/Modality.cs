@@ -81,7 +81,7 @@ namespace CluSys.lib
 
             if (methodInfo == null)
                 return value;
-            return methodInfo.Invoke(value, new object[1] { MainWindow.GetConnection() } );
+            return methodInfo.Invoke(value, new object[1] { ClusysUtils.GetConnection() } );
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) { throw new NotSupportedException(); }

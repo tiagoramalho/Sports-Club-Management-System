@@ -29,7 +29,7 @@
         BorderThickness="1"
         >
     <Window.Resources>
-        <src:StringConverter x:Key="StringConverter" />
+        <lib:StringConverter x:Key="StringConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <lib:ModalityDotGetAthletesConverter x:Key="ModalityDotGetAthletesConverter" />
     </Window.Resources>
@@ -76,7 +76,7 @@
             </ListBox>
         </DockPanel>
 
-        <Grid x:Name="HomeContent" Visibility="Visible" Grid.Column="1" Margin="8">
+        <Grid x:Name="HomeContent" Visibility="Hidden" Grid.Column="1" Margin="8">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
@@ -176,7 +176,7 @@
             </ItemsControl>
         </Grid>
 
-        <ContentControl x:Name="AthleteContent" Visibility="Hidden" Grid.Column="1" Margin="8" d:DataContext="{d:DesignInstance lib:AthleteWithBody}">
+        <ContentControl x:Name="AthleteContent" Visibility="Visible" Grid.Column="1" Margin="8" d:DataContext="{d:DesignInstance lib:AthleteWithBody}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -211,61 +211,77 @@
 
                 <GroupBox Grid.Row="2" Header="Sessões" Margin="16">
                     <StackPanel>
-                        <ItemsControl x:Name="EvaluationsList">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel IsItemsHost="True" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate DataType="lib:MedicalEvaluation">
-                                    <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
-                                        <StackPanel>
-                                            <TextBlock Margin="16 16 16 4" Text="{Binding Path=CountId, StringFormat={}Avaliação #{0}}" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" />
-                                            <Separator Style="{StaticResource MaterialDesignLightSeparator}"/>
-                                            <TextBlock Text="{Binding Path=OpeningDate, StringFormat=D, ConverterCulture=pt-PT}" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignBody2TextBlock}" />
-                                            <Button Click="OpenSessions" Style="{DynamicResource MaterialDesignToolButton}">
-                                                <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
-                                            </Button>
-                                        </StackPanel>
-                                    </materialDesign:Card>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
 
-                        <Separator Style="{DynamicResource MaterialDesignSeparator}"/>
-
-                        <ItemsControl x:Name="SessionsList">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel IsItemsHost="True" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate DataType="lib:EvaluationSession">
-                                    <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
-                                        <StackPanel>
-                                            <TextBlock Margin="16 16 16 4" Text="{Binding Path=Id, StringFormat={}Sessão #{0}}" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" />
-                                            <TextBlock Text="{Binding Path=Date, StringFormat=D, ConverterCulture=pt-PT}" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignBody2TextBlock}" />
-                                            <Separator Style="{StaticResource MaterialDesignLightSeparator}"/>
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*" />
-                                                    <ColumnDefinition Width="Auto" />
-                                                </Grid.ColumnDefinitions>
+                            <ItemsControl x:Name="EvaluationsList">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel IsItemsHost="True" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="lib:MedicalEvaluation">
+                                        <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
                                             <StackPanel>
-                                            <TextBlock Margin="8 0 8 0" Text="{Binding Path=NumberOfProblems, StringFormat={}Problemas: {0}}" />
-                                            <TextBlock Margin="8 4 8 8" Text="{Binding Path=NumberOfTreatments, StringFormat={}Tratamentos: {0}}" />
+                                                <TextBlock Margin="16 16 16 4" Text="{Binding Path=CountId, StringFormat={}Avaliação #{0}}" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" />
+                                                <Separator Style="{StaticResource MaterialDesignLightSeparator}"/>
+                                                <TextBlock Text="{Binding Path=OpeningDate, StringFormat=D, ConverterCulture=pt-PT}" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignBody2TextBlock}" />
+                                                <Button Click="OpenSessions" Style="{DynamicResource MaterialDesignToolButton}">
+                                                    <materialDesign:PackIcon Kind="InformationVariant"  Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
+                                                </Button>
                                             </StackPanel>
-                                            <Button Grid.Column="1" Style="{DynamicResource MaterialDesignToolButton}">
-                                                <materialDesign:PackIcon Margin="0 0 8 0" Kind="ArrowRight" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
-                                            </Button>
-                                            </Grid>
-                                        </StackPanel>
-                                    </materialDesign:Card>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                                        </materialDesign:Card>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <Button Grid.Column="1" Style="{DynamicResource MaterialDesignFloatingActionDarkButton}"
+                                    Margin="8" HorizontalAlignment="Center"
+                                    ToolTip="MaterialDesignFloatingActionDarkButton">
+                                <materialDesign:PackIcon Kind="Plus" Height="24" Width="24" />
+                            </Button>
+                        </Grid>
+
+                        <Expander x:Name="SessionsExpander" HorizontalAlignment="Stretch" IsEnabled="True">
+                            <Expander.Header>
+                                <Separator Style="{DynamicResource MaterialDesignSeparator}"/>
+                            </Expander.Header>
+
+                            <ItemsControl x:Name="SessionsList">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel IsItemsHost="True" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="lib:EvaluationSession">
+                                        <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+                                            <StackPanel>
+                                                <TextBlock Margin="16 16 16 4" Text="{Binding Path=Id, StringFormat={}Sessão #{0}}" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" />
+                                                <TextBlock Text="{Binding Path=Date, StringFormat=D, ConverterCulture=pt-PT}" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignBody2TextBlock}" />
+                                                <Separator Style="{StaticResource MaterialDesignLightSeparator}"/>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <StackPanel>
+                                                        <TextBlock Margin="8 0 8 0" Text="{Binding Path=NumberOfProblems, StringFormat={}Problemas: {0}}" />
+                                                        <TextBlock Margin="8 4 8 8" Text="{Binding Path=NumberOfTreatments, StringFormat={}Tratamentos: {0}}" />
+                                                    </StackPanel>
+                                                    <Button Grid.Column="1" Style="{DynamicResource MaterialDesignToolButton}">
+                                                        <materialDesign:PackIcon Margin="0 0 8 0" Kind="Eye" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
+                                                    </Button>
+                                                </Grid>
+                                            </StackPanel>
+                                        </materialDesign:Card>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Expander>
                     </StackPanel>
                 </GroupBox>
 

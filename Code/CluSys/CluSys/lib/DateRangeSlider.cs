@@ -8,10 +8,10 @@ namespace CluSys.lib
 {
     public class DateRangeSlider : RangeSlider
     {
-        public DateTime MinimumDate { get; set; } = new DateTime(1980, 9, 1);
-        public DateTime MaximumDate { get; set; } = new DateTime(2020, 9, 1);
-        public DateTime LowerDate { get; set; } = new DateTime(1990, 1, 1);
-        public DateTime UpperDate { get; set; } = new DateTime(2050, 1, 1);
+        public DateTime MinimumDate { get; set; } = DateTime.Now.AddYears(-1);
+        public DateTime MaximumDate { get; set; } = DateTime.Now;
+        public DateTime LowerDate { get; set; } = DateTime.Now.AddYears(-1);
+        public DateTime UpperDate { get; set; } = DateTime.Now;
 
         public RangeValidationRule MinDateValidator { get; }
         public RangeValidationRule MaxDateValidator { get; }

@@ -18,7 +18,7 @@ namespace CluSys.lib
         {
             get
             {
-                var conn = MainWindow.GetConnection();
+                var conn = ClusysUtils.GetConnection();
                 var cmd = new SqlCommand($"SELECT COUNT(*) as NumberOfProblems FROM MajorProblem WHERE EvalId={EvalId} and SessionId={Id};", conn);
                 using (var reader = cmd.ExecuteReader())
                     return reader.Read() ? int.Parse(reader["NumberOfProblems"].ToString()) : 0;
@@ -29,7 +29,7 @@ namespace CluSys.lib
         {
             get
             {
-                var conn = MainWindow.GetConnection();
+                var conn = ClusysUtils.GetConnection();
                 var cmd = new SqlCommand($"SELECT COUNT(*) as NumberOfTreatments FROM TreatmentPlan WHERE EvalId={EvalId} and SessionId={Id};", conn);
                 using (var reader = cmd.ExecuteReader())
                     return reader.Read() ? int.Parse(reader["NumberOfTreatments"].ToString()) : 0;

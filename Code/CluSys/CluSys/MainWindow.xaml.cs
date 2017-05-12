@@ -26,6 +26,10 @@ using System.Windows.Markup;
 using MahApps.Metro.Controls;
 using MaterialDesignThemes.Wpf;
 
+namespace CluSys.lib
+{
+}
+
 namespace CluSys
 {
     public partial class MainWindow
@@ -56,7 +60,7 @@ namespace CluSys
         private bool OpenConnection()
         {
             if (_cn == null)
-                _cn = GetConnection();
+                _cn = ClusysUtils.GetConnection();
 
             if (_cn.State != ConnectionState.Open)
                 _cn.Open();
@@ -64,17 +68,10 @@ namespace CluSys
             return _cn.State == ConnectionState.Open;
         }
 
-        public static SqlConnection GetConnection()
-        {
-            var conn = new SqlConnection("data source= RJ-JESUS\\SQLEXPRESS2014;integrated security=true;initial catalog=CluSys");
-            conn.Open();
-            return conn;
-        }
-
         private void FilterAthletes(object sender, TextChangedEventArgs e)
         {
             var filterText = ((TextBox)sender).Text;
-            var lb = FindByType<ListBox>((Visual)e.Source);
+            var lb = ClusysUtils.FindByType<ListBox>((Visual)e.Source);
 
             if (lb == null)
                 return;
@@ -120,60 +117,41 @@ namespace CluSys
             var me = (sender as Control)?.DataContext as MedicalEvaluation;
 
             SessionsList.ItemsSource = me?.Sessions(_cn);
-            if ((VisualTreeHelper.GetChild((DependencyObject)sender, 0) as Ripple)?.Content is PackIcon icon)
-                icon.Kind = PackIconKind.ChevronUp;
+            SessionsExpander.IsExpanded = true;
+        }
+
+        private void ResetAthleteContent()
+        {
+            EvaluationsList.ItemsSource = null;
+            SessionsList.ItemsSource = null;
+            SessionsExpander.IsExpanded = false;
         }
 
         private void FilterEvaluations(object sender, RangeParameterChangedEventArgs rangeParameterChangedEventArgs)
         {
             var dr = sender as DateRangeSlider;
 
-            if (dr == null || EvaluationsList.ItemsSource == null)
+            if (dr == null)
                 return;
 
-            var view = (CollectionView)CollectionViewSource.GetDefaultView(EvaluationsList.ItemsSource);
-            view.Filter = (medicalEvaluation) =>
-            {
-                var me = medicalEvaluation as MedicalEvaluation;
-
-                return me != null &&  (dr.LowerDate <= me.OpeningDate && me.OpeningDate <= dr.UpperDate
-                                       || dr.LowerDate <= me.ClosingDate && me.ClosingDate <= dr.UpperDate);
-            };
-        }
-
-        private static T FindByType<T>(Visual v)
-        {
-            while (v != null)
-            {
-                for(var i = 0; i < VisualTreeHelper.GetChildrenCount(v); i++)
+            var meView = (CollectionView) CollectionViewSource.GetDefaultView(EvaluationsList.ItemsSource);
+            if(meView != null)
+                meView.Filter = evaluation =>
                 {
-                    var c = VisualTreeHelper.GetChild(v, i);
+                    var me = evaluation as MedicalEvaluation;
 
-                    if (c is T)
-                        return (T)Convert.ChangeType(c, typeof(T));
-                }
+                    return me != null && (dr.LowerDate <= me.OpeningDate && me.OpeningDate <= dr.UpperDate
+                                          || dr.LowerDate <= me.ClosingDate && me.ClosingDate <= dr.UpperDate);
+                };
 
-                v = VisualTreeHelper.GetParent(v) as Visual;
-            }
+            var seView = (CollectionView) CollectionViewSource.GetDefaultView(SessionsList.ItemsSource);
+            if(seView != null)
+                seView.Filter = session =>
+                {
+                    var se = session as EvaluationSession;
 
-            return default(T);
+                    return se != null && dr.LowerDate <= se.Date && se.Date <= dr.UpperDate;
+                };
         }
-    }
-
-    public sealed class StringConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            var format = parameter as string;
-
-            if (value == null || format == null)
-                return value;
-            else if (value is double && double.IsNaN((double)value))
-                return "n/a";
-
-            return string.Format(format, value);
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) { throw new NotSupportedException(); }
     }
 }
