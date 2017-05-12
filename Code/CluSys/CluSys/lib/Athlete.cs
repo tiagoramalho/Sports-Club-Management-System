@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace CluSys.lib
 {
     [Serializable()]
-    class Athlete
+    internal class Athlete
     {
         public string CC { get; set; }
         public string FirstName { get; set; }
@@ -24,18 +24,16 @@ namespace CluSys.lib
         public string DominantSide { get; set; }
         public string ModalityId { get; set; }
 
-        private readonly ObservableCollection<MedicalEvaluation> _evaluations = new ObservableCollection<MedicalEvaluation>();
-
         public ObservableCollection<MedicalEvaluation> Evaluations(SqlConnection conn)
         {
-            SqlCommand cmd = new SqlCommand("SELECT * FROM MedicalEvaluation WHERE AthleteCC=" + CC + ";", conn);
+            var evaluations = new ObservableCollection<MedicalEvaluation>();
+            SqlCommand cmd = new SqlCommand($"SELECT * FROM MedicalEvaluation WHERE AthleteCC={CC};", conn);
             SqlDataReader reader = cmd.ExecuteReader();
 
-            _evaluations.Clear();
             while (reader.Read())
-                _evaluations.Add(new MedicalEvaluation()
+                evaluations.Add(new MedicalEvaluation(evaluations)
                 {
-                    ID = int.Parse(reader["ID"].ToString()),
+                    Id = int.Parse(reader["ID"].ToString()),
                     Weightt = double.Parse(reader["Weightt"].ToString()),
                     Height = double.Parse(reader["Height"].ToString()),
                     Story = reader["Story"].ToString(),
@@ -48,13 +46,10 @@ namespace CluSys.lib
 
             reader.Close();
 
-            return _evaluations;
+            return evaluations;
         }
 
-        private bool Equals(Athlete other)
-        {
-            return string.Equals(CC, other.CC, StringComparison.OrdinalIgnoreCase);
-        }
+        private bool Equals(Athlete other) => string.Equals(CC, other.CC, StringComparison.OrdinalIgnoreCase);
 
         public override bool Equals(object obj)
         {
@@ -64,10 +59,7 @@ namespace CluSys.lib
             return Equals((Athlete) obj);
         }
 
-        public override int GetHashCode()
-        {
-            return (CC != null ? StringComparer.OrdinalIgnoreCase.GetHashCode(CC) : 0);
-        }
+        public override int GetHashCode() => (CC != null ? StringComparer.OrdinalIgnoreCase.GetHashCode(CC) : 0);
     }
 
     [Serializable()]
@@ -76,8 +68,6 @@ namespace CluSys.lib
         public double Height { get; set; }
         public double Weight { get; set; }
         public bool activeEvaluation { get; set; }
-
-        public AthleteWithBody() { }
 
         public AthleteWithBody(SqlConnection conn, Athlete ath)
         {
@@ -116,7 +106,7 @@ namespace CluSys.lib
     [Serializable()]
     class Athletes
     {
-        public static ObservableCollection<Athlete> OpenEvaluations(SqlConnection conn)
+        public static ObservableCollection<Athlete> AthletesWithOpenEvaluations(SqlConnection conn)
         {
             var athletes = new ObservableCollection<Athlete>();
 

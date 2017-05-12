@@ -3,18 +3,17 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
 
+        mc:Ignorable="d"
         xmlns:src="clr-namespace:CluSys"
         xmlns:lib="clr-namespace:CluSys.lib"
-        mc:Ignorable="d"
 
         Icon="App.ico"
-        Title="CluSys"
         MinHeight="650"
         MinWidth="1024"
         WindowState="Maximized"
         WindowStartupLocation="CenterScreen"
+        Title="CluSys" TitleCharacterCasing="Normal"
 
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -25,211 +24,194 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
 
+        xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
         GlowBrush="{DynamicResource AccentColorBrush}"
         BorderThickness="1"
         >
     <Window.Resources>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <src:StringConverter x:Key="StringConverter" />
-        <src:ModalityDotGetAthletesConverter x:Key="ModalityDotGetAthletesConverter" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <lib:ModalityDotGetAthletesConverter x:Key="ModalityDotGetAthletesConverter" />
     </Window.Resources>
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100px" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100px" />
-                <ColumnDefinition Width="0.7*" />
-                <ColumnDefinition Width="0.3*" />
-            </Grid.ColumnDefinitions>
-
-            <Image Source="App.ico" Width="24" Height="24" Margin="8" />
-            <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="8" HorizontalAlignment="Right" VerticalAlignment="Center">
-                <Ellipse Width="24" Height="24" Margin="4">
-                    <Ellipse.Fill>
-                        <ImageBrush ImageSource="App.ico" Stretch="UniformToFill" />
-                    </Ellipse.Fill>
-                </Ellipse>
-                <TextBlock Margin="4" HorizontalAlignment="Center" VerticalAlignment="Center">Menu to utilizador</TextBlock>
-                <Button Style="{DynamicResource MaterialDesignToolButton}" Margin="4"
-                        materialDesign:RippleAssist.IsDisabled="True">
-                    <materialDesign:PackIcon Kind="ChevronDown" />
-                </Button>
-            </StackPanel>
-        </Grid>
-
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100px" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-
-            <DockPanel Margin="8">
-                <Button Click="GoHome" DockPanel.Dock="Top" Width="48" Height="48"
-                        Style="{DynamicResource MaterialDesignToolButton}"
-                        materialDesign:RippleAssist.IsCentered="True">
-                    <materialDesign:PackIcon Kind="Home" />
-                </Button>
-                <ListBox x:Name="OpenAthletesList"
+        <DockPanel Margin="8" LastChildFill="True">
+            <Button Click="GoHome" Height="48" DockPanel.Dock="Top"
+                    Style="{DynamicResource MaterialDesignToolButton}" materialDesign:RippleAssist.IsCentered="True">
+                <materialDesign:PackIcon Kind="HomeVariant" Width="24" Height="24" />
+            </Button>
+            <Button Height="48" DockPanel.Dock="Bottom"
+                        Style="{DynamicResource MaterialDesignToolButton}" materialDesign:RippleAssist.IsCentered="True">
+                <StackPanel>
+                    <Ellipse Width="24" Height="24">
+                        <Ellipse.Fill>
+                            <ImageBrush ImageSource="/assets/img/77.jpg" Stretch="UniformToFill" />
+                        </Ellipse.Fill>
+                    </Ellipse>
+                    <materialDesign:PackIcon Kind="DotsHorizontal" Width="24" />
+                </StackPanel>
+            </Button>
+            <ListBox x:Name="OpenAthletesList"
                          PreviewMouseUp="OpenAthlete"
                          HorizontalContentAlignment="Center"
                          ScrollViewer.VerticalScrollBarVisibility="Hidden">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate DataType="lib:Athlete">
-                            <StackPanel>
-                                <Ellipse Width="24" Height="24" Margin="0 0 0 4">
-                                    <Ellipse.Fill>
-                                        <ImageBrush ImageSource="{Binding Path=Photo}" Stretch="UniformToFill" />
-                                    </Ellipse.Fill>
-                                </Ellipse>
-                                <TextBlock Margin="0 4 0 0" Text="{Binding Path=FirstName}" HorizontalAlignment="Center" />
-                                <TextBlock Margin="0 0 0 4" Text="{Binding Path=LastName}" HorizontalAlignment="Center" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ListBox>
-            </DockPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="lib:Athlete">
+                        <StackPanel>
+                            <Ellipse Width="24" Height="24" Margin="0 0 0 4">
+                                <Ellipse.Fill>
+                                    <ImageBrush ImageSource="{Binding Path=Photo}" Stretch="UniformToFill" />
+                                </Ellipse.Fill>
+                            </Ellipse>
+                            <TextBlock Margin="0 4 0 0" Text="{Binding Path=FirstName}" HorizontalAlignment="Center" />
+                            <TextBlock Margin="0 0 0 4" Text="{Binding Path=LastName}" HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ListBox>
+        </DockPanel>
 
-            <Grid x:Name="HomeContent" Visibility="Hidden" Grid.Column="1" Margin="8">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
+        <Grid x:Name="HomeContent" Visibility="Hidden" Grid.Column="1" Margin="8">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-                <ListBox x:Name="AthletesWithOpenEvaluations"
+            <ListBox x:Name="AthletesWithOpenEvaluations"
                          Margin="8"
                          PreviewMouseUp="OpenAthlete"
                          Grid.IsSharedSizeScope="True">
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel IsItemsHost="True" />
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate DataType="lib:Athlete">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel IsItemsHost="True" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="lib:Athlete">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="ColumnSize" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <Ellipse Height="48" Width="48" Grid.Row="0" Margin="8">
+                                <Ellipse.Fill>
+                                    <ImageBrush ImageSource="{Binding Path=Photo}" Stretch="UniformToFill" />
+                                </Ellipse.Fill>
+                            </Ellipse>
+                            <TextBlock HorizontalAlignment="Center" Grid.Row="1">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0} {1}">
+                                        <Binding Path="FirstName" />
+                                        <Binding Path="LastName" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                            <TextBlock HorizontalAlignment="Center" Grid.Row="2" Text="{Binding Path=ModalityId}" />
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ListBox>
+
+            <ItemsControl x:Name="ModalityList"
+                              Grid.Row="1"
+                              Grid.IsSharedSizeScope="True">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel IsItemsHost="True" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="lib:Modality">
+                        <materialDesign:Card Margin="4" Width="240">
                             <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" SharedSizeGroup="ColumnSize" />
-                                </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
 
-                                <Ellipse Height="48" Width="48" Grid.Row="0" Margin="8">
-                                    <Ellipse.Fill>
-                                        <ImageBrush ImageSource="{Binding Path=Photo}" Stretch="UniformToFill" />
-                                    </Ellipse.Fill>
-                                </Ellipse>
-                                <TextBlock HorizontalAlignment="Center" Grid.Row="1">
-                                    <TextBlock.Text>
-                                        <MultiBinding StringFormat="{}{0} {1}">
-                                            <Binding Path="FirstName" />
-                                            <Binding Path="LastName" />
-                                        </MultiBinding>
-                                    </TextBlock.Text>
-                                </TextBlock>
-                                <TextBlock HorizontalAlignment="Center" Grid.Row="2" Text="{Binding Path=ModalityId}" />
-                            </Grid>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ListBox>
-
-                <ItemsControl x:Name="ModalityList"
-                              Grid.Row="1"
-                              Grid.IsSharedSizeScope="True">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel IsItemsHost="True" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate DataType="lib:Modality">
-                            <materialDesign:Card Margin="4" Width="240">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="*" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-
-                                    <TextBlock Text="{Binding Path=name}"
+                                <TextBlock Text="{Binding Path=name}"
                                                Foreground="White" Background="{DynamicResource PrimaryHueMidBrush}"
                                                FontWeight="Bold" Padding="8 24 8 0" />
-                                    <ListBox Grid.Row="1" Margin="8 24 8 0" PreviewMouseUp="OpenAthlete"
+                                <ListBox Grid.Row="1" Margin="8 24 8 0" PreviewMouseUp="OpenAthlete"
                                              ItemsSource="{Binding Converter={StaticResource ModalityDotGetAthletesConverter}, ConverterParameter='GetAthletes'}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate DataType="lib:Athlete">
-                                                <TextBlock>
-                                                    <TextBlock.Text>
-                                                        <MultiBinding StringFormat="{}{0} {1}">
-                                                            <Binding Path="FirstName" />
-                                                            <Binding Path="LastName" />
-                                                        </MultiBinding>
-                                                    </TextBlock.Text>
-                                                </TextBlock>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ListBox>
-                                    <Border Grid.Row="2" Margin="8" Background="White" CornerRadius="3" ToolTip="Enter to search, ignore case">
-                                        <DockPanel LastChildFill="True">
-                                            <Button Style="{DynamicResource MaterialDesignToolButton}"
-                                                    Height="24" Width="24">
-                                                <materialDesign:PackIcon Kind="Magnify" Opacity=".56" />
-                                            </Button>
-                                            <TextBox Margin="4 0 0 0" TextChanged="SearchBox_TextChanged"
-                                                     materialDesign:HintAssist.Hint="Search" x:Name="SearchBox"
-                                                     materialDesign:TextFieldAssist.DecorationVisibility="Hidden" BorderThickness="0"
-                                                     VerticalAlignment="Center" />
-                                        </DockPanel>
-                                    </Border>
-                                </Grid>
-                            </materialDesign:Card>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </Grid>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="lib:Athlete">
+                                            <TextBlock>
+                                                <TextBlock.Text>
+                                                    <MultiBinding StringFormat="{}{0} {1}">
+                                                        <Binding Path="FirstName" />
+                                                        <Binding Path="LastName" />
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ListBox>
+                                <Border Grid.Row="2" Margin="8" Background="White" CornerRadius="3" ToolTip="Enter to search, ignore case">
+                                    <DockPanel LastChildFill="True">
+                                        <Button Height="24" Width="24" Style="{DynamicResource MaterialDesignToolButton}">
+                                            <materialDesign:PackIcon Kind="Magnify" Opacity=".56" />
+                                        </Button>
+                                        <TextBox Margin="4 0 0 0" TextChanged="SearchBox_TextChanged"
+                                                 materialDesign:HintAssist.Hint="Search" x:Name="SearchBox"
+                                                 materialDesign:TextFieldAssist.DecorationVisibility="Hidden" BorderThickness="0"
+                                                 VerticalAlignment="Center" />
+                                    </DockPanel>
+                                </Border>
+                            </Grid>
+                        </materialDesign:Card>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
 
-            <ContentControl x:Name="AthleteContent" Visibility="Visible" Grid.Column="1" Margin="8"
+        <ContentControl x:Name="AthleteContent" Visibility="Visible" Grid.Column="1" Margin="8"
                             d:DataContext="{d:DesignInstance lib:AthleteWithBody}">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-                    <StackPanel Orientation="Horizontal" Margin="8" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <Ellipse Width="48" Height="48" Margin="8">
-                            <Ellipse.Fill>
-                                <ImageBrush ImageSource="{Binding Path=Photo}" Stretch="UniformToFill" />
-                            </Ellipse.Fill>
-                        </Ellipse>
-                        <TextBlock Margin="8" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignHeadlineTextBlock}">
-                            <TextBlock.Text>
-                                <MultiBinding StringFormat="{}{0} {1} {2}">
-                                    <Binding Path="FirstName" FallbackValue="FirstName"/>
-                                    <Binding Path="MiddleName" FallbackValue=""/>
-                                    <Binding Path="LastName" FallbackValue="LastName"/>
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
-                    </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="16" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Ellipse Margin="8" Width="48" Height="48">
+                        <Ellipse.Fill>
+                            <ImageBrush ImageSource="{Binding Path=Photo}" Stretch="UniformToFill" />
+                        </Ellipse.Fill>
+                    </Ellipse>
+                    <TextBlock Margin="8" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignHeadlineTextBlock}">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0} {1} {2}">
+                                <Binding Path="FirstName" FallbackValue="FirstName"/>
+                                <Binding Path="MiddleName" FallbackValue=""/>
+                                <Binding Path="LastName" FallbackValue="LastName"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </StackPanel>
 
-                    <DockPanel Grid.Row="1" Margin="8" LastChildFill="True">
-                        <materialDesign:Chip Visibility="{Binding Path=activeEvaluation, Converter={StaticResource BooleanToVisibilityConverter}}" Content="Em tratamento de lesão" Margin="4" IsEnabled="False" DockPanel.Dock="Right" />
-                        <materialDesign:Chip Icon="A" Content="{Binding Path=Height, Converter={StaticResource StringConverter}, ConverterParameter='{}{0:N2} m'}" Margin="4" IsEnabled="False" />
-                        <materialDesign:Chip Icon="P" Content="{Binding Path=Weight, Converter={StaticResource StringConverter}, ConverterParameter='{}{0:N2} kg'}" Margin="4" IsEnabled="False" />
-                    </DockPanel>
+                <DockPanel Grid.Row="1" Margin="16" LastChildFill="True">
+                    <materialDesign:Chip Visibility="{Binding Path=activeEvaluation, Converter={StaticResource BooleanToVisibilityConverter}}" Content="Em tratamento de lesão" Margin="4" IsEnabled="False" DockPanel.Dock="Right" />
+                    <materialDesign:Chip Icon="A" Content="{Binding Path=Height, Converter={StaticResource StringConverter}, ConverterParameter='{}{0:N2} m'}" Margin="4" IsEnabled="False" />
+                    <materialDesign:Chip Icon="P" Content="{Binding Path=Weight, Converter={StaticResource StringConverter}, ConverterParameter='{}{0:N2} kg'}" Margin="4" IsEnabled="False" />
+                </DockPanel>
 
-                    <ScrollViewer Grid.Row="2" Margin="24" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
+                <GroupBox Grid.Row="2" Header="Sessões" Margin="16">
+                    <StackPanel>
                         <ItemsControl x:Name="EvaluationsList">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -238,223 +220,97 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="lib:MedicalEvaluation">
-                                    <StackPanel Orientation="Horizontal">
-                                        <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
-                                            <StackPanel>
-                                                <TextBlock Margin="16 16 16 4" Text="{Binding Path=ID, StringFormat={}Avaliação #{0}}" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" />
-                                                <Separator Style="{StaticResource MaterialDesignLightSeparator}"/>
-                                                <TextBlock Text="{Binding Path=OpeningDate, StringFormat=D, ConverterCulture=pt-PT}" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignBody2TextBlock}" />
-                                                <Button Click="Button_Click" Style="{DynamicResource MaterialDesignToolButton}">
-                                                    <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
-                                                </Button>
-                                            </StackPanel>
-                                        </materialDesign:Card>
-                                    </StackPanel>
+                                    <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+                                        <StackPanel>
+                                            <TextBlock Margin="16 16 16 4" Text="{Binding Path=CountId, StringFormat={}Avaliação #{0}}" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" />
+                                            <Separator Style="{StaticResource MaterialDesignLightSeparator}"/>
+                                            <TextBlock Text="{Binding Path=OpeningDate, StringFormat=D, ConverterCulture=pt-PT}" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignBody2TextBlock}" />
+                                            <Button Click="Button_Click" Style="{DynamicResource MaterialDesignToolButton}">
+                                                <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
+                                            </Button>
+                                        </StackPanel>
+                                    </materialDesign:Card>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
-                    </ScrollViewer>
 
-                    <Expander Margin="8" Grid.Row="3" HorizontalAlignment="Stretch">
-                        <StackPanel Orientation="Vertical"
-                            TextBlock.Foreground="{DynamicResource MaterialDesignBody}"
-                            Margin="24,8,24,16">
-                            <TextBlock Text="Your Content" />
-                            <TextBlock Opacity=".68" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-                               TextWrapping="Wrap"/>
-                        </StackPanel>
-                    </Expander>
+                        <ItemsControl x:Name="SessionsList">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel IsItemsHost="True" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="lib:EvaluationSession">
+                                    <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+                                        <StackPanel>
+                                            <TextBlock Margin="16 16 16 4" Text="{Binding Path=Id, StringFormat={}Sessão #{0}}" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" />
+                                            <Separator Style="{StaticResource MaterialDesignLightSeparator}"/>
+                                            <TextBlock Text="{Binding Path=Date, StringFormat=D, ConverterCulture=pt-PT}" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignBody2TextBlock}" />
+                                            <Button Click="Button_Click" Style="{DynamicResource MaterialDesignToolButton}">
+                                                <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
+                                            </Button>
+                                        </StackPanel>
+                                    </materialDesign:Card>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </GroupBox>
 
-                    <!--
-                    <Expander Margin="8" x:Name="expander" Grid.Row="3" HorizontalAlignment="Stretch">
-                        <StackPanel Margin="24,8,24,8" TextBlock.Foreground="{DynamicResource MaterialDesignBody}">
-                            <TextBlock Text="Your Content" />
-                            <TextBlock Opacity=".68" TextWrapping="Wrap" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."/>
-                        </StackPanel>
-                    </Expander>
-                    -->
+                <Grid Grid.Row="4" Margin="16" VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
 
-                    <lib:DateRangeSlider x:Name="SliderRange"
-                                         Grid.Row="4" Margin="8"
+                    <DatePicker x:Name="MinDateRange" Width="100"
+                                materialDesign:HintAssist.Hint="Início" 
+                                HorizontalAlignment="Right" Margin="8"
+                                Style="{DynamicResource MaterialDesignFloatingHintDatePicker}">
+                        <DatePicker.SelectedDate>
+                            <Binding ElementName="SliderRange" Path="MinimumDate" UpdateSourceTrigger="PropertyChanged" />
+                        </DatePicker.SelectedDate>
+                    </DatePicker>
+
+                    <lib:DateRangeSlider x:Name="SliderRange" DockPanel.Dock="Top"
+                                         Grid.Column="1" Margin="8"
                                          Minimum="1" Maximum="100"
                                          DataContext="{Binding RelativeSource={RelativeSource Self}}"
                                          LowerValue="{Binding Path=LowerDateAsDouble}" UpperValue="{Binding Path=UpperDateAsDouble}"
                                          AutoToolTipPlacement="TopLeft" MoveWholeRange="True"
-                                         AutoToolTipTextConverter="{Binding Path=TooltipToStringConverter}"
+                                         AutoToolTipTextConverter="{Binding Path=DateRangeToStringConverter}"
                                          IsSnapToTickEnabled="True" IsMoveToPointEnabled="True" ExtendedMode="True"
                                          LowerValueChanged="FilterEvaluations" UpperValueChanged="FilterEvaluations" />
+
+                    <DatePicker x:Name="MaxDateRange" Width="100" Grid.Column="2"
+                                    materialDesign:HintAssist.Hint="Fim" 
+                                    HorizontalAlignment="Right" Margin="8"
+                                    Style="{DynamicResource MaterialDesignFloatingHintDatePicker}">
+                        <DatePicker.SelectedDate>
+                            <Binding ElementName="SliderRange" Path="MaximumDate" UpdateSourceTrigger="PropertyChanged" />
+                        </DatePicker.SelectedDate>
+                    </DatePicker>
                 </Grid>
-            </ContentControl>
-
-            <!-- -->
-
-            <ItemsControl x:Name="AthleteContent2" Visibility="Hidden" Grid.Column="1" Margin="8"
-                          ItemsSource="{Binding Source=Fallback}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
-                            <StackPanel Orientation="Horizontal" Margin="8" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <Ellipse Width="48" Height="48" Margin="8">
-                                    <Ellipse.Fill>
-                                        <ImageBrush ImageSource="{Binding Path=Photo}" Stretch="UniformToFill" />
-                                    </Ellipse.Fill>
-                                </Ellipse>
-                                <TextBlock Margin="8" VerticalAlignment="Center"
-                                           Style="{StaticResource MaterialDesignHeadlineTextBlock}">
-                                    <TextBlock.Text>
-                                        <MultiBinding StringFormat="{}{0} {1} {2}">
-                                            <Binding Path="FirstName" FallbackValue="FirstName"/>
-                                            <Binding Path="MiddleName" FallbackValue=""/>
-                                            <Binding Path="LastName" FallbackValue="LastName"/>
-                                        </MultiBinding>
-                                    </TextBlock.Text>
-                                </TextBlock>
-                            </StackPanel>
-
-                            <DockPanel Grid.Row="1" Margin="8" LastChildFill="True">
-                                <materialDesign:Chip Visibility="{Binding Path=activeEvaluation, Converter={StaticResource BooleanToVisibilityConverter}}" Content="Em tratamento de lesão" Margin="4" DockPanel.Dock="Right" />
-                                <materialDesign:Chip Icon="A" Content="{Binding Path=Height, Converter={StaticResource StringConverter}, ConverterParameter='{}{0:N2} m'}" Margin="4" />
-                                <materialDesign:Chip Icon="P" Content="{Binding Path=Weight, Converter={StaticResource StringConverter}, ConverterParameter='{}{0:N2} kg'}" Margin="4" />
-                            </DockPanel>
-
-                            <ScrollViewer Grid.Row="2" Margin="24"
-                                          HorizontalScrollBarVisibility="Hidden"
-                                          VerticalScrollBarVisibility="Disabled">
-                                <ItemsControl x:Name="Evaluations" ItemsSource="{Binding Path=Fallback}">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <WrapPanel IsItemsHost="True" />
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}"
-                                                     Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
-                                                <StackPanel>
-                                                    <TextBlock Margin="16 16 16 4"
-                                                       Text="{Binding Path=Height, StringFormat={}Avaliação #{0}}"
-                                                       Style="{StaticResource MaterialDesignHeadlineTextBlock}" />
-                                                    <Separator Grid.Row="1" Style="{StaticResource MaterialDesignLightSeparator}"/>
-                                                    <TextBlock Grid.Row="2" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignBody2TextBlock}">March 19, 2016</TextBlock>
-                                                    <Button Click="Button_Click" Grid.Row="3" Style="{StaticResource MaterialDesignToolButton}">
-                                                        <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
-                                                    </Button>
-                                                </StackPanel>
-                                            </materialDesign:Card>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-
-                                    <!--
-                                    <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}"
-                                                     Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
-                                        <StackPanel>
-                                            <TextBlock Margin="16 16 16 4" Style="{StaticResource MaterialDesignHeadlineTextBlock}">Avaliação #</TextBlock>
-                                            <Separator Grid.Row="1" Style="{StaticResource MaterialDesignLightSeparator}"/>
-                                            <TextBlock Grid.Row="2" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignBody2TextBlock}">March 19, 2016</TextBlock>
-                                            <Button Grid.Row="3" Style="{StaticResource MaterialDesignToolButton}">
-                                                <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
-                                            </Button>
-                                        </StackPanel>
-                                    </materialDesign:Card>
-
-                                    <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}"
-                                                     Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
-                                        <StackPanel>
-                                            <TextBlock Margin="16 16 16 4" Style="{StaticResource MaterialDesignHeadlineTextBlock}">Avaliação #</TextBlock>
-                                            <Separator Grid.Row="1" Style="{StaticResource MaterialDesignLightSeparator}"/>
-                                            <TextBlock Grid.Row="2" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignBody2TextBlock}">March 19, 2016</TextBlock>
-                                            <Button Grid.Row="3" Style="{StaticResource MaterialDesignToolButton}">
-                                                <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
-                                            </Button>
-                                        </StackPanel>
-                                    </materialDesign:Card>
-
-                                    <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}"
-                                                     Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
-                                        <StackPanel>
-                                            <TextBlock Margin="16 16 16 4" Style="{StaticResource MaterialDesignHeadlineTextBlock}">Avaliação #</TextBlock>
-                                            <Separator Grid.Row="1" Style="{StaticResource MaterialDesignLightSeparator}"/>
-                                            <TextBlock Grid.Row="2" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignBody2TextBlock}">March 19, 2016</TextBlock>
-                                            <Button Grid.Row="3" Style="{StaticResource MaterialDesignToolButton}">
-                                                <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
-                                            </Button>
-                                        </StackPanel>
-                                    </materialDesign:Card>
-
-                                    <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}"
-                                                     Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
-                                        <StackPanel>
-                                            <TextBlock Margin="16 16 16 4" Style="{StaticResource MaterialDesignHeadlineTextBlock}">Avaliação #</TextBlock>
-                                            <Separator Grid.Row="1" Style="{StaticResource MaterialDesignLightSeparator}"/>
-                                            <TextBlock Grid.Row="2" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignBody2TextBlock}">March 19, 2016</TextBlock>
-                                            <Button Grid.Row="3" Style="{StaticResource MaterialDesignToolButton}">
-                                                <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
-                                            </Button>
-                                        </StackPanel>
-                                    </materialDesign:Card>
-
-                                    <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}"
-                                                     Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
-                                        <StackPanel>
-                                            <TextBlock Margin="16 16 16 4" Style="{StaticResource MaterialDesignHeadlineTextBlock}">Avaliação #</TextBlock>
-                                            <Separator Grid.Row="1" Style="{StaticResource MaterialDesignLightSeparator}"/>
-                                            <TextBlock Grid.Row="2" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignBody2TextBlock}">March 19, 2016</TextBlock>
-                                            <Button Grid.Row="3" Style="{StaticResource MaterialDesignToolButton}">
-                                                <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
-                                            </Button>
-                                        </StackPanel>
-                                    </materialDesign:Card>
-
-                                    <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueMidBrush}"
-                                                     Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
-                                        <StackPanel>
-                                            <TextBlock Margin="16 16 16 4" Style="{StaticResource MaterialDesignHeadlineTextBlock}">Avaliação #</TextBlock>
-                                            <Separator Grid.Row="1" Style="{StaticResource MaterialDesignLightSeparator}"/>
-                                            <TextBlock Grid.Row="2" Margin="16 0 16 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignBody2TextBlock}">March 19, 2016</TextBlock>
-                                            <Button Grid.Row="3" Style="{StaticResource MaterialDesignToolButton}">
-                                                <materialDesign:PackIcon Kind="ChevronDown" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
-                                            </Button>
-                                        </StackPanel>
-                                    </materialDesign:Card>
-                                    -->
-                                </ItemsControl>
-                            </ScrollViewer>
-
-                            <Expander Margin="8" x:Name="expander" Grid.Row="3" HorizontalAlignment="Stretch">
-                                <StackPanel Margin="24,8,24,8" TextBlock.Foreground="{DynamicResource MaterialDesignBody}">
-                                    <TextBlock Text="Your Content" />
-                                    <TextBlock Opacity=".68" TextWrapping="Wrap" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."/>
-                                </StackPanel>
-                            </Expander>
-
-                            <!--
-                            <materialDesign:DialogHost Grid.Row="3" >
-                                <materialDesign:DialogHost.DialogContent>
-                                    <ScrollViewer MaxHeight="100" VerticalScrollBarVisibility="Auto">
-                                        <StackPanel>
-                                            <TextBlock Text="hgajs" />
-                                            <TextBlock Text="hgajs" />
-                                        </StackPanel>
-                                    </ScrollViewer>
-                                </materialDesign:DialogHost.DialogContent>
-                                <StackPanel>
-                                    <TextBlock Text="kdja" />
-                                    <TextBlock Text="kdja" />
-                                    <Button Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" />
-                                </StackPanel>
-                            </materialDesign:DialogHost>
-                            -->
-                        </Grid>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </Grid>
+            </Grid>
+        </ContentControl>
     </Grid>
 </metro:MetroWindow>
+<!--
+<materialDesign:DialogHost Grid.Row="3" >
+    <materialDesign:DialogHost.DialogContent>
+        <ScrollViewer MaxHeight="100" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <TextBlock Text="hgajs" />
+                <TextBlock Text="hgajs" />
+            </StackPanel>
+        </ScrollViewer>
+    </materialDesign:DialogHost.DialogContent>
+    <StackPanel>
+        <TextBlock Text="kdja" />
+        <TextBlock Text="kdja" />
+        <Button Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" />
+    </StackPanel>
+</materialDesign:DialogHost>
+-->

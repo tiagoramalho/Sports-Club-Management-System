@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="JetBrains.Annotations, Version=10.4.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.10.4.0\lib\net\JetBrains.Annotations.dll</HintPath>
+    </Reference>
     <Reference Include="MahApps.Metro, Version=1.5.0.23, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.5.0\lib\net45\MahApps.Metro.dll</HintPath>
     </Reference>
@@ -80,6 +83,7 @@
     </Compile>
     <Compile Include="lib\DateRangeSlider.cs" />
     <Compile Include="lib\Athlete.cs" />
+    <Compile Include="lib\EvaluationSession.cs" />
     <Compile Include="lib\MedicalEvaluation.cs" />
     <Compile Include="lib\Modality.cs" />
     <Compile Include="MainWindow.xaml.cs">

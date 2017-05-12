@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Data.SqlClient;
 
 namespace CluSys.lib
 {
     [Serializable()]
-    class MedicalEvaluation
+    internal class MedicalEvaluation
     {
-        public int ID { get; set; }
+        public int Id { private get; set; }
         public double Weightt { get; set; }
         public double Height { get; set; }
         public string Story { get; set; }
@@ -15,7 +18,37 @@ namespace CluSys.lib
         public string AthleteCC { get; set; }
         public string PhysiotherapistCC { get; set; }
 
-        private bool Equals(MedicalEvaluation other) => ID == other.ID;
+        public int CountId
+        {
+            get => _container?.IndexOf(this) ?? Id;
+            set => _container?.Move(CountId, value);
+        }
+
+        private readonly ObservableCollection<MedicalEvaluation> _container;
+
+        public MedicalEvaluation(ObservableCollection<MedicalEvaluation> container = null) => _container = container;
+
+        public ObservableCollection<EvaluationSession> Sessions(SqlConnection conn)
+        {
+            var sessions = new ObservableCollection<EvaluationSession>();
+
+            SqlCommand cmd = new SqlCommand($"SELECT * FROM EvaluationSession WHERE Id={Id};", conn);
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+                sessions.Add(new EvaluationSession()
+                {
+                    Id = int.Parse(reader["ID"].ToString()),
+                    EvalId= int.Parse(reader["EvalId"].ToString()),
+                    Date = DateTime.Parse(reader["DateSession"].ToString()),
+                });
+
+            reader.Close();
+
+            return sessions;
+        }
+
+        private bool Equals(MedicalEvaluation other) => Id == other.Id;
 
         public override bool Equals(object obj)
         {
@@ -25,6 +58,6 @@ namespace CluSys.lib
             return Equals((MedicalEvaluation) obj);
         }
 
-        public override int GetHashCode() => ID;
+        public override int GetHashCode() => Id;
     }
 }

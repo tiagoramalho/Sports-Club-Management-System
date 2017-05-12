@@ -40,9 +40,16 @@ namespace CluSys
 
             InitializeComponent();
 
-            ModalityList.ItemsSource = Modalities.LoadSQL(_cn);
+            // Set culture
+            CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("pt-PT");
+            CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("pt-PT");
+
+            BindingOperations.GetBinding(MinDateRange, DatePicker.SelectedDateProperty)?.ValidationRules.Add(SliderRange.MinDateValidator);
+            BindingOperations.GetBinding(MaxDateRange, DatePicker.SelectedDateProperty)?.ValidationRules.Add(SliderRange.MaxDateValidator);
+
             OpenAthletesList.ItemsSource = _openAthletes;  // empty on start
-            AthletesWithOpenEvaluations.ItemsSource = Athletes.OpenEvaluations(_cn);
+            ModalityList.ItemsSource = Modalities.LoadSQL(_cn);
+            AthletesWithOpenEvaluations.ItemsSource = Athletes.AthletesWithOpenEvaluations(_cn);
         }
 
         private bool OpenConnection()
@@ -109,7 +116,8 @@ namespace CluSys
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            //expander.IsExpanded = true;
+            var me = (sender as Control)?.DataContext as MedicalEvaluation;
+            SessionsList.ItemsSource = me?.Sessions(_cn);
         }
 
         private void FilterEvaluations(object sender, RangeParameterChangedEventArgs rangeParameterChangedEventArgs)
@@ -160,25 +168,6 @@ namespace CluSys
                 return "n/a";
 
             return string.Format(format, value);
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) { throw new NotSupportedException(); }
-    }
-
-    public sealed class ModalityDotGetAthletesConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            var methodName = parameter as string;
-
-            if (value == null || methodName == null)
-                return value;
-
-            var methodInfo = value.GetType().GetMethod(methodName, new Type[1] { typeof(SqlConnection) });
-
-            if (methodInfo == null)
-                return value;
-            return methodInfo.Invoke(value, new object[1] { MainWindow.GetConnection() } );
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) { throw new NotSupportedException(); }
