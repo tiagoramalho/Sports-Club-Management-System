@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,28 @@ namespace CluSys.lib
         public int Id { get; set; }
         public int EvalId { get; set; }
         public DateTime Date { get; set; }
+
+        public int NumberOfProblems
+        {
+            get
+            {
+                var conn = MainWindow.GetConnection();
+                var cmd = new SqlCommand($"SELECT COUNT(*) as NumberOfProblems FROM MajorProblem WHERE EvalId={EvalId} and SessionId={Id};", conn);
+                using (var reader = cmd.ExecuteReader())
+                    return reader.Read() ? int.Parse(reader["NumberOfProblems"].ToString()) : 0;
+            }
+        }
+
+        public int NumberOfTreatments
+        {
+            get
+            {
+                var conn = MainWindow.GetConnection();
+                var cmd = new SqlCommand($"SELECT COUNT(*) as NumberOfTreatments FROM TreatmentPlan WHERE EvalId={EvalId} and SessionId={Id};", conn);
+                using (var reader = cmd.ExecuteReader())
+                    return reader.Read() ? int.Parse(reader["NumberOfTreatments"].ToString()) : 0;
+            }
+        }
 
         private bool Equals(EvaluationSession other) => Id == other.Id && EvalId == other.EvalId;
 

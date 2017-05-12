@@ -24,6 +24,7 @@ using System.Collections.Specialized;
 using System.Reflection;
 using System.Windows.Markup;
 using MahApps.Metro.Controls;
+using MaterialDesignThemes.Wpf;
 
 namespace CluSys
 {
@@ -70,19 +71,19 @@ namespace CluSys
             return conn;
         }
 
-        private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void FilterAthletes(object sender, TextChangedEventArgs e)
         {
             var filterText = ((TextBox)sender).Text;
-            ListBox lb = FindByType<ListBox>((Visual)e.Source);
+            var lb = FindByType<ListBox>((Visual)e.Source);
 
             if (lb == null)
                 return;
 
-            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(lb.ItemsSource);
+            var view = (CollectionView)CollectionViewSource.GetDefaultView(lb.ItemsSource);
             view.Filter = (a) => {
                 var athlete = a as Athlete;
 
-                return (athlete?.FirstName + " " + athlete?.LastName).Contains(filterText);
+                return (athlete?.FirstName + " " + athlete?.LastName).IndexOf(filterText, StringComparison.OrdinalIgnoreCase) >= 0;
             };
         }
 
@@ -114,10 +115,13 @@ namespace CluSys
             AthleteContent.Visibility = Visibility.Visible;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void OpenSessions(object sender, RoutedEventArgs e)
         {
             var me = (sender as Control)?.DataContext as MedicalEvaluation;
+
             SessionsList.ItemsSource = me?.Sessions(_cn);
+            if ((VisualTreeHelper.GetChild((DependencyObject)sender, 0) as Ripple)?.Content is PackIcon icon)
+                icon.Kind = PackIconKind.ChevronUp;
         }
 
         private void FilterEvaluations(object sender, RangeParameterChangedEventArgs rangeParameterChangedEventArgs)
