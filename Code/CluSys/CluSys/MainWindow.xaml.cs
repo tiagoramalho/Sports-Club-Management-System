@@ -51,6 +51,9 @@ namespace CluSys
             OpenAthletesList.ItemsSource = _openAthletes;  // empty on start
             ModalityList.ItemsSource = Modalities.LoadSQL(_cn);
             AthletesWithOpenEvaluations.ItemsSource = Athletes.AthletesWithOpenEvaluations(_cn);
+
+            // List of problems
+            ProblemsList.ItemsSource = new[] {"Problema 1", "Problema 2", "Problema 3"};
         }
 
         private bool OpenConnection()
@@ -161,6 +164,11 @@ namespace CluSys
 
                     return se != null && dr.LowerDate <= se.Date && se.Date <= dr.UpperDate;
                 };
+        }
+
+        private void BodyChartClick(object sender, MouseButtonEventArgs e)
+        {
+            Console.WriteLine($@"{e.GetPosition(BodyChart).X} {e.GetPosition(BodyChart).Y}");
         }
     }
 }
