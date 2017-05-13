@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CluSys.lib
 {
-    [Serializable()]
+    [Serializable]
     internal class Athlete
     {
         public string CC { get; set; }
@@ -62,12 +62,12 @@ namespace CluSys.lib
         public override int GetHashCode() => (CC != null ? StringComparer.OrdinalIgnoreCase.GetHashCode(CC) : 0);
     }
 
-    [Serializable()]
+    [Serializable]
     class AthleteWithBody : Athlete
     {
         public double Height { get; set; }
         public double Weight { get; set; }
-        public bool activeEvaluation { get; set; }
+        public bool ActiveEvaluation { get; set; }
 
         public AthleteWithBody(SqlConnection conn, Athlete ath)
         {
@@ -91,20 +91,20 @@ namespace CluSys.lib
             {
                 Weight = double.Parse(reader["Weightt"].ToString());
                 Height = double.Parse(reader["Height"].ToString());
-                activeEvaluation = reader["ClosingDATE"].ToString() == "";
+                ActiveEvaluation = reader["ClosingDATE"].ToString() == "";
             }
             else
             {
                 Weight = double.NaN;
                 Height = double.NaN;
-                activeEvaluation = false;
+                ActiveEvaluation = false;
             }
             reader.Close();
         }
     }
 
     [Serializable()]
-    class Athletes
+    internal class Athletes
     {
         public static ObservableCollection<Athlete> AthletesWithOpenEvaluations(SqlConnection conn)
         {

@@ -1,5 +1,7 @@
 using System;
+using System.ComponentModel;
 using System.Globalization;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using MahApps.Metro.Controls;
@@ -10,8 +12,8 @@ namespace CluSys.lib
     {
         public DateTime MinimumDate { get; set; } = DateTime.Now.AddYears(-1);
         public DateTime MaximumDate { get; set; } = DateTime.Now;
-        public DateTime LowerDate { get; set; } = DateTime.Now.AddYears(-1);
-        public DateTime UpperDate { get; set; } = DateTime.Now;
+        public DateTime LowerDate { get; private set; } = DateTime.Now.AddYears(-1);
+        public DateTime UpperDate { get; private set; } = DateTime.Now;
 
         public RangeValidationRule MinDateValidator { get; }
         public RangeValidationRule MaxDateValidator { get; }
@@ -33,8 +35,8 @@ namespace CluSys.lib
         public DateRangeSlider()
         {
             DateRangeToStringConverter = new DateRangeConverter(this);
-            MinDateValidator = new RangeValidationRule(this, checkMax:true);
-            MaxDateValidator = new RangeValidationRule(this, checkMin:true);
+            MinDateValidator = new RangeValidationRule(this, refersMinimum:true);
+            MaxDateValidator = new RangeValidationRule(this, refersMaximum:true);
         }
     }
 
@@ -73,28 +75,47 @@ namespace CluSys.lib
 
     public sealed class RangeValidationRule : ValidationRule
     {
-        private readonly bool _checkMin;
-        private readonly bool _checkMax;
+        private readonly bool _refersMinimum;
+        private readonly bool _refersMaximum;
         private readonly DateRangeSlider _dr;
 
-        public RangeValidationRule(DateRangeSlider dr, bool checkMin=false, bool checkMax=false)
+        public RangeValidationRule(DateRangeSlider dr, bool refersMaximum=false, bool refersMinimum=false)
         {
             _dr = dr;
-            _checkMin = checkMin;
-            _checkMax = checkMax;
+            _refersMinimum = refersMinimum;
+            _refersMaximum = refersMaximum;
         }
 
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
             DateTime time;
+            var updateMax = false;
+            var updateMin = false;
 
             if (!DateTime.TryParse((value ?? "").ToString(), CultureInfo.CurrentCulture, DateTimeStyles.AssumeLocal | DateTimeStyles.AllowWhiteSpaces, out time))
                 return new ValidationResult(false, "Formato inválido");
 
-            if(_checkMin && time.Date < _dr.MinimumDate)
-                return new ValidationResult(false, "Intervalo inválido");
-            else if(_checkMax && time.Date > _dr.MaximumDate)
-                return new ValidationResult(false, "Intervalo inválido");
+            if (_refersMaximum)
+            {
+                if (time.Date < _dr.MinimumDate)
+                    return new ValidationResult(false, "Intervalo inválido");
+                updateMax = true;
+            }
+
+            if (_refersMinimum)
+            {
+                if (time.Date > _dr.MaximumDate)
+                    return new ValidationResult(false, "Intervalo inválido");
+                updateMin = true;
+            }
+
+            if(updateMin) _dr.MinimumDate = time;
+            if(updateMax) _dr.MaximumDate = time;
+
+            // We should also notify of changes (to update filters), but for now...
+            _dr.LowerValue = _dr.LowerDateAsDouble;
+            _dr.UpperValue = _dr.UpperDateAsDouble;
+
             return ValidationResult.ValidResult;
         }
     }

@@ -18,11 +18,7 @@ namespace CluSys.lib
         public string AthleteCC { get; set; }
         public string PhysiotherapistCC { get; set; }
 
-        public int CountId
-        {
-            get => _container?.IndexOf(this) ?? Id;
-            set => _container?.Move(CountId, value);
-        }
+        public int CountId => _container?.IndexOf(this) + 1 ?? Id;
 
         private readonly ObservableCollection<MedicalEvaluation> _container;
 

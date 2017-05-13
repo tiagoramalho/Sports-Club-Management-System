@@ -26,10 +26,6 @@ using System.Windows.Markup;
 using MahApps.Metro.Controls;
 using MaterialDesignThemes.Wpf;
 
-namespace CluSys.lib
-{
-}
-
 namespace CluSys
 {
     public partial class MainWindow
@@ -86,6 +82,7 @@ namespace CluSys
 
         private void GoHome(object sender, RoutedEventArgs e)
         {
+            // Toogle visibility
             AthleteContent.Visibility = Visibility.Hidden;
             HomeContent.Visibility = Visibility.Visible;
         }
@@ -98,16 +95,24 @@ namespace CluSys
                 return;
 
             var athlete = new AthleteWithBody(_cn, item.Content as Athlete);
+
+            // Nothing to do if athlete already open
+            if(Equals(AthleteContent.DataContext, athlete))
+                return;
+
             AthleteContent.DataContext = athlete;
 
             if (!_openAthletes.Contains(athlete))
                 _openAthletes.Insert(0, athlete);
 
+            // Reset the athlete's content
+            ResetAthleteContent();
             // Get this athlete's evaluations
             EvaluationsList.ItemsSource = athlete.Evaluations(_cn);
             // Filter them based on date
-            FilterEvaluations(SliderRange, null);
+            FilterEvaluations(SliderRange);
 
+            // Toogle visibility
             HomeContent.Visibility = Visibility.Hidden;
             AthleteContent.Visibility = Visibility.Visible;
         }
@@ -125,9 +130,13 @@ namespace CluSys
             EvaluationsList.ItemsSource = null;
             SessionsList.ItemsSource = null;
             SessionsExpander.IsExpanded = false;
+
+            // Reset the slider's
+            //SliderRange.LowerValue = SliderRange.LowerDateAsDouble;
+            //SliderRange.UpperValue = SliderRange.UpperDateAsDouble;
         }
 
-        private void FilterEvaluations(object sender, RangeParameterChangedEventArgs rangeParameterChangedEventArgs)
+        private void FilterEvaluations(object sender, RangeParameterChangedEventArgs rangeParameterChangedEventArgs=null)
         {
             var dr = sender as DateRangeSlider;
 
@@ -141,7 +150,7 @@ namespace CluSys
                     var me = evaluation as MedicalEvaluation;
 
                     return me != null && (dr.LowerDate <= me.OpeningDate && me.OpeningDate <= dr.UpperDate
-                                          || dr.LowerDate <= me.ClosingDate && me.ClosingDate <= dr.UpperDate);
+                                          && (me.ClosingDate == null || dr.LowerDate <= me.ClosingDate && me.ClosingDate <= dr.UpperDate));
                 };
 
             var seView = (CollectionView) CollectionViewSource.GetDefaultView(SessionsList.ItemsSource);
