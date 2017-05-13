@@ -34,7 +34,7 @@ namespace CluSys.lib
         {
             var sessions = new ObservableCollection<EvaluationSession>();
 
-            SqlCommand cmd = new SqlCommand($"SELECT * FROM EvaluationSession WHERE Id={Id};", conn);
+            SqlCommand cmd = new SqlCommand($"SELECT * FROM EvaluationSession WHERE EvalId={Id};", conn);
             SqlDataReader reader = cmd.ExecuteReader();
 
             while (reader.Read())

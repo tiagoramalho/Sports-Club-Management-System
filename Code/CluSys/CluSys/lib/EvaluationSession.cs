@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -55,6 +56,33 @@ namespace CluSys.lib
             {
                 return (Id * 397) ^ EvalId;
             }
+        }
+
+        public static ObservableCollection<BocyChartMark> GetMarks(SqlConnection cn)
+        {
+            var bodyMarks = new ObservableCollection<BocyChartMark>();
+            SqlCommand cmd = new SqlCommand("SELECT * FROM BocyChartMark", cn);
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+                bodyMarks.Add(new BocyChartMark()
+                {
+                    ID = int.Parse(reader["ID"].ToString()),
+                    x = double.Parse(reader["x"].ToString()),
+                    y = double.Parse(reader["y"].ToString()),
+                    PainLevel = int.Parse(reader["PainLevel"].ToString()),
+                    Obs = reader["Obs"].ToString(),
+                    EvalId = int.Parse(reader["EvalId"].ToString()),
+                    SessionId = int.Parse(reader["SessionId"].ToString()),
+                    ViewId = int.Parse(reader["ViewId"].ToString()),
+                });
+            
+            cn.Close();
+            return bodyMarks;
+
+
+
+
         }
     }
 }

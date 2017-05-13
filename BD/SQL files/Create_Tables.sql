@@ -139,7 +139,7 @@ CREATE TABLE Annotation (
 
 CREATE TABLE BodyChartView (
   ID         INT     NOT NULL IDENTITY (1, 1),
-  ImageBody  VARCHAR NOT NULL,
+  ImageBody  VARCHAR(100) NOT NULL,
   OrderImage TINYINT NOT NULL,
   PRIMARY KEY (ID)
 );

@@ -81,6 +81,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="lib\BocyChartMark.cs" />
+    <Compile Include="lib\BodyChartView.cs" />
     <Compile Include="lib\DateRangeSlider.cs" />
     <Compile Include="lib\Athlete.cs" />
     <Compile Include="lib\EvaluationSession.cs" />
@@ -147,6 +149,12 @@
     <Resource Include="assets\img\35.jpg" />
     <Resource Include="assets\img\61.jpg" />
     <Resource Include="assets\img\7.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="assets\views\1.png" />
+    <Resource Include="assets\views\2.png" />
+    <Resource Include="assets\views\3.png" />
+    <Resource Include="assets\views\4.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -68,29 +68,39 @@ INSERT INTO Trains VALUES
   ('Futebol', 'Seniores', '123123', 1);
 
 INSERT INTO MedicalEvaluation VALUES
-  ('81.5', '1.85', NULL, '20170412', '20170509', NULL, '1247', '12123'),
-  ('82.5', '1.87', NULL, '20170511', NULL, NULL, '1247', '12123'),
+  ('81.5', '1.85', NULL, '20160518', '20160601', NULL, '1247', '12123'),
+  ('82.0', '1.85', NULL, '20160801', '20160901', NULL, '1247', '12123'),
+  ('82.5', '1.90', NULL, '20170511', NULL, NULL, '1247', '12123'),
   ('72.5', '1.70', NULL, '20170506', NULL, NULL, '1248', '12123'),
   ('50.5', '1.60', NULL, '20170411', '20170511', NULL, '1245', '12123'),
   ('82.5', '1.84', NULL, '20170521', NULL, NULL, '1241', '12123');
 
 INSERT INTO EvaluationSession VALUES
-  ('1', '20170422'),
-  ('1', '20170423'),
-  ('1', '20170424'),
-  ('2', '20170424'),
-  ('3', '20170422');
+  ('1', '20160518'),
+  ('1', '20160522'),
+  ('1', '20160526'),
+  ('1', '20160601'),
+  ('2', '20160801'),
+  ('2', '20160811'),
+  ('2', '20160821'),
+  ('2', '20160901'),
+  ('3', '20170511'),
+  ('3', '20170513');
 
 INSERT INTO MajorProblem VALUES
   ('Dores no ombro', '1', '1'),
   ('Clavícula deslocada', '1', '1'),
   ('Clavícula deslocada', '1', '2'),
   ('Clavícula com poucas alteraçoes', '1', '3'),
-  ('Pé partido', '2', '4');
+  ('Pé partido', '2', '5'),
+  ('Ligamentos rasgados', '2', '6'),
+  ('Pé com pouca mobilidade', '2', '7'),
+  ('Corrigir estabilidade', '2', '8');
 
-INSERT INTO TreatmentPlan VALUES
-  ('Repouso total', NULL, '2', '4', '5'),
-  ('Fazer gelo', 'Aliviar a dor no ombro', '1', '1', '1'),
-  ('Ligadura na zona do ombro e clavicula', NULL, '1', '1', '2');
 
+INSERT INTO BodyChartView VALUES
+	('/assets/views/1.png', '1'),
+	('/assets/views/2.png', '2'),
+	('/assets/views/3.png', '3'),
+	('/assets/views/4.png', '4');
 	

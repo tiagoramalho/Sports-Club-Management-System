@@ -2,6 +2,7 @@
 
 public class BodyChartView
 {
+    public int ID { get; set; }
     public String ImageBody { get; set; }
     public int OrderImage { get; set; }
 
