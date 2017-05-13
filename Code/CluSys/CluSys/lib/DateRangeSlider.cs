@@ -22,14 +22,30 @@ namespace CluSys.lib
 
         public double LowerDateAsDouble
         {
-            get => DateRangeConverter.ProportionalDate2Double(LowerDate, MinimumDate, MaximumDate, Minimum, Maximum);
-            set => LowerDate = DateRangeConverter.ProportionalDouble2Date(value, Minimum, Maximum, MinimumDate, MaximumDate);
+            get
+            {
+                return DateRangeConverter.ProportionalDate2Double(LowerDate, MinimumDate, MaximumDate, Minimum,
+                    Maximum);
+            }
+            set
+            {
+                LowerDate = DateRangeConverter.ProportionalDouble2Date(value, Minimum, Maximum, MinimumDate,
+                    MaximumDate);
+            }
         }
 
         public double UpperDateAsDouble
         {
-            get => DateRangeConverter.ProportionalDate2Double(UpperDate, MinimumDate, MaximumDate, Minimum, Maximum);
-            set => UpperDate = DateRangeConverter.ProportionalDouble2Date(value, Minimum, Maximum, MinimumDate, MaximumDate);
+            get
+            {
+                return DateRangeConverter.ProportionalDate2Double(UpperDate, MinimumDate, MaximumDate, Minimum,
+                    Maximum);
+            }
+            set
+            {
+                UpperDate = DateRangeConverter.ProportionalDouble2Date(value, Minimum, Maximum, MinimumDate,
+                    MaximumDate);
+            }
         }
 
         public DateRangeSlider()
@@ -44,11 +60,23 @@ namespace CluSys.lib
     {
         private readonly DateRangeSlider _drs;
 
-        public DateRangeConverter(DateRangeSlider drs) => _drs = drs;
+        public DateRangeConverter(DateRangeSlider drs)
+        {
+            _drs = drs;
+        }
 
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) => value == null ? null : ProportionalDouble2Date((double)value, _drs.Minimum, _drs.Maximum, _drs.MinimumDate, _drs.MaximumDate).ToString("D", new CultureInfo("pt-PT"));
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value == null
+                ? null
+                : ProportionalDouble2Date((double) value, _drs.Minimum, _drs.Maximum, _drs.MinimumDate,
+                    _drs.MaximumDate).ToString("D", new CultureInfo("pt-PT"));
+        }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotSupportedException();
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
 
         public static double ProportionalDate2Double(DateTime d, DateTime minDate, DateTime maxDate, double minDouble, double maxDouble)
         {

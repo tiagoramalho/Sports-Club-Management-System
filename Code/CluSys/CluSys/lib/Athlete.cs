@@ -49,7 +49,10 @@ namespace CluSys.lib
             return evaluations;
         }
 
-        private bool Equals(Athlete other) => string.Equals(CC, other.CC, StringComparison.OrdinalIgnoreCase);
+        private bool Equals(Athlete other)
+        {
+            return string.Equals(CC, other.CC, StringComparison.OrdinalIgnoreCase);
+        }
 
         public override bool Equals(object obj)
         {
@@ -59,7 +62,10 @@ namespace CluSys.lib
             return Equals((Athlete) obj);
         }
 
-        public override int GetHashCode() => (CC != null ? StringComparer.OrdinalIgnoreCase.GetHashCode(CC) : 0);
+        public override int GetHashCode()
+        {
+            return CC != null ? StringComparer.OrdinalIgnoreCase.GetHashCode(CC) : 0;
+        }
     }
 
     [Serializable]

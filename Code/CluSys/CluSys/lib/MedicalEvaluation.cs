@@ -18,11 +18,17 @@ namespace CluSys.lib
         public string AthleteCC { get; set; }
         public string PhysiotherapistCC { get; set; }
 
-        public int CountId => _container?.IndexOf(this) + 1 ?? Id;
+        public int CountId
+        {
+            get { return _container?.IndexOf(this) + 1 ?? Id; }
+        }
 
         private readonly ObservableCollection<MedicalEvaluation> _container;
 
-        public MedicalEvaluation(ObservableCollection<MedicalEvaluation> container = null) => _container = container;
+        public MedicalEvaluation(ObservableCollection<MedicalEvaluation> container = null)
+        {
+            _container = container;
+        }
 
         public ObservableCollection<EvaluationSession> Sessions(SqlConnection conn)
         {
@@ -44,7 +50,10 @@ namespace CluSys.lib
             return sessions;
         }
 
-        private bool Equals(MedicalEvaluation other) => Id == other.Id;
+        private bool Equals(MedicalEvaluation other)
+        {
+            return Id == other.Id;
+        }
 
         public override bool Equals(object obj)
         {
@@ -54,6 +63,9 @@ namespace CluSys.lib
             return Equals((MedicalEvaluation) obj);
         }
 
-        public override int GetHashCode() => Id;
+        public override int GetHashCode()
+        {
+            return Id;
+        }
     }
 }

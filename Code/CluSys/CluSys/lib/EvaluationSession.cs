@@ -36,7 +36,10 @@ namespace CluSys.lib
             }
         }
 
-        private bool Equals(EvaluationSession other) => Id == other.Id && EvalId == other.EvalId;
+        private bool Equals(EvaluationSession other)
+        {
+            return Id == other.Id && EvalId == other.EvalId;
+        }
 
         public override bool Equals(object obj)
         {
