@@ -91,4 +91,12 @@ namespace CluSys.lib
             return !(bool?) value;
         }
     }
+
+    public sealed class GreaterThanZeroValudationRule : ValidationRule
+    {
+        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

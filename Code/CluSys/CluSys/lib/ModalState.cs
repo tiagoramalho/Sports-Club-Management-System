@@ -39,5 +39,9 @@ namespace CluSys.lib
 
         // Observations
         public ObservableCollection<SessionObservation> Observations { get; set; } = new ObservableCollection<SessionObservation>();
+
+        // Others
+        public bool MedicalDischarge { get; set; } = false;
+        public DateTime? ExpectedRecoveryDate { get; set; }
     }
 }
