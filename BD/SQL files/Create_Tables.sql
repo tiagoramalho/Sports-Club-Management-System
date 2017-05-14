@@ -195,10 +195,10 @@ CREATE TABLE MajorProblem (
 CREATE TABLE TreatmentPlan (
   ID        INT NOT NULL IDENTITY (1, 1),
   Obs       VARCHAR(200),
-  objective VARCHAR(200),
+  Objective VARCHAR(200),
   EvalId    INT NOT NULL,
   SessionId INT NOT NULL,
-  ProbId    INT NOT NULL,
+  ProbId    INT ,
   PRIMARY KEY (ID),
   FOREIGN KEY (EvalId, SEssionId) REFERENCES EvaluationSession (EvalId, ID),
   FOREIGN KEY (ProbId) REFERENCES MajorProblem (ID)

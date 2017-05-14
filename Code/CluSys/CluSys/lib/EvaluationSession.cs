@@ -11,7 +11,7 @@ namespace CluSys.lib
     [Serializable]
     class EvaluationSession
     {
-        public int Id { get; set; }
+        public int Id { get; set; } = -1;
         public int EvalId { get; set; }
         public DateTime Date { get; set; }
 
@@ -56,6 +56,29 @@ namespace CluSys.lib
             {
                 return (Id * 397) ^ EvalId;
             }
+        }
+        private void submitEvaluationSession(SqlConnection cn, EvaluationSession ES)
+        {
+            
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "INSERT INTO EvaluationSession (EvalId, dateSession) " + "VALUES (@EvalId,, @dateSession)";
+            cmd.Parameters.AddWithValue("@EvalId", ES.EvalId);
+            cmd.Parameters.AddWithValue("@dateSession", ES.Date);
+            cmd.Connection = cn;
+
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to Insert Evaluation Session in database. \n ERROR MESSAGE: \n" + ex.Message);
+            }
+            finally
+            {
+                cn.Close();
+            }
+
         }
 
         public static ObservableCollection<BodyChartMark> GetMarks(SqlConnection cn)

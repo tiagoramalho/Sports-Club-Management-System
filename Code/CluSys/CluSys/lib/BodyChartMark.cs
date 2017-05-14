@@ -45,5 +45,28 @@ namespace CluSys.lib
                 return hash;
             }
         }
+
+        public void insertBodyChartMark(SqlConnection cn)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "INSERT INTO BodyChartMark (x, y, PainLevel, Obs, EvalId, SessionId, ViewId) " + "VALUES (@x, @y, @PainLevel, @Obs, @EvalId, @SessionId, @ViewId)";
+            cmd.Parameters.AddWithValue("@x", X);
+            cmd.Parameters.AddWithValue("@y", Y);
+            cmd.Parameters.AddWithValue("@PainLevel", PainLevel);
+            cmd.Parameters.AddWithValue("@Obs", Obs);
+            cmd.Parameters.AddWithValue("@EvalId", EvalId);
+            cmd.Parameters.AddWithValue("@SessionId", SessionId);
+            cmd.Parameters.AddWithValue("@ViewId", ViewId);
+            cmd.Connection = cn;
+
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to Insert BocyChartMark in database. \n ERROR MESSAGE: \n" + ex.Message);
+            }
+        }
     }
 }

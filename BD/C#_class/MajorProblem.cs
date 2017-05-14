@@ -3,7 +3,7 @@
 public class MajorProblem
 {
 
-   
+    public int ID { get; set; }
     public String Obs { get; set; }
     public int EvalId { get; set; }
     public int SessionId { get; set; }
