@@ -69,7 +69,7 @@ namespace CluSys.lib
                 {
                     reader.Read();
                     evalId = int.Parse(reader[0].ToString());
-                    // update evaluation
+                    UpdateEvaluation(cn, evalId);
                 }
             }
             finally
@@ -84,11 +84,11 @@ namespace CluSys.lib
                     AthleteCC = Patient.CC,
                     ClosingDate = null,
                     ExpectedRecovery = ExpectedRecoveryDate,
-                    Height = Height ?? 0,
+                    Height = Height ?? 0,  // this should be the last value recorded
                     OpeningDate = DateTime.Now,
                     PhysiotherapistCC = PhysiotherapistCC.ToString(),
                     Story = Story,
-                    Weightt = Weight ?? 0,
+                    Weightt = Weight ?? 0,  // same
                 };
                 eval.InsertMedicalEvaluation(cn);
                 cmd = new SqlCommand
@@ -110,76 +110,24 @@ namespace CluSys.lib
 
             return evalId;
         }
+
+        private void UpdateEvaluation(SqlConnection cn, int evalId)
+        {
+
+            var cmd = new SqlCommand
+            {
+                Connection = cn,
+                CommandText = $"UPDATE MedicalEvaluation SET Height={Height ?? 0}, Weightt={Weight ?? 0}, ExpectedRecovery={ExpectedRecoveryDate} WHERE ID={evalId}",
+            };
+
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to update evaluation's value in the database. \n ERROR MESSAGE: \n" + ex.Message);
+            }
+        }
     }
-        
-        public void updateHeight(SqlConnection cn)
-        {
-
-            SqlCommand cmd = new SqlCommand();
-            cmd.CommandText = "UPDATE MedicalEvaluation SET Height = @Height WHERE ID =" + ID;
-            cmd.Parameters.AddWithValue("@Height", Height);
-            cmd.Connection = cn;
-
-            try
-            {
-                cmd.ExecuteNonQuery();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to Update Height in database. \n ERROR MESSAGE: \n" + ex.Message);
-            }
-            finally
-            {
-                cn.Close();
-            }
-
-        }
-        public void updateWeight(SqlConnection cn)
-        {
-
-            SqlCommand cmd = new SqlCommand();
-            cmd.CommandText = "UPDATE MedicalEvaluation SET Weightt = @Weightt WHERE ID =" + ID;
-            cmd.Parameters.AddWithValue("@Weightt", Weight);
-            cmd.Connection = cn;
-
-            try
-            {
-                cmd.ExecuteNonQuery();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to Update Weightt in database. \n ERROR MESSAGE: \n" + ex.Message);
-            }
-            finally
-            {
-                cn.Close();
-            }
-
-        }
-        public void updateExpectedRecoveryDate(SqlConnection cn)
-        {
-
-            SqlCommand cmd = new SqlCommand();
-            cmd.CommandText = "UPDATE MedicalEvaluation SET ExpectedRecovery = @ExpectedRecovery WHERE ID =" + ID;
-            cmd.Parameters.AddWithValue("@ExpectedRecovery", ExpectedRecoveryDate);
-            cmd.Connection = cn;
-
-            try
-            {
-                cmd.ExecuteNonQuery();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to Update ExpectedRecovery in database. \n ERROR MESSAGE: \n" + ex.Message);
-            }
-            finally
-            {
-                cn.Close();
-            }
-
-        }
-
-
-    }
-    
 }
