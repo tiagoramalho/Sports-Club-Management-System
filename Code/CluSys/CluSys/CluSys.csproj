@@ -81,6 +81,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="lib\Annotation.cs" />
     <Compile Include="lib\BocyChartMark.cs" />
     <Compile Include="lib\BodyChartView.cs" />
     <Compile Include="lib\DateRangeSlider.cs" />

@@ -31,6 +31,7 @@ namespace CluSys
     public partial class MainWindow
     {
         private SqlConnection _cn;
+        private ModalState _modelState;
         private bool _withinMarkPopup = false;
         private readonly ObservableCollection<Athlete> _openAthletes;
 
@@ -38,6 +39,7 @@ namespace CluSys
         {
             // Init
             OpenConnection();
+            _modelState = new ModalState();
             _openAthletes = new ObservableCollection<Athlete>();
 
             InitializeComponent();
@@ -54,7 +56,7 @@ namespace CluSys
             AthletesWithOpenEvaluations.ItemsSource = Athletes.AthletesWithOpenEvaluations(_cn);
 
             // Modal
-            EvaluationModal.DataContext = new ModalState();
+            EvaluationModal.DataContext = _modelState;
         }
 
         private bool OpenConnection()
@@ -238,14 +240,8 @@ namespace CluSys
             NewProblemText.Text = string.Empty;
         }
 
-        private void BodyChartMarkPopup_OnMouseEnter(object sender, MouseEventArgs e)
-        {
-            _withinMarkPopup = true;
-        }
+        private void BodyChartMarkPopup_OnMouseEnter(object sender, MouseEventArgs e) { _withinMarkPopup = true; }
 
-        private void BodyChartMarkPopup_OnMouseLeave(object sender, MouseEventArgs e)
-        {
-            _withinMarkPopup = false;
-        }
+        private void BodyChartMarkPopup_OnMouseLeave(object sender, MouseEventArgs e) { _withinMarkPopup = false; }
     }
 }

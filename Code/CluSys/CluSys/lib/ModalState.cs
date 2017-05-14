@@ -28,7 +28,8 @@ namespace CluSys.lib
         }
         public int ActiveViewIdx { get; set; } = 0;
         public readonly ObservableCollection<BodyChartView> Views = BodyChartViews.GetViews();
-        public ObservableCollection<BodyChartMark> Marks = new ObservableCollection<BodyChartMark>();
+        public readonly ObservableCollection<BodyChartMark> Marks = new ObservableCollection<BodyChartMark>();
+        public ObservableCollection<Annotation> Annotations { get; set; } = lib.Annotations.GetAnnotations();
 
         // Problems
         public ObservableCollection<string> Problems { get; set; } = new ObservableCollection<string>();
