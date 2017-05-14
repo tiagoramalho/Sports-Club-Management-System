@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Windows.Interactivity;
+using System.Data.SqlClient;
 
 namespace CluSys.lib
 {
@@ -46,9 +46,9 @@ namespace CluSys.lib
             }
         }
 
-        public void insertBodyChartMark(SqlConnection cn)
+        public void InsertBodyChartMark(SqlConnection cn)
         {
-            SqlCommand cmd = new SqlCommand();
+            var cmd = new SqlCommand();
             cmd.CommandText = "INSERT INTO BodyChartMark (x, y, PainLevel, Obs, EvalId, SessionId, ViewId) " + "VALUES (@x, @y, @PainLevel, @Obs, @EvalId, @SessionId, @ViewId)";
             cmd.Parameters.AddWithValue("@x", X);
             cmd.Parameters.AddWithValue("@y", Y);
