@@ -96,7 +96,21 @@ namespace CluSys.lib
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            throw new NotImplementedException();
+            double v;
+
+            if(value == null || value.ToString() == "")
+                return ValidationResult.ValidResult;
+
+            try
+            {
+                v = double.Parse(value.ToString());
+            }
+            catch (Exception)
+            {
+                return new ValidationResult(false, "Imposível interpretar.");
+            }
+
+            return v <= 0 ? new ValidationResult(false, "Valor deve positivo.") : ValidationResult.ValidResult;
         }
     }
 }

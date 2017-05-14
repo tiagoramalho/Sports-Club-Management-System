@@ -68,19 +68,19 @@ namespace CluSys.lib
             return Id;
         }
 
-        private void submitMedicalEvaluation(SqlConnection cn, MedicalEvaluation ME)
+        public void InsertMedicalEvaluation(SqlConnection cn)
         {
            
             SqlCommand cmd = new SqlCommand();
             cmd.CommandText = "INSERT INTO MedicalEvaluation (Weightt, Height, Story, OpeningDate, ClosingDate, ExpectedRecovery, AthleteCC, PhysiotherapistCC) " + "VALUES (@Weightt, @Height, @Story, @OpeningDate, @ClosingDate, @ExpectedRecovery, @AthleteCC, @PhysiotherapistCC)";
-            cmd.Parameters.AddWithValue("@Weightt", ME.Weightt);
-            cmd.Parameters.AddWithValue("@Height", ME.Height);
-            cmd.Parameters.AddWithValue("@Story", ME.Story);
-            cmd.Parameters.AddWithValue("@OpeningDate", ME.OpeningDate);
-            cmd.Parameters.AddWithValue("@ClosingDATE", ME.ClosingDate);
-            cmd.Parameters.AddWithValue("@ExpectedRecovery", ME.ExpectedRecovery);
-            cmd.Parameters.AddWithValue("@AthleteCC", ME.AthleteCC);
-            cmd.Parameters.AddWithValue("@PhysiotherapistCC", ME.PhysiotherapistCC);
+            cmd.Parameters.AddWithValue("@Weightt", Weightt);
+            cmd.Parameters.AddWithValue("@Height", Height);
+            cmd.Parameters.AddWithValue("@Story", Story);
+            cmd.Parameters.AddWithValue("@OpeningDate", OpeningDate);
+            cmd.Parameters.AddWithValue("@ClosingDATE", ClosingDate);
+            cmd.Parameters.AddWithValue("@ExpectedRecovery", ExpectedRecovery);
+            cmd.Parameters.AddWithValue("@AthleteCC", AthleteCC);
+            cmd.Parameters.AddWithValue("@PhysiotherapistCC", PhysiotherapistCC);
             cmd.Connection = cn;
 
             try
@@ -90,10 +90,6 @@ namespace CluSys.lib
             catch (Exception ex)
             {
                 throw new Exception("Failed to Insert Medical Evaluation in database. \n ERROR MESSAGE: \n" + ex.Message);
-            }
-            finally
-            {
-                cn.Close();
             }
 
         }

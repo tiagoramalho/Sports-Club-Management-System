@@ -343,16 +343,33 @@
 
         <materialDesign:DialogHost.DialogContent>
             <ScrollViewer x:Name="EvaluationModal" Width="480" Height="720" VerticalScrollBarVisibility="Auto"
+                          Background="{DynamicResource MaterialDesignPaper}"
                           d:DataContext="{d:DesignInstance lib:ModalState}">
                 <StackPanel Margin="24" HorizontalAlignment="Stretch">
                     <TextBlock Margin="16" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" Text="Dados da Avaliação Clínica" />
 
                     <DockPanel Margin="16" VerticalAlignment="Center">
                         <materialDesign:PackIcon Margin="4 0 4 0" Kind="Weight" Foreground="{Binding ElementName=WeightBox, Path=BorderBrush}" />
-                        <TextBox x:Name="WeightBox" materialDesign:HintAssist.Hint="Peso (kg)" Text="{Binding Path=Weight}" />
+                        <TextBox x:Name="WeightBox" materialDesign:HintAssist.Hint="Peso (kg)">
+                            <TextBox.Text>
+                                <Binding Path="Weight" UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <lib:GreaterThanZeroValudationRule ValidatesOnTargetUpdated="True" />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
 
                         <materialDesign:PackIcon Margin="12 0 4 0" Kind="Ruler" Foreground="{Binding ElementName=HeightBox, Path=BorderBrush}" />
-                        <TextBox x:Name="HeightBox" materialDesign:HintAssist.Hint="Altura (m)" Text="{Binding Path=Height}" />
+                        <TextBox x:Name="HeightBox" materialDesign:HintAssist.Hint="Altura (m)">
+                            <TextBox.Text>
+                                <Binding Path="Height" UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <lib:GreaterThanZeroValudationRule ValidatesOnTargetUpdated="True" />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
 
                         <DatePicker Width="100" DockPanel.Dock="Right" Margin="12 0 4 0" SelectedDate="{Binding Path=Date}"  
                                     HorizontalAlignment="Right"
@@ -600,7 +617,7 @@
 
                     </Grid>
 
-                    <Button Margin="16 16 16 0" HorizontalAlignment="Right" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="Adicionar sessão">Guardar</Button>
+                    <Button Margin="16 16 16 0" Click="SaveSession" HorizontalAlignment="Right" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="Adicionar sessão">Guardar</Button>
                 </StackPanel>
             </ScrollViewer>
         </materialDesign:DialogHost.DialogContent>

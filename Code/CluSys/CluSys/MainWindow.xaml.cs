@@ -367,5 +367,10 @@ namespace CluSys
 
             ms.Observations.Remove(obs);
         }
+
+        private void SaveSession(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
