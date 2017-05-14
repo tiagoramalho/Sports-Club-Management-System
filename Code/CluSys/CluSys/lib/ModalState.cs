@@ -33,5 +33,11 @@ namespace CluSys.lib
 
         // Problems
         public ObservableCollection<MajorProblem> Problems { get; set; } = new ObservableCollection<MajorProblem>();
+
+        // Treatments
+        public ObservableCollection<TreatmentPlan> Treatments { get; set; } = new ObservableCollection<TreatmentPlan>();
+
+        // Observations
+        public ObservableCollection<SessionObservation> Observations { get; set; } = new ObservableCollection<SessionObservation>();
     }
 }

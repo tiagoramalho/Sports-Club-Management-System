@@ -164,6 +164,10 @@ namespace CluSys
                 };
         }
 
+        /******************************************************************************************************
+         * Body Chart
+         *****************************************************************************************************/
+
         private void BodyChartClick(object sender, MouseButtonEventArgs e)
         {
             if (_withinMarkPopup)
@@ -194,53 +198,6 @@ namespace CluSys
 
             BodyChartMarkPopup.DataContext = mark;
             BodyChartMarkPopup.IsPopupOpen = true;  // open the popup
-        }
-
-        private void LeftView(object sender, RoutedEventArgs e)
-        {
-            var ms = (ModalState) EvaluationModal.DataContext;
-            var newIdx = ms.ActiveViewIdx + 1;  // or overflow
-
-            RotateView(ms, newIdx >= ms.Views.Count ? 0 : newIdx);
-        }
-
-        private void RightView(object sender, RoutedEventArgs e)
-        {
-            var ms = (ModalState) EvaluationModal.DataContext;
-            var newIdx = ms.ActiveViewIdx - 1;  // or "underflow"
-
-            RotateView(ms, newIdx < 0 ? ms.Views.Count - 1 : newIdx);
-        }
-
-        private void RotateView(ModalState ms, int newIdx)
-        {
-            var bc = BodyChartCanvas;
-
-            ms.ActiveViewIdx = newIdx;
-            var newActiveView = ms.ActiveView;
-
-            BodyChartMarkPopup.IsPopupOpen = false;
-
-            // Clear the canvas
-            bc.Children.RemoveRange(1, int.MaxValue);
-            // Add values (if they exist)
-            foreach (var m in ms.Marks)
-                if (m.ViewId == newActiveView.Id)
-                    ClusysUtils.DrawPoint(new Point(m.X, m.Y), bc, Brushes.Black, BodyChartClick);
-
-            // Make it visible now
-            BodyChart.DataContext = newActiveView;
-        }
-
-        private void AddProblem(object sender, RoutedEventArgs e)
-        {
-            var ms = (ModalState) EvaluationModal.DataContext;
-            var prob = new MajorProblem(ms.Problems) { Obs = NewProblemText.Text };
-
-            if (ms.Problems.Contains(prob))
-                return;
-
-            ms.Problems.Add(prob); NewProblemText.Text = string.Empty;
         }
 
         private void BodyChartMarkPopup_OnMouseEnter(object sender, MouseEventArgs e) { _withinMarkPopup = true; }
@@ -279,21 +236,136 @@ namespace CluSys
 
         private void SaveMark(object sender, RoutedEventArgs e) { BodyChartMarkPopup.IsPopupOpen = false;  /* That's it. */ }
 
+        private void LeftView(object sender, RoutedEventArgs e)
+        {
+            var ms = (ModalState) EvaluationModal.DataContext;
+            var newIdx = ms.ActiveViewIdx + 1;  // or overflow
+
+            RotateView(ms, newIdx >= ms.Views.Count ? 0 : newIdx);
+        }
+
+        private void RightView(object sender, RoutedEventArgs e)
+        {
+            var ms = (ModalState) EvaluationModal.DataContext;
+            var newIdx = ms.ActiveViewIdx - 1;  // or "underflow"
+
+            RotateView(ms, newIdx < 0 ? ms.Views.Count - 1 : newIdx);
+        }
+
+        private void RotateView(ModalState ms, int newIdx)
+        {
+            var bc = BodyChartCanvas;
+
+            ms.ActiveViewIdx = newIdx;
+            var newActiveView = ms.ActiveView;
+
+            BodyChartMarkPopup.IsPopupOpen = false;
+
+            // Clear the canvas
+            bc.Children.RemoveRange(1, int.MaxValue);
+            // Add values (if they exist)
+            foreach (var m in ms.Marks)
+                if (m.ViewId == newActiveView.Id)
+                    ClusysUtils.DrawPoint(new Point(m.X, m.Y), bc, Brushes.Black, BodyChartClick);
+
+            // Make it visible now
+            BodyChart.DataContext = newActiveView;
+        }
+
+        /******************************************************************************************************
+         * Problems
+         *****************************************************************************************************/
+
+        private void AddProblem(object sender, RoutedEventArgs e)
+        {
+            var ms = (ModalState) EvaluationModal.DataContext;
+            var prob = new MajorProblem(ms.Problems) { Obs = NewProblemText.Text };
+
+            if (ms.Problems.Contains(prob))
+                return;
+
+            ms.Problems.Add(prob); NewProblemText.Text = string.Empty;
+        }
+
         private void DeleteProblem(object sender, RoutedEventArgs e)
         {
-            var probText = ((sender as Control)?.Parent?.GetChildObjects()?.ElementAtOrDefault(5) as TextBlock)?.Text;
+            var prob = (sender as Control)?.DataContext as MajorProblem;
 
-            if (probText == null)
+            if (prob == null)
                 return;
 
             var ms = (ModalState) EvaluationModal.DataContext;
-            var prob = new MajorProblem { Obs = probText };
 
             ms.Problems.Remove(prob);
 
-            // Forcefully reload the list
+            // Forcefully reload the ProblemsList
             ProblemsList.ItemsSource = null;
             ProblemsList.ItemsSource = ms.Problems;
+
+            // Forcefully reload the TreatmentsList
+            TreatmentsList.ItemsSource = null;
+            TreatmentsList.ItemsSource = ms.Treatments;
+        }
+
+        /******************************************************************************************************
+         * Treatments
+         *****************************************************************************************************/
+
+        private void AddTreatment(object sender, RoutedEventArgs e)
+        {
+            var ms = (ModalState) EvaluationModal.DataContext;
+            var problem = NewTreatmentRefProblem.SelectionBoxItem as MajorProblem;
+
+            var treatment = new TreatmentPlan { Description = NewTreatmentDescription.Text, Objective = NewTreatmentObjective.Text, RefProblem = problem};
+
+            // Call the value checker...
+
+            if (ms.Treatments.Contains(treatment))
+                return;
+
+            ms.Treatments.Add(treatment);
+            NewTreatmentDescription.Text = string.Empty;
+            NewTreatmentObjective.Text = string.Empty;
+            NewTreatmentRefProblem.SelectedIndex = -1;
+        }
+
+        private void DeleteTreatment(object sender, RoutedEventArgs e)
+        {
+            var treatment = (sender as Control)?.DataContext as TreatmentPlan;
+
+            if(treatment == null)
+                return;
+
+            var ms = (ModalState) EvaluationModal.DataContext;
+
+            ms.Treatments.Remove(treatment);
+        }
+
+        /******************************************************************************************************
+         * Treatments
+         *****************************************************************************************************/
+
+        private void AddObservation(object sender, RoutedEventArgs e)
+        {
+            var ms = (ModalState) EvaluationModal.DataContext;
+            var obs = new SessionObservation { Description = NewObservationText.Text };
+
+            if (ms.Observations.Contains(obs))
+                return;
+
+            ms.Observations.Add(obs); NewObservationText.Text = string.Empty;
+        }
+
+        private void DeleteObservation(object sender, RoutedEventArgs e)
+        {
+            var obs = (sender as Control)?.DataContext as SessionObservation;
+
+            if(obs == null)
+                return;
+
+            var ms = (ModalState) EvaluationModal.DataContext;
+
+            ms.Observations.Remove(obs);
         }
     }
 }

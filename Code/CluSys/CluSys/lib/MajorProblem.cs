@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Data.SqlClient;
+using System.Globalization;
+using System.Linq;
+using System.Windows.Data;
 
 namespace CluSys.lib
 {
-    class MajorProblem
+    internal class MajorProblem
     {
 
         public int Id { get; set; } = -1;

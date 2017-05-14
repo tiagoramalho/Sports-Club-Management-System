@@ -92,6 +92,7 @@
     <Compile Include="lib\MedicalEvaluation.cs" />
     <Compile Include="lib\Modality.cs" />
     <Compile Include="lib\ModalState.cs" />
+    <Compile Include="lib\SessionObservation.cs" />
     <Compile Include="lib\TreatmentPlan.cs" />
     <Compile Include="lib\Utils.cs" />
     <Compile Include="MainWindow.xaml.cs">

@@ -35,6 +35,7 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <lib:ModalityDotGetAthletesConverter x:Key="ModalityDotGetAthletesConverter" />
         <lib:InvertBoolConverter x:Key="InvertBoolConverter" />
+        <lib:RefProblemConverter x:Key="RefProblemConverter" />
     </Window.Resources>
 
     <materialDesign:DialogHost>
@@ -440,7 +441,7 @@
                                                 </Grid.RowDefinitions>
                                                 <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Path=CountId, StringFormat={}Problema {0}}" FontWeight="Bold" />
                                                 <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding Path=Obs}" />
-                                                <Button Click="DeleteProblem" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Style="{DynamicResource MaterialDesignToolButton}"
+                                                <Button DataContext="{Binding}" Click="DeleteProblem" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Style="{DynamicResource MaterialDesignToolButton}"
                                                         Margin="8" HorizontalAlignment="Center" ToolTip="Apagar problema">
                                                     <materialDesign:PackIcon Kind="MinusCircle" />
                                                 </Button>
@@ -455,46 +456,100 @@
                                      SpellCheck.IsEnabled="True"
                                      VerticalScrollBarVisibility="Auto"
                                      materialDesign:HintAssist.Hint="Novo problema" />
-                            <Button Margin="216 4 16 8" Click="AddProblem" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="Adicionar novo problema">Adicionar</Button>
+                            <Button Margin="16 4 16 8" HorizontalAlignment="Right" Click="AddProblem" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="Adicionar novo problema">Adicionar</Button>
                         </StackPanel>
                     </GroupBox>
 
                     <GroupBox Header="Tratamentos" Margin="16">
                         <StackPanel>
-                            <ItemsControl Margin="16" x:Name="TreatmentsList">
+                            <ItemsControl ItemsSource="{Binding Path=Treatments}" Margin="16" x:Name="TreatmentsList">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Border Padding="8" BorderThickness="0 0 0 1" BorderBrush="{DynamicResource MaterialDesignDivider}">
-                                            <TextBlock FontWeight="Bold" Text="{Binding}" />
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Grid.Row="0" FontWeight="DemiBold" Grid.Column="0" Text="{Binding Path=Description}" />
+                                                <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding Path=Objective}" />
+                                                <TextBlock Grid.Row="2" Grid.Column="0" Text="{Binding Path=RefProblem, Converter={StaticResource RefProblemConverter}}" />
+                                                <Button DataContext="{Binding}" Click="DeleteTreatment" Grid.Row="0" Grid.Column="1" Grid.RowSpan="3" Style="{DynamicResource MaterialDesignToolButton}" Margin="8" HorizontalAlignment="Center" ToolTip="Apagar tratamento">
+                                                    <materialDesign:PackIcon Kind="MinusCircle" />
+                                                </Button>
+                                            </Grid>
                                         </Border>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                             <TextBox TextWrapping="Wrap" Height="40" VerticalAlignment="Stretch" Margin="16 4 16 0"
+                                     x:Name="NewTreatmentDescription"
                                      AcceptsReturn="True"                 
                                      SpellCheck.IsEnabled="True"
                                      VerticalScrollBarVisibility="Auto"
                                      materialDesign:HintAssist.Hint="Descrição" />
                             <TextBox TextWrapping="Wrap" Height="40" VerticalAlignment="Stretch" Margin="16 4 16 0"
+                                     x:Name="NewTreatmentObjective"
                                      AcceptsReturn="True"                 
                                      SpellCheck.IsEnabled="True"
                                      VerticalScrollBarVisibility="Auto"
                                      materialDesign:HintAssist.Hint="Objetivo" />
-                            <StackPanel Margin="16 4 16 8" VerticalAlignment="Center" Orientation="Horizontal">
-                                <ComboBox Width="100" materialDesign:HintAssist.Hint="(problema)" 
+                            <DockPanel Margin="16 4 16 8" VerticalAlignment="Center">
+                                <ComboBox DockPanel.Dock="Left" Width="100" materialDesign:HintAssist.Hint="Problema" 
+                                          x:Name="NewTreatmentRefProblem"
+                                          ItemsSource="{Binding Path=Problems}"
                                           Style="{DynamicResource MaterialDesignFloatingHintComboBox}">
                                     <ComboBox.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <VirtualizingStackPanel />
                                         </ItemsPanelTemplate>
                                     </ComboBox.ItemsPanel>
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=CountId}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
                                 </ComboBox>
-                                <Button Margin="100 16 0 0" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="Adicionar tratamento">Adicionar</Button>
-                            </StackPanel>
+                                <Button DockPanel.Dock="Right" HorizontalAlignment="Right" Margin="0 16 0 0" Click="AddTreatment" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="Adicionar tratamento">Adicionar</Button>
+                            </DockPanel>
                         </StackPanel>
                     </GroupBox>
 
                     <GroupBox Header="Cuidados a ter" Margin="16">
+                        <StackPanel>
+                            <ItemsControl x:Name="ObservationsList" Margin="16" ItemsSource="{Binding Path=Observations}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Padding="8" BorderThickness="0 0 0 1" BorderBrush="{DynamicResource MaterialDesignDivider}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+
+                                                <TextBlock VerticalAlignment="Center" Grid.Column="0" Text="{Binding Path=Description}" />
+                                                <Button DataContext="{Binding}" VerticalAlignment="Center" Click="DeleteObservation" Style="{DynamicResource MaterialDesignToolButton}"
+                                                        Margin="8" HorizontalAlignment="Center" Grid.Column="1" ToolTip="Apagar observação">
+                                                    <materialDesign:PackIcon Kind="MinusCircle" />
+                                                </Button>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <TextBox TextWrapping="Wrap" Height="40" VerticalAlignment="Stretch" Margin="16"
+                                     x:Name="NewObservationText"
+                                     AcceptsReturn="True"                 
+                                     SpellCheck.IsEnabled="True"
+                                     VerticalScrollBarVisibility="Auto"
+                                     materialDesign:HintAssist.Hint="Novo problema" />
+                            <Button Margin="16 4 16 8" HorizontalAlignment="Right" Click="AddObservation" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="Adicionar nova observação">Adicionar</Button>
+                        </StackPanel>
                     </GroupBox>
 
                     <Grid>
