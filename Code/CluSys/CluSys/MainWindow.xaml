@@ -368,10 +368,10 @@
                     
                     <GroupBox Header="Body chart" Margin="16">
                         <DockPanel LastChildFill="True">
-                            <Button DockPanel.Dock="Left" Click="LeftView" Style="{DynamicResource MaterialDesignToolButton}" materialDesign:RippleAssist.IsDisabled="True">
+                            <Button DockPanel.Dock="Left" PreviewMouseUp="LeftView" Style="{DynamicResource MaterialDesignToolButton}" materialDesign:RippleAssist.IsDisabled="True">
                                 <materialDesign:PackIcon Kind="ArrowLeft"  />
                             </Button>
-                            <Button DockPanel.Dock="Right" Click="RightView" Style="{DynamicResource MaterialDesignToolButton}" materialDesign:RippleAssist.IsDisabled="True">
+                            <Button DockPanel.Dock="Right" PreviewMouseUp="RightView" Style="{DynamicResource MaterialDesignToolButton}" materialDesign:RippleAssist.IsDisabled="True">
                                 <materialDesign:PackIcon Kind="ArrowRight" />
                             </Button>
                             <materialDesign:PopupBox x:Name="BodyChartMarkPopup" DockPanel.Dock="Top" Visibility="Hidden" StaysOpen="True" HorizontalAlignment="Right"
@@ -386,7 +386,7 @@
                                         </ItemsControl.ItemTemplate>
                                     </ListBox>
                                     <TextBox Margin="8" TextWrapping="Wrap" VerticalAlignment="Stretch"
-                                             Width="280" Height="80"
+                                             Width="280" Height="65"
                                              AcceptsReturn="True"                 
                                              Text="{Binding Path=Obs}"
                                              VerticalScrollBarVisibility="Auto"
@@ -402,6 +402,20 @@
                                             </DataTemplate>
                                         </materialDesign:RatingBar.ValueItemTemplate>
                                     </materialDesign:RatingBar>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <Button Click="DeleteMark" Margin="8 8 4 8"  Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="MaterialDesignFlatButton">
+                                            <StackPanel Orientation="Horizontal">
+                                                <materialDesign:PackIcon Margin="0 0 8 0" Kind="Delete" />
+                                                <TextBlock Text="Apagar" />
+                                            </StackPanel>
+                                        </Button>
+                                        <Button Click="SaveMark" Margin="4 8 8 8" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="MaterialDesignFlatButton">
+                                            <StackPanel Orientation="Horizontal">
+                                                <materialDesign:PackIcon Margin="0 0 8 0" Kind="ContentSave" />
+                                                <TextBlock Text="Guardar" />
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
                                 </StackPanel>
                             </materialDesign:PopupBox>
                             <Canvas x:Name="BodyChartCanvas" Width="300" Height="600" Margin="8 0 8 0">

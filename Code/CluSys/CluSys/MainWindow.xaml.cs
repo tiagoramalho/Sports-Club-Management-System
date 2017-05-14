@@ -31,7 +31,6 @@ namespace CluSys
     public partial class MainWindow
     {
         private SqlConnection _cn;
-        private ModalState _modelState;
         private bool _withinMarkPopup = false;
         private readonly ObservableCollection<Athlete> _openAthletes;
 
@@ -39,7 +38,6 @@ namespace CluSys
         {
             // Init
             OpenConnection();
-            _modelState = new ModalState();
             _openAthletes = new ObservableCollection<Athlete>();
 
             InitializeComponent();
@@ -56,7 +54,8 @@ namespace CluSys
             AthletesWithOpenEvaluations.ItemsSource = Athletes.AthletesWithOpenEvaluations(_cn);
 
             // Modal
-            EvaluationModal.DataContext = _modelState;
+            EvaluationModal.DataContext = new ModalState();
+            EvaluationModal.PreviewMouseUp += (sender, args) => { if (!_withinMarkPopup) BodyChartMarkPopup.IsPopupOpen = false; };
         }
 
         private bool OpenConnection()
@@ -220,6 +219,8 @@ namespace CluSys
             ms.ActiveViewIdx = newIdx;
             var newActiveView = ms.ActiveView;
 
+            BodyChartMarkPopup.IsPopupOpen = false;
+
             // Clear the canvas
             bc.Children.RemoveRange(1, int.MaxValue);
             // Add values (if they exist)
@@ -254,5 +255,24 @@ namespace CluSys
             foreach (var selectedItem in lb.SelectedItems)
                 mark.Annotations.Add(selectedItem as Annotation);
         }
+
+        private void DeleteMark(object sender, RoutedEventArgs e)
+        {
+            var bc = BodyChartCanvas;
+            var ms = (ModalState) EvaluationModal.DataContext;
+            var mark = BodyChartMarkPopup.DataContext as BodyChartMark;
+
+            if (ms == null || mark == null)
+                return;
+
+            BodyChartMarkPopup.IsPopupOpen = false;
+            BodyChartMarkPopup.DataContext = null;
+
+            var ellipse = bc.Children.OfType<Ellipse>().FirstOrDefault(point => Math.Abs((double)point.GetValue(Canvas.LeftProperty) - mark.X) < double.Epsilon && Math.Abs((double)point.GetValue(Canvas.TopProperty) - mark.Y) < double.Epsilon);
+            bc.Children.Remove(ellipse);
+            ms.Marks.Remove(mark);
+        }
+
+        private void SaveMark(object sender, RoutedEventArgs e) { BodyChartMarkPopup.IsPopupOpen = false;  /* That's it. */ }
     }
 }
