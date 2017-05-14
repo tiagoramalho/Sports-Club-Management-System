@@ -32,22 +32,6 @@ namespace CluSys.lib
         public ObservableCollection<Annotation> Annotations { get; set; } = lib.Annotations.GetAnnotations();
 
         // Problems
-        public ObservableCollection<string> Problems { get; set; } = new ObservableCollection<string>();
-    }
-
-    public sealed class ProblemToIndexConverter : IMultiValueConverter
-    {
-        object IMultiValueConverter.Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
-        {
-            var text = values[0] as string;
-            var se = ClusysUtils.FindByType<ScrollViewer>((Visual) values[1]).DataContext as ModalState;
-
-            return se?.Problems.IndexOf(text).ToString() ?? "";
-        }
-
-        object[] IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
+        public ObservableCollection<MajorProblem> Problems { get; set; } = new ObservableCollection<MajorProblem>();
     }
 }

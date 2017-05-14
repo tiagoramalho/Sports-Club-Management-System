@@ -235,8 +235,12 @@ namespace CluSys
         private void AddProblem(object sender, RoutedEventArgs e)
         {
             var ms = (ModalState) EvaluationModal.DataContext;
-            ms.Problems.Add(NewProblemText.Text);
-            NewProblemText.Text = string.Empty;
+            var prob = new MajorProblem(ms.Problems) { Obs = NewProblemText.Text };
+
+            if (ms.Problems.Contains(prob))
+                return;
+
+            ms.Problems.Add(prob); NewProblemText.Text = string.Empty;
         }
 
         private void BodyChartMarkPopup_OnMouseEnter(object sender, MouseEventArgs e) { _withinMarkPopup = true; }
@@ -274,5 +278,22 @@ namespace CluSys
         }
 
         private void SaveMark(object sender, RoutedEventArgs e) { BodyChartMarkPopup.IsPopupOpen = false;  /* That's it. */ }
+
+        private void DeleteProblem(object sender, RoutedEventArgs e)
+        {
+            var probText = ((sender as Control)?.Parent?.GetChildObjects()?.ElementAtOrDefault(5) as TextBlock)?.Text;
+
+            if (probText == null)
+                return;
+
+            var ms = (ModalState) EvaluationModal.DataContext;
+            var prob = new MajorProblem { Obs = probText };
+
+            ms.Problems.Remove(prob);
+
+            // Forcefully reload the list
+            ProblemsList.ItemsSource = null;
+            ProblemsList.ItemsSource = ms.Problems;
+        }
     }
 }

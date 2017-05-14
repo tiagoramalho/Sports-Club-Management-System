@@ -35,7 +35,6 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <lib:ModalityDotGetAthletesConverter x:Key="ModalityDotGetAthletesConverter" />
         <lib:InvertBoolConverter x:Key="InvertBoolConverter" />
-        <lib:ProblemToIndexConverter x:Key="ProblemToIndexConverter" />
     </Window.Resources>
 
     <materialDesign:DialogHost>
@@ -426,7 +425,7 @@
 
                     <GroupBox Header="Problemas" Margin="16">
                         <StackPanel>
-                            <ItemsControl Margin="16" ItemsSource="{Binding Path=Problems}">
+                            <ItemsControl x:Name="ProblemsList" Margin="16" ItemsSource="{Binding Path=Problems}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Border Padding="8" BorderThickness="0 0 0 1" BorderBrush="{DynamicResource MaterialDesignDivider}">
@@ -439,18 +438,9 @@
                                                     <RowDefinition Height="Auto" />
                                                     <RowDefinition Height="Auto" />
                                                 </Grid.RowDefinitions>
-                                                <TextBlock Grid.Row="0" Grid.Column="0" FontWeight="Bold">
-                                                    <TextBlock.Text>
-                                                        <MultiBinding Converter="{StaticResource ProblemToIndexConverter}" StringFormat="{}Problema {0}">
-                                                            <MultiBinding.Bindings>
-                                                                <Binding />
-                                                                <Binding RelativeSource="{RelativeSource Self}"/>
-                                                            </MultiBinding.Bindings>
-                                                        </MultiBinding>
-                                                    </TextBlock.Text>
-                                                </TextBlock>
-                                                <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding}" />
-                                                <Button Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Style="{DynamicResource MaterialDesignToolButton}"
+                                                <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Path=CountId, StringFormat={}Problema {0}}" FontWeight="Bold" />
+                                                <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding Path=Obs}" />
+                                                <Button Click="DeleteProblem" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Style="{DynamicResource MaterialDesignToolButton}"
                                                         Margin="8" HorizontalAlignment="Center" ToolTip="Apagar problema">
                                                     <materialDesign:PackIcon Kind="MinusCircle" />
                                                 </Button>
