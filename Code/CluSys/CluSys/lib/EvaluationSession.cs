@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CluSys.lib
 {
-    [Serializable()]
+    [Serializable]
     class EvaluationSession
     {
         public int Id { get; set; }
@@ -58,18 +58,18 @@ namespace CluSys.lib
             }
         }
 
-        public static ObservableCollection<BocyChartMark> GetMarks(SqlConnection cn)
+        public static ObservableCollection<BodyChartMark> GetMarks(SqlConnection cn)
         {
-            var bodyMarks = new ObservableCollection<BocyChartMark>();
+            var bodyMarks = new ObservableCollection<BodyChartMark>();
             SqlCommand cmd = new SqlCommand("SELECT * FROM BocyChartMark", cn);
             SqlDataReader reader = cmd.ExecuteReader();
 
             while (reader.Read())
-                bodyMarks.Add(new BocyChartMark()
+                bodyMarks.Add(new BodyChartMark
                 {
-                    ID = int.Parse(reader["ID"].ToString()),
-                    x = double.Parse(reader["x"].ToString()),
-                    y = double.Parse(reader["y"].ToString()),
+                    Id = int.Parse(reader["ID"].ToString()),
+                    X = double.Parse(reader["x"].ToString()),
+                    Y = double.Parse(reader["y"].ToString()),
                     PainLevel = int.Parse(reader["PainLevel"].ToString()),
                     Obs = reader["Obs"].ToString(),
                     EvalId = int.Parse(reader["EvalId"].ToString()),
@@ -79,10 +79,6 @@ namespace CluSys.lib
             
             cn.Close();
             return bodyMarks;
-
-
-
-
         }
     }
 }

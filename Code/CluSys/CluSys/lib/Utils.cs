@@ -5,13 +5,19 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace CluSys.lib
 {
     public static class ClusysUtils
     {
+        public const double DrawRadius = 2;
+
         public static SqlConnection GetConnection()
         {
             var conn = new SqlConnection("data source= RJ-JESUS\\SQLEXPRESS2014;integrated security=true;initial catalog=CluSys");
@@ -36,6 +42,23 @@ namespace CluSys.lib
             }
 
             return default(T);
+        }
+
+        public static void DrawPoint(Point point, Canvas canvas, SolidColorBrush brush, MouseButtonEventHandler handler = null)
+        {
+            var mark = new Ellipse {Fill = brush};
+
+            mark.SetValue(Canvas.LeftProperty, point.X);
+            mark.SetValue(Canvas.TopProperty, point.Y);
+
+            mark.StrokeThickness = 2;
+            mark.Stroke = Brushes.Black;
+            mark.Width = mark.Height = 2 * DrawRadius;
+
+            if(handler != null)
+                mark.MouseLeftButtonUp += handler;
+
+            canvas.Children.Add(mark);
         }
     }
 

@@ -31,6 +31,7 @@ namespace CluSys
     public partial class MainWindow
     {
         private SqlConnection _cn;
+        private bool _withinMarkPopup = false;
         private readonly ObservableCollection<Athlete> _openAthletes;
 
         public MainWindow()
@@ -52,8 +53,8 @@ namespace CluSys
             ModalityList.ItemsSource = Modalities.LoadSQL(_cn);
             AthletesWithOpenEvaluations.ItemsSource = Athletes.AthletesWithOpenEvaluations(_cn);
 
-            // List of problems
-            ProblemsList.ItemsSource = new[] {"Problema 1", "Problema 2", "Problema 3"};
+            // Modal
+            EvaluationModal.DataContext = new ModalState();
         }
 
         private bool OpenConnection()
@@ -133,10 +134,6 @@ namespace CluSys
             EvaluationsList.ItemsSource = null;
             SessionsList.ItemsSource = null;
             SessionsExpander.IsExpanded = false;
-
-            // Reset the slider's
-            //SliderRange.LowerValue = SliderRange.LowerDateAsDouble;
-            //SliderRange.UpperValue = SliderRange.UpperDateAsDouble;
         }
 
         private void FilterEvaluations(object sender, RangeParameterChangedEventArgs rangeParameterChangedEventArgs=null)
@@ -168,7 +165,87 @@ namespace CluSys
 
         private void BodyChartClick(object sender, MouseButtonEventArgs e)
         {
-            Console.WriteLine($@"{e.GetPosition(BodyChart).X} {e.GetPosition(BodyChart).Y}");
+            if (_withinMarkPopup)
+                return;
+
+            var createMark = true;
+            var bc = BodyChartCanvas;
+            var ms = (ModalState) EvaluationModal.DataContext;
+            var activeView = ms.ActiveView;
+            var point = new Point(e.GetPosition(BodyChart).X - ClusysUtils.DrawRadius, e.GetPosition(BodyChart).Y - ClusysUtils.DrawRadius);
+
+            BodyChartMarkPopup.IsPopupOpen = false;  // close the popup
+
+            foreach (var m in ms.Marks)
+                if (Point.Subtract(point, new Point(m.X, m.Y)).Length < 4 * ClusysUtils.DrawRadius)
+                {
+                    BodyChartMarkPopup.DataContext = m;
+                    createMark = false;
+                    break;
+                }
+
+            if (createMark)
+            {
+                var mark = new BodyChartMark { ViewId = activeView.Id, X = point.X, Y = point.Y, PainLevel = 2 };
+
+                ms.Marks.Add(mark);
+                BodyChartMarkPopup.DataContext = mark;
+
+                ClusysUtils.DrawPoint(point, bc, Brushes.Black, BodyChartClick);
+            }
+
+            BodyChartMarkPopup.IsPopupOpen = true;  // open the popup
+        }
+
+        private void LeftView(object sender, RoutedEventArgs e)
+        {
+            var ms = (ModalState) EvaluationModal.DataContext;
+            var newIdx = ms.ActiveViewIdx + 1;  // or overflow
+
+            RotateView(ms, newIdx >= ms.Views.Count ? 0 : newIdx);
+        }
+
+        private void RightView(object sender, RoutedEventArgs e)
+        {
+            var ms = (ModalState) EvaluationModal.DataContext;
+            var newIdx = ms.ActiveViewIdx - 1;  // or "underflow"
+
+            RotateView(ms, newIdx < 0 ? ms.Views.Count - 1 : newIdx);
+        }
+
+        private void RotateView(ModalState ms, int newIdx)
+        {
+            var bc = BodyChartCanvas;
+
+            ms.ActiveViewIdx = newIdx;
+            var newActiveView = ms.ActiveView;
+
+            // Clear the canvas
+            bc.Children.RemoveRange(1, int.MaxValue);
+            // Add values (if they exist)
+            foreach (var m in ms.Marks)
+                if (m.ViewId == newActiveView.Id)
+                    ClusysUtils.DrawPoint(new Point(m.X, m.Y), bc, Brushes.Black, BodyChartClick);
+
+            // Make it visible now
+            BodyChart.DataContext = newActiveView;
+        }
+
+        private void AddProblem(object sender, RoutedEventArgs e)
+        {
+            var ms = (ModalState) EvaluationModal.DataContext;
+            ms.Problems.Add(NewProblemText.Text);
+            NewProblemText.Text = string.Empty;
+        }
+
+        private void BodyChartMarkPopup_OnMouseEnter(object sender, MouseEventArgs e)
+        {
+            _withinMarkPopup = true;
+        }
+
+        private void BodyChartMarkPopup_OnMouseLeave(object sender, MouseEventArgs e)
+        {
+            _withinMarkPopup = false;
         }
     }
 }
