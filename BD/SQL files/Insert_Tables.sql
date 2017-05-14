@@ -104,3 +104,10 @@ INSERT INTO BodyChartView VALUES
 	('/assets/views/3.png', '3'),
 	('/assets/views/4.png', '4');
 	
+INSERT INTO Annotation VALUES
+	('ArrowLeft', 'desviado para a esquerda'),
+	('ArrowRight', 'desviado para a direita'),
+	('ArrowUp', 'desviado para cima'),
+	('ArrowDown', 'desviado para baixo'),
+	('RotateLeft', 'desviado com rotação para a esquerda'),
+	('RotateRight', 'desviado com rotação para a direita');

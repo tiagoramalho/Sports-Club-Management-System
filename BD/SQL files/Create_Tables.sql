@@ -132,7 +132,7 @@ CREATE TABLE EvaluationSession (
 );
 
 CREATE TABLE Annotation (
-  Symbol  NCHAR,
+  Symbol  VARCHAR(50),
   Meaning VARCHAR(50)
     PRIMARY KEY (Symbol)
 );
@@ -160,7 +160,7 @@ CREATE TABLE BocyChartMark (
 
 CREATE TABLE BodyAnnotation (
   BodyId   INT NOT NULL,
-  AnnotSym NCHAR,
+  AnnotSym VARCHAR(50),
   PRIMARY KEY (BodyId, AnnotSym),
   FOREIGN KEY (BodyId) REFERENCES BocyChartMark (ID),
   FOREIGN KEY (AnnotSym) REFERENCES Annotation (Symbol)
