@@ -36,7 +36,6 @@
         <lib:ModalityDotGetAthletesConverter x:Key="ModalityDotGetAthletesConverter" />
         <lib:InvertBoolConverter x:Key="InvertBoolConverter" />
         <lib:RefProblemConverter x:Key="RefProblemConverter" />
-        <lib:GreaterThanZeroValudationRule x:Key="GreaterThanZeroValudationRule" />
     </Window.Resources>
 
     <materialDesign:DialogHost>

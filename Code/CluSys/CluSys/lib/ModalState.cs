@@ -111,4 +111,75 @@ namespace CluSys.lib
             return evalId;
         }
     }
+        
+        public void updateHeight(SqlConnection cn)
+        {
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "UPDATE MedicalEvaluation SET Height = @Height WHERE ID =" + ID;
+            cmd.Parameters.AddWithValue("@Height", Height);
+            cmd.Connection = cn;
+
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to Update Height in database. \n ERROR MESSAGE: \n" + ex.Message);
+            }
+            finally
+            {
+                cn.Close();
+            }
+
+        }
+        public void updateWeight(SqlConnection cn)
+        {
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "UPDATE MedicalEvaluation SET Weightt = @Weightt WHERE ID =" + ID;
+            cmd.Parameters.AddWithValue("@Weightt", Weight);
+            cmd.Connection = cn;
+
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to Update Weightt in database. \n ERROR MESSAGE: \n" + ex.Message);
+            }
+            finally
+            {
+                cn.Close();
+            }
+
+        }
+        public void updateExpectedRecoveryDate(SqlConnection cn)
+        {
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "UPDATE MedicalEvaluation SET ExpectedRecovery = @ExpectedRecovery WHERE ID =" + ID;
+            cmd.Parameters.AddWithValue("@ExpectedRecovery", ExpectedRecoveryDate);
+            cmd.Connection = cn;
+
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to Update ExpectedRecovery in database. \n ERROR MESSAGE: \n" + ex.Message);
+            }
+            finally
+            {
+                cn.Close();
+            }
+
+        }
+
+
+    }
+    
 }
