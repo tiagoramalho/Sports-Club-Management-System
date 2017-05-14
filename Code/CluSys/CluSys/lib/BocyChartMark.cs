@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.ObjectModel;
+using System.Windows.Interactivity;
 
 namespace CluSys.lib
 {
     [Serializable]
-    public class BodyChartMark
+    internal class BodyChartMark
     {
         public int Id { get; set; } = -1;
         public int EvalId { get; set; }
@@ -13,6 +15,8 @@ namespace CluSys.lib
         public double Y { get; set; }
         public int PainLevel { get; set; }
         public string Obs { get; set; }
+
+        public ObservableCollection<Annotation> Annotations { get; } = new ObservableCollection<Annotation>();
 
         private bool Equals(BodyChartMark other)
         {

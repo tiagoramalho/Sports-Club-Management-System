@@ -378,13 +378,12 @@
                                                      MouseLeave="BodyChartMarkPopup_OnMouseLeave" MouseEnter="BodyChartMarkPopup_OnMouseEnter"
                                                      d:DataContext="{d:DesignInstance lib:BodyChartMark}">
                                 <StackPanel>
-                                    <ListBox Margin="8" SelectionMode="Extended" Style="{DynamicResource MaterialDesignToolToggleFlatListBox}">
-                                        <materialDesign:PackIcon Kind="ArrowLeft" />
-                                        <materialDesign:PackIcon Kind="ArrowRight" />
-                                        <materialDesign:PackIcon Kind="ArrowUp" />
-                                        <materialDesign:PackIcon Kind="ArrowDown" />
-                                        <materialDesign:PackIcon Kind="RotateLeft" />
-                                        <materialDesign:PackIcon Kind="RotateRight" />
+                                    <ListBox x:Name="AnnotationsList" SelectionChanged="AnnotationSelectionChanged" Margin="8" ItemsSource="{Binding ElementName=EvaluationModal, Path=DataContext.Annotations}" SelectionMode="Extended" Style="{DynamicResource MaterialDesignToolToggleFlatListBox}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <materialDesign:PackIcon Kind="{Binding Path=Symbol}" materialDesign:HintAssist.Hint="{Binding Path=Meaning}" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
                                     </ListBox>
                                     <TextBox Margin="8" TextWrapping="Wrap" VerticalAlignment="Stretch"
                                              Width="280" Height="80"

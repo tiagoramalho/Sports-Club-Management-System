@@ -170,32 +170,30 @@ namespace CluSys
             if (_withinMarkPopup)
                 return;
 
-            var createMark = true;
             var bc = BodyChartCanvas;
+            var lb = AnnotationsList;
             var ms = (ModalState) EvaluationModal.DataContext;
             var activeView = ms.ActiveView;
             var point = new Point(e.GetPosition(BodyChart).X - ClusysUtils.DrawRadius, e.GetPosition(BodyChart).Y - ClusysUtils.DrawRadius);
 
-            BodyChartMarkPopup.IsPopupOpen = false;  // close the popup
+            BodyChartMark mark = ms.Marks.FirstOrDefault(m => Point.Subtract(point, new Point(m.X, m.Y)).Length < 4 * ClusysUtils.DrawRadius);
 
-            foreach (var m in ms.Marks)
-                if (Point.Subtract(point, new Point(m.X, m.Y)).Length < 4 * ClusysUtils.DrawRadius)
-                {
-                    BodyChartMarkPopup.DataContext = m;
-                    createMark = false;
-                    break;
-                }
-
-            if (createMark)
+            if (mark == null)
             {
-                var mark = new BodyChartMark { ViewId = activeView.Id, X = point.X, Y = point.Y, PainLevel = 2 };
+                mark = new BodyChartMark { ViewId = activeView.Id, X = point.X, Y = point.Y, PainLevel = 2 };
 
                 ms.Marks.Add(mark);
-                BodyChartMarkPopup.DataContext = mark;
-
                 ClusysUtils.DrawPoint(point, bc, Brushes.Black, BodyChartClick);
             }
 
+            BodyChartMarkPopup.IsPopupOpen = false;  // close the popup
+            BodyChartMarkPopup.DataContext = null;
+
+            lb.SelectedItems.Clear();
+            foreach (var annotation in mark.Annotations)
+                lb.SelectedItems.Add(annotation);
+
+            BodyChartMarkPopup.DataContext = mark;
             BodyChartMarkPopup.IsPopupOpen = true;  // open the popup
         }
 
@@ -243,5 +241,18 @@ namespace CluSys
         private void BodyChartMarkPopup_OnMouseEnter(object sender, MouseEventArgs e) { _withinMarkPopup = true; }
 
         private void BodyChartMarkPopup_OnMouseLeave(object sender, MouseEventArgs e) { _withinMarkPopup = false; }
+
+        private void AnnotationSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var lb = AnnotationsList;
+            var mark = BodyChartMarkPopup.DataContext as BodyChartMark;
+
+            if(lb == null || mark == null)
+                return;
+
+            mark.Annotations.Clear();
+            foreach (var selectedItem in lb.SelectedItems)
+                mark.Annotations.Add(selectedItem as Annotation);
+        }
     }
 }
