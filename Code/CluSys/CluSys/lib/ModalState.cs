@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -14,9 +15,11 @@ namespace CluSys.lib
     class ModalState
     {
         // Basic
-        public int? Weight { get; set; }
+        public int? ID { get; set; }
 
-        public int? Height { get; set; }
+        public double? Weight { get; set; }
+
+        public double? Height { get; set; }
         public DateTime? Date { get; set; } = DateTime.Now;
         public string Story { get; set; }
 
@@ -43,5 +46,75 @@ namespace CluSys.lib
         // Others
         public bool MedicalDischarge { get; set; } = false;
         public DateTime? ExpectedRecoveryDate { get; set; }
+        
+        public void updateHeight(SqlConnection cn)
+        {
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "UPDATE MedicalEvaluation SET Height = @Height WHERE ID =" + ID;
+            cmd.Parameters.AddWithValue("@Height", Height);
+            cmd.Connection = cn;
+
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to Update Height in database. \n ERROR MESSAGE: \n" + ex.Message);
+            }
+            finally
+            {
+                cn.Close();
+            }
+
+        }
+        public void updateWeight(SqlConnection cn)
+        {
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "UPDATE MedicalEvaluation SET Weightt = @Weightt WHERE ID =" + ID;
+            cmd.Parameters.AddWithValue("@Weightt", Weight);
+            cmd.Connection = cn;
+
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to Update Weightt in database. \n ERROR MESSAGE: \n" + ex.Message);
+            }
+            finally
+            {
+                cn.Close();
+            }
+
+        }
+        public void updateExpectedRecoveryDate(SqlConnection cn)
+        {
+
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "UPDATE MedicalEvaluation SET ExpectedRecovery = @ExpectedRecovery WHERE ID =" + ID;
+            cmd.Parameters.AddWithValue("@ExpectedRecovery", ExpectedRecoveryDate);
+            cmd.Connection = cn;
+
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to Update ExpectedRecovery in database. \n ERROR MESSAGE: \n" + ex.Message);
+            }
+            finally
+            {
+                cn.Close();
+            }
+
+        }
+
+
     }
+    
 }
