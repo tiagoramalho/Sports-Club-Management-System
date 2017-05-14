@@ -8,7 +8,7 @@ namespace CluSys.lib
     [Serializable()]
     internal class MedicalEvaluation
     {
-        public int Id { private get; set; }
+        public int Id { private get; set; } = -1;
         public double Weightt { get; set; }
         public double Height { get; set; }
         public string Story { get; set; }
@@ -66,6 +66,36 @@ namespace CluSys.lib
         public override int GetHashCode()
         {
             return Id;
+        }
+
+        private void submitMedicalEvaluation(SqlConnection cn, MedicalEvaluation ME)
+        {
+           
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "INSERT INTO MedicalEvaluation (Weightt, Height, Story, OpeningDate, ClosingDate, ExpectedRecovery, AthleteCC, PhysiotherapistCC) " + "VALUES (@Weightt, @Height, @Story, @OpeningDate, @ClosingDate, @ExpectedRecovery, @AthleteCC, @PhysiotherapistCC)";
+            cmd.Parameters.AddWithValue("@Weightt", ME.Weightt);
+            cmd.Parameters.AddWithValue("@Height", ME.Height);
+            cmd.Parameters.AddWithValue("@Story", ME.Story);
+            cmd.Parameters.AddWithValue("@OpeningDate", ME.OpeningDate);
+            cmd.Parameters.AddWithValue("@ClosingDATE", ME.ClosingDate);
+            cmd.Parameters.AddWithValue("@ExpectedRecovery", ME.ExpectedRecovery);
+            cmd.Parameters.AddWithValue("@AthleteCC", ME.AthleteCC);
+            cmd.Parameters.AddWithValue("@PhysiotherapistCC", ME.PhysiotherapistCC);
+            cmd.Connection = cn;
+
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to Insert Medical Evaluation in database. \n ERROR MESSAGE: \n" + ex.Message);
+            }
+            finally
+            {
+                cn.Close();
+            }
+
         }
     }
 }

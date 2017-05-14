@@ -2,7 +2,7 @@
 
 public class TreatmentPlan
 {
-
+    public int ID { get; set; }
     public String Obs { get; set; }
     public String Obs { get; set; }
     public int EvalId { get; set; }

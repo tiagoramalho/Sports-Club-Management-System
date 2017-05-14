@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.SqlClient;
 
 namespace CluSys.lib
 {
@@ -41,5 +42,35 @@ namespace CluSys.lib
                 return hash;
             }
         }
+
+        private void submitBodyChartMark(SqlConnection cn, BodyChartMark BM)
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = "INSERT INTO BodyChartMark (x, y, PainLevel, Obs, EvalId, SessionId, ViewId) " + "VALUES (@x, @y, @PainLevel, @Obs, @EvalId, @SessionId, @ViewId)";
+            cmd.Parameters.AddWithValue("@x", BM.X);
+            cmd.Parameters.AddWithValue("@y", BM.Y);
+            cmd.Parameters.AddWithValue("@PainLevel", BM.PainLevel);
+            cmd.Parameters.AddWithValue("@Obs", BM.Obs);
+            cmd.Parameters.AddWithValue("@EvalId", BM.EvalId);
+            cmd.Parameters.AddWithValue("@SessionId", BM.SessionId);
+            cmd.Parameters.AddWithValue("@ViewId", BM.ViewId);
+            cmd.Connection = cn;
+
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to Insert BocyChartMark in database. \n ERROR MESSAGE: \n" + ex.Message);
+            }
+            finally
+            {
+                cn.Close();
+            }
+
+        }
+
+
     }
 }
