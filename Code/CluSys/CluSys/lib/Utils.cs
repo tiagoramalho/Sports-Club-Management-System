@@ -92,6 +92,22 @@ namespace CluSys.lib
         }
     }
 
+    public sealed class NewSessionVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!(value is MedicalEvaluation))
+                return Visibility.Hidden;
+
+            return ((MedicalEvaluation) value).ClosingDate == null ? Visibility.Visible : Visibility.Hidden;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public sealed class GreaterThanZeroValudationRule : ValidationRule
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)

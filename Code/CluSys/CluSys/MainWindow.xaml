@@ -36,9 +36,9 @@
         <lib:ModalityDotGetAthletesConverter x:Key="ModalityDotGetAthletesConverter" />
         <lib:InvertBoolConverter x:Key="InvertBoolConverter" />
         <lib:RefProblemConverter x:Key="RefProblemConverter" />
+        <lib:NewSessionVisibilityConverter x:Key="NewSessionVisibilityConverter" />
     </Window.Resources>
-
-    <materialDesign:DialogHost>
+    <materialDesign:DialogHost x:Name="SessionModal">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100px" />
@@ -81,7 +81,7 @@
                 </ListBox>
             </DockPanel>
 
-            <Grid x:Name="HomeContent" Visibility="Hidden" Grid.Column="1" Margin="8">
+            <Grid x:Name="HomeContent" Visibility="Visible" Grid.Column="1" Margin="8">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
@@ -181,7 +181,7 @@
                 </ItemsControl>
             </Grid>
 
-            <ContentControl x:Name="AthleteContent" Visibility="Visible" Grid.Column="1" Margin="8" d:DataContext="{d:DesignInstance lib:AthleteWithBody}">
+            <ContentControl x:Name="AthleteContent" Visibility="Hidden" Grid.Column="1" Margin="8" d:DataContext="{d:DesignInstance lib:AthleteWithBody}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -250,7 +250,8 @@
                                 </Button>
                             </Grid>
 
-                            <Expander x:Name="SessionsExpander" HorizontalAlignment="Stretch" IsEnabled="True">
+                            <Expander x:Name="SessionsExpander" HorizontalAlignment="Stretch" IsEnabled="True"
+                                      d:DataContext="{d:DesignInstance lib:MedicalEvaluation}">
                                 <Expander.Header>
                                     <Separator Style="{DynamicResource MaterialDesignSeparator}"/>
                                 </Expander.Header>
@@ -292,7 +293,7 @@
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
-                                    <Button Grid.Column="1" Style="{DynamicResource MaterialDesignFloatingActionMiniButton}"
+                                    <Button Grid.Column="1" Visibility="{Binding Converter={StaticResource NewSessionVisibilityConverter}}" Style="{DynamicResource MaterialDesignFloatingActionMiniButton}"
                                         Margin="8" HorizontalAlignment="Center" ToolTip="Nova sessão">
                                         <materialDesign:PackIcon Kind="Plus" Height="24" Width="24" />
                                     </Button>

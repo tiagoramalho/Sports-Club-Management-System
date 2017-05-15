@@ -88,7 +88,7 @@ namespace CluSys
         private void GoHome(object sender, RoutedEventArgs e)
         {
             // Toogle visibility
-            AthleteContent.Visibility = Visibility.Hidden;
+            AthleteContent.Visibility = Visibility.Hidden; AthleteContent.DataContext = null;
             HomeContent.Visibility = Visibility.Visible;
         }
 
@@ -126,6 +126,7 @@ namespace CluSys
         {
             var me = (sender as Control)?.DataContext as MedicalEvaluation;
 
+            SessionsExpander.DataContext = me;
             SessionsList.ItemsSource = me?.Sessions(_cn);
             SessionsExpander.IsExpanded = true;
         }
@@ -370,7 +371,7 @@ namespace CluSys
 
         private void SaveSession(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            SessionModal.IsOpen = false;  // close the modal
         }
     }
 }
