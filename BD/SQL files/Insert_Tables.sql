@@ -74,7 +74,7 @@ INSERT INTO MedicalEvaluation VALUES
   ('82.5', '1.90', NULL, '20170511', NULL, NULL, '1247', '12123'),
   ('72.5', '1.70', NULL, '20170506', NULL, NULL, '1248', '12123'),
   ('50.5', '1.60', NULL, '20170411', '20170511', NULL, '1245', '12123'),
-  ('82.5', '1.84', NULL, '20170421', NULL, NULL, '1241', '12123');
+  ('82.5', '1.84', NULL, '20170421', NULL, '20170421', '1241', '12123');
   
 
 INSERT INTO EvaluationSession VALUES
