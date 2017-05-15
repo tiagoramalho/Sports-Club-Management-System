@@ -146,17 +146,18 @@ namespace CluSys
                 return;
 
             var meView = (CollectionView) CollectionViewSource.GetDefaultView(EvaluationsList.ItemsSource);
-            if(meView != null)
+            if (meView != null)
                 meView.Filter = evaluation =>
                 {
                     var me = evaluation as MedicalEvaluation;
 
                     return me != null && (dr.LowerDate <= me.OpeningDate && me.OpeningDate <= dr.UpperDate
-                                          && (me.ClosingDate == null || dr.LowerDate <= me.ClosingDate && me.ClosingDate <= dr.UpperDate));
+                                          && (me.ClosingDate == null ||
+                                              dr.LowerDate <= me.ClosingDate && me.ClosingDate <= dr.UpperDate));
                 };
 
             var seView = (CollectionView) CollectionViewSource.GetDefaultView(SessionsList.ItemsSource);
-            if(seView != null)
+            if (seView != null)
                 seView.Filter = session =>
                 {
                     var se = session as EvaluationSession;

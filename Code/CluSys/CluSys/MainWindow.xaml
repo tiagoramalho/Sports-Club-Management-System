@@ -87,98 +87,100 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <ListBox x:Name="AthletesWithOpenEvaluations"
-                         Margin="16"
+                <GroupBox Header="Com sessão ativa" Margin="16">
+                    <ListBox x:Name="AthletesWithOpenEvaluations"
+                         Margin="8"
                          PreviewMouseUp="OpenAthlete"
                          Grid.IsSharedSizeScope="True">
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel IsItemsHost="True" />
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate DataType="lib:Athlete">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" SharedSizeGroup="ColumnSize" />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-
-                                <Ellipse Height="48" Width="48" Grid.Row="0" Margin="8">
-                                    <Ellipse.Fill>
-                                        <ImageBrush ImageSource="{Binding Path=Photo}" Stretch="UniformToFill" />
-                                    </Ellipse.Fill>
-                                </Ellipse>
-                                <TextBlock HorizontalAlignment="Center" Grid.Row="1">
-                                    <TextBlock.Text>
-                                        <MultiBinding StringFormat="{}{0} {1}">
-                                            <Binding Path="FirstName" />
-                                            <Binding Path="LastName" />
-                                        </MultiBinding>
-                                    </TextBlock.Text>
-                                </TextBlock>
-                                <TextBlock HorizontalAlignment="Center" Grid.Row="2" Text="{Binding Path=ModalityId}" />
-                            </Grid>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ListBox>
-
-                <ItemsControl x:Name="ModalityList"
-                              Grid.Row="1" Margin="16"
-                              Grid.IsSharedSizeScope="True">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel IsItemsHost="True" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate DataType="lib:Modality">
-                            <materialDesign:Card Margin="4" Width="240">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel IsItemsHost="True" />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="lib:Athlete">
                                 <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" SharedSizeGroup="ColumnSize" />
+                                    </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
 
-                                    <TextBlock Text="{Binding Path=name}"
+                                    <Ellipse Height="48" Width="48" Grid.Row="0" Margin="8">
+                                        <Ellipse.Fill>
+                                            <ImageBrush ImageSource="{Binding Path=Photo}" Stretch="UniformToFill" />
+                                        </Ellipse.Fill>
+                                    </Ellipse>
+                                    <TextBlock HorizontalAlignment="Center" Grid.Row="1">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}{0} {1}">
+                                                <Binding Path="FirstName" />
+                                                <Binding Path="LastName" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                    <TextBlock HorizontalAlignment="Center" Grid.Row="2" Text="{Binding Path=ModalityId}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ListBox>
+                </GroupBox>
+
+                <ScrollViewer Margin="16" Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                    <ItemsControl x:Name="ModalityList" Grid.IsSharedSizeScope="True">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel IsItemsHost="True" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="lib:Modality">
+                                <materialDesign:Card Margin="4" Width="240">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+
+                                        <TextBlock Text="{Binding Path=name}"
                                            Foreground="White" Background="{DynamicResource PrimaryHueMidBrush}"
                                            FontWeight="Bold" Padding="8 24 8 0" />
-                                    <ListBox Grid.Row="1" Margin="8 24 8 0" PreviewMouseUp="OpenAthlete"
+                                        <ListBox Grid.Row="1" Margin="8 24 8 0" PreviewMouseUp="OpenAthlete"
                                              ItemsSource="{Binding Converter={StaticResource ModalityDotGetAthletesConverter}, ConverterParameter='GetAthletes'}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate DataType="lib:Athlete">
-                                                <TextBlock>
-                                                    <TextBlock.Text>
-                                                        <MultiBinding StringFormat="{}{0} {1}">
-                                                            <Binding Path="FirstName" />
-                                                            <Binding Path="LastName" />
-                                                        </MultiBinding>
-                                                    </TextBlock.Text>
-                                                </TextBlock>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ListBox>
-                                    <Border Grid.Row="2" Margin="8" Background="White" CornerRadius="3" ToolTip="Enter to search, ignore case">
-                                        <DockPanel LastChildFill="True">
-                                            <Button Height="24" Width="24" Style="{DynamicResource MaterialDesignToolButton}">
-                                                <materialDesign:PackIcon Kind="Magnify" Opacity=".56" />
-                                            </Button>
-                                            <TextBox Margin="4 0 0 0" TextChanged="FilterAthletes"
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate DataType="lib:Athlete">
+                                                    <TextBlock>
+                                                        <TextBlock.Text>
+                                                            <MultiBinding StringFormat="{}{0} {1}">
+                                                                <Binding Path="FirstName" />
+                                                                <Binding Path="LastName" />
+                                                            </MultiBinding>
+                                                        </TextBlock.Text>
+                                                    </TextBlock>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ListBox>
+                                        <Border Grid.Row="2" Margin="8" Background="White" CornerRadius="3" ToolTip="Enter to search, ignore case">
+                                            <DockPanel LastChildFill="True">
+                                                <Button Height="24" Width="24" Style="{DynamicResource MaterialDesignToolButton}">
+                                                    <materialDesign:PackIcon Kind="Magnify" Opacity=".56" />
+                                                </Button>
+                                                <TextBox Margin="4 0 0 0" TextChanged="FilterAthletes"
                                                  materialDesign:HintAssist.Hint="Search" x:Name="SearchBox"
                                                  materialDesign:TextFieldAssist.DecorationVisibility="Hidden" BorderThickness="0"
                                                  VerticalAlignment="Center" />
-                                        </DockPanel>
-                                    </Border>
-                                </Grid>
-                            </materialDesign:Card>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                                            </DockPanel>
+                                        </Border>
+                                    </Grid>
+                                </materialDesign:Card>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
             </Grid>
 
             <ContentControl x:Name="AthleteContent" Visibility="Hidden" Grid.Column="1" Margin="8" d:DataContext="{d:DesignInstance lib:AthleteWithBody}">
@@ -244,7 +246,7 @@
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
                                 <Button Grid.Column="1" Style="{DynamicResource MaterialDesignFloatingActionMiniDarkButton}"
-                                        Margin="8" HorizontalAlignment="Center" ToolTip="Nova avaliação"
+                                        Margin="8" HorizontalAlignment="Center" ToolTip="Nova avaliação/sessão"
                                         Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
                                     <materialDesign:PackIcon Kind="Plus" Height="24" Width="24" />
                                 </Button>
@@ -284,7 +286,7 @@
                                                                 <TextBlock Margin="8 0 8 0" Text="{Binding Path=NumberOfProblems, StringFormat={}Problemas: {0}}" />
                                                                 <TextBlock Margin="8 4 8 8" Text="{Binding Path=NumberOfTreatments, StringFormat={}Tratamentos: {0}}" />
                                                             </StackPanel>
-                                                            <Button Grid.Column="1" Style="{DynamicResource MaterialDesignToolButton}">
+                                                            <Button Grid.Column="1" Style="{DynamicResource MaterialDesignToolButton}" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
                                                                 <materialDesign:PackIcon Margin="0 0 8 0" Kind="Eye" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
                                                             </Button>
                                                         </Grid>
@@ -294,7 +296,8 @@
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
                                     <Button Grid.Column="1" Visibility="{Binding Converter={StaticResource NewSessionVisibilityConverter}}" Style="{DynamicResource MaterialDesignFloatingActionMiniButton}"
-                                        Margin="8" HorizontalAlignment="Center" ToolTip="Nova sessão">
+                                        Margin="8" HorizontalAlignment="Center" ToolTip="Nova sessão"
+                                        Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
                                         <materialDesign:PackIcon Kind="Plus" Height="24" Width="24" />
                                     </Button>
                                 </Grid>
@@ -385,7 +388,7 @@
                              materialDesign:HintAssist.Hint="História da lesão" />
                     
                     <GroupBox Header="Body chart" Margin="16">
-                        <DockPanel LastChildFill="True">
+                        <DockPanel LastChildFill="True" Margin="0 0 0 32">
                             <Button DockPanel.Dock="Left" PreviewMouseUp="LeftView" Style="{DynamicResource MaterialDesignToolButton}" materialDesign:RippleAssist.IsDisabled="True">
                                 <materialDesign:PackIcon Kind="ArrowLeft"  />
                             </Button>
@@ -421,13 +424,13 @@
                                         </materialDesign:RatingBar.ValueItemTemplate>
                                     </materialDesign:RatingBar>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                        <Button Click="DeleteMark" Margin="8 8 4 8"  Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="MaterialDesignFlatButton">
+                                        <Button Click="DeleteMark" Margin="8 -2 4 8"  Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="MaterialDesignFlatButton">
                                             <StackPanel Orientation="Horizontal">
                                                 <materialDesign:PackIcon Margin="0 0 8 0" Kind="Delete" />
                                                 <TextBlock Text="Apagar" />
                                             </StackPanel>
                                         </Button>
-                                        <Button Click="SaveMark" Margin="4 8 8 8" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="MaterialDesignFlatButton">
+                                        <Button Click="SaveMark" Margin="4 -2 8 8" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="MaterialDesignFlatButton">
                                             <StackPanel Orientation="Horizontal">
                                                 <materialDesign:PackIcon Margin="0 0 8 0" Kind="ContentSave" />
                                                 <TextBlock Text="Guardar" />

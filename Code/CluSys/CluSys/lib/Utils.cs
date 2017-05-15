@@ -52,7 +52,8 @@ namespace CluSys.lib
             mark.SetValue(Canvas.TopProperty, point.Y);
 
             mark.StrokeThickness = 2;
-            mark.Stroke = Brushes.Black;
+            //mark.Stroke = Brushes.Black;
+            mark.Stroke = new SolidColorBrush(Color.FromArgb(255, 0, 150, 136));
             mark.Width = mark.Height = 2 * DrawRadius;
 
             if(handler != null)
