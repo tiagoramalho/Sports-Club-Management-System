@@ -66,6 +66,20 @@ namespace CluSys.lib
         {
             return CC != null ? StringComparer.OrdinalIgnoreCase.GetHashCode(CC) : 0;
         }
+
+        public DateTime? getExpectedRecovery(SqlConnection conn) { 
+            SqlCommand cmd = new SqlCommand("SELECT ExpectedRecovery FROM MedicalEvaluation WHERE AthleteCC = "+ CC +" and ClosingDATE is null; ", conn);
+            SqlDataReader reader = cmd.ExecuteReader();
+            reader.Read();
+            if(reader["ExpectedRecovery"].ToString() == "")
+            {
+                reader.Close();
+                return null;
+            }
+            reader.Close();
+            return DateTime.Parse(reader["ExpectedRecovery"].ToString());
+        }
+        
     }
 
     [Serializable]
