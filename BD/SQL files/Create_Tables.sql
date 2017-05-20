@@ -110,8 +110,8 @@ CREATE TABLE MedicalHistoryMedication (
 
 CREATE TABLE MedicalEvaluation (
   ID                INT           NOT NULL IDENTITY (1, 1),
-  Weightt           DECIMAL(5, 2) NOT NULL,
-  Height            DECIMAL(3, 2) NOT NULL,
+  Weightt           DECIMAL(5, 2),
+  Height            DECIMAL(3, 2),
   Story             VARCHAR(200),
   OpeningDate       DATE          NOT NULL,
   ClosingDATE       DATE,
