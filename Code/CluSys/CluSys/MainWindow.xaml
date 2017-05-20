@@ -37,6 +37,7 @@
         <lib:InvertBoolConverter x:Key="InvertBoolConverter" />
         <lib:RefProblemConverter x:Key="RefProblemConverter" />
         <lib:NewSessionVisibilityConverter x:Key="NewSessionVisibilityConverter" />
+        <lib:PainToColorConverter x:Key="PainToColorConverter" />
     </Window.Resources>
     <materialDesign:DialogHost x:Name="SessionModal">
         <Grid>
@@ -417,14 +418,14 @@
                                         <materialDesign:RatingBar.ValueItemTemplate>
                                             <DataTemplate DataType="sys:Int32">
                                                 <Grid Margin="2">
-                                                    <materialDesign:PackIcon Kind="CheckboxBlankCircle" Height="24" Width="24" />
+                                                    <materialDesign:PackIcon Kind="CheckboxBlankCircle" Height="24" Width="24" Foreground="{Binding Converter={StaticResource PainToColorConverter}}" />
                                                     <TextBlock Text="{Binding}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="8" Foreground="{DynamicResource PrimaryHueMidForegroundBrush}" />
                                                 </Grid>
                                             </DataTemplate>
                                         </materialDesign:RatingBar.ValueItemTemplate>
                                     </materialDesign:RatingBar>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                        <Button Click="DeleteMark" Margin="8 -2 4 8"  Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="MaterialDesignFlatButton">
+                                        <Button Click="DeleteMark" Margin="8 -2 4 8" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="MaterialDesignFlatButton">
                                             <StackPanel Orientation="Horizontal">
                                                 <materialDesign:PackIcon Margin="0 0 8 0" Kind="Delete" />
                                                 <TextBlock Text="Apagar" />

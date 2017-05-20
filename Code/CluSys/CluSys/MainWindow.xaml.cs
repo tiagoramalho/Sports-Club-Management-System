@@ -179,16 +179,16 @@ namespace CluSys
             var lb = AnnotationsList;
             var ms = (ModalState) EvaluationModal.DataContext;
             var activeView = ms.ActiveView;
-            var point = new Point(e.GetPosition(BodyChart).X - ClusysUtils.DrawRadius, e.GetPosition(BodyChart).Y - ClusysUtils.DrawRadius);
+            var point = new Point(e.GetPosition(BodyChart).X - BodyChartMark.DrawRadius, e.GetPosition(BodyChart).Y - BodyChartMark.DrawRadius);
 
-            BodyChartMark mark = ms.Marks.FirstOrDefault(m => Point.Subtract(point, new Point(m.X, m.Y)).Length < 4 * ClusysUtils.DrawRadius);
+            BodyChartMark mark = ms.Marks.FirstOrDefault(m => Point.Subtract(point, new Point(m.X, m.Y)).Length < 4 * BodyChartMark.DrawRadius);
 
             if (mark == null)
             {
                 mark = new BodyChartMark { ViewId = activeView.Id, X = point.X, Y = point.Y, PainLevel = 2 };
 
                 ms.Marks.Add(mark);
-                ClusysUtils.DrawPoint(point, bc, Brushes.Black, BodyChartClick);
+                BodyChartMark.DrawMark(bc, mark, BodyChartClick);
             }
 
             BodyChartMarkPopup.IsPopupOpen = false;  // close the popup
@@ -268,7 +268,7 @@ namespace CluSys
             // Add values (if they exist)
             foreach (var m in ms.Marks)
                 if (m.ViewId == newActiveView.Id)
-                    ClusysUtils.DrawPoint(new Point(m.X, m.Y), bc, Brushes.Black, BodyChartClick);
+                    BodyChartMark.DrawMark(bc, m, BodyChartClick);
 
             // Make it visible now
             BodyChart.DataContext = newActiveView;
