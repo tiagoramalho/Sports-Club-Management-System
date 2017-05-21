@@ -14,7 +14,7 @@ namespace CluSys.lib
         public string Story { get; set; }
         public DateTime OpeningDate { get; set; }
         public DateTime? ClosingDate { get; set; }
-        public DateTime? ExpectedRecovery { get; set; }
+        public DateTime? ExpectedRecoveryDate { get; set; }
         public string AthleteCC { get; set; }
         public string PhysiotherapistCC { get; set; }
 
@@ -30,24 +30,28 @@ namespace CluSys.lib
             _container = container;
         }
 
-        public ObservableCollection<EvaluationSession> Sessions(SqlConnection conn)
+        public ObservableCollection<EvaluationSession> Sessions
         {
-            var sessions = new ObservableCollection<EvaluationSession>();
+            get
+            {
+                var sessions = new ObservableCollection<EvaluationSession>();
 
-            SqlCommand cmd = new SqlCommand($"SELECT * FROM EvaluationSession WHERE EvalId={Id};", conn);
-            SqlDataReader reader = cmd.ExecuteReader();
+                SqlConnection conn = ClusysUtils.GetConnection();
+                SqlCommand cmd = new SqlCommand($"SELECT * FROM EvaluationSession WHERE EvalId={Id};", conn);
+                SqlDataReader reader = cmd.ExecuteReader();
 
-            while (reader.Read())
-                sessions.Add(new EvaluationSession()
-                {
-                    Id = int.Parse(reader["ID"].ToString()),
-                    EvalId= int.Parse(reader["EvalId"].ToString()),
-                    Date = DateTime.Parse(reader["DateSession"].ToString()),
-                });
+                while (reader.Read())
+                    sessions.Add(new EvaluationSession()
+                    {
+                        Id = int.Parse(reader["ID"].ToString()),
+                        EvalId = int.Parse(reader["EvalId"].ToString()),
+                        Date = DateTime.Parse(reader["DateSession"].ToString()),
+                    });
 
-            reader.Close();
+                reader.Close();
 
-            return sessions;
+                return sessions;
+            }
         }
 
         private bool Equals(MedicalEvaluation other)
@@ -68,6 +72,7 @@ namespace CluSys.lib
             return Id;
         }
 
+        /*
         public void InsertMedicalEvaluation(SqlConnection cn)
         {
            
@@ -78,7 +83,7 @@ namespace CluSys.lib
             cmd.Parameters.AddWithValue("@Story", Story);
             cmd.Parameters.AddWithValue("@OpeningDate", OpeningDate);
             cmd.Parameters.AddWithValue("@ClosingDATE", ClosingDate);
-            cmd.Parameters.AddWithValue("@ExpectedRecovery", ExpectedRecovery);
+            cmd.Parameters.AddWithValue("@ExpectedRecovery", ExpectedRecoveryDate);
             cmd.Parameters.AddWithValue("@AthleteCC", AthleteCC);
             cmd.Parameters.AddWithValue("@PhysiotherapistCC", PhysiotherapistCC);
             cmd.Connection = cn;
@@ -93,6 +98,7 @@ namespace CluSys.lib
             }
 
         }
+        */
         
     }
 }

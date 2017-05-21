@@ -13,10 +13,11 @@ namespace CluSys.lib
     {
         public int Id { get; set; }
         public string Description { get; set; }
-        public DateTime DateClosed { get; set; }
+        public DateTime? DateClosed { get; set; }
         public int EvalId { get; set; }
         public int SessionId { get; set; }
 
+        /*
         private void InsertSessionObs(SqlConnection cn)
         {
             SqlCommand cmd = new SqlCommand();
@@ -38,31 +39,6 @@ namespace CluSys.lib
                 throw new Exception("Failed to Insert SessionObs in database. \n ERROR MESSAGE: \n" + ex.Message);
             }
         }
-    }
-
-    internal class SessionObservations
-    {
-        public ObservableCollection<SessionObservation> GetObservations(SqlConnection cn)
-        {
-            var observations = new ObservableCollection<SessionObservation>();
-
-            var cmd = new SqlCommand("SELECT * FROM SessionObs", cn);
-            var reader = cmd.ExecuteReader();
-
-            while (reader.Read())
-            {
-                observations.Add(new SessionObservation
-                {
-                    Id = int.Parse(reader["ID"].ToString()),
-                    Description = reader["Obs"].ToString(),
-                    DateClosed = DateTime.Parse(reader["DateClosed"].ToString()),
-                    EvalId = int.Parse(reader["EvalId"].ToString()),
-                    SessionId = int.Parse(reader["SessionId"].ToString()),
-                });
-            }
-            reader.Close();
-
-            return observations;
-        }
+        */
     }
 }

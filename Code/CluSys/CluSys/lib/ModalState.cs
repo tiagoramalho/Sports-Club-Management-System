@@ -1,53 +1,67 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.SqlClient;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Media;
-using System.Windows.Navigation;
 
 namespace CluSys.lib
 {
-    class ModalState
+    internal class ModalState
     {
-        public Athlete Patient { get; set; }
-
-        // Basic
-        public double? Weight { get; set; }
-        public double? Height { get; set; }
-        public DateTime? Date { get; set; } = DateTime.Now;
-        public string Story { get; set; }
+        public AthleteWithBody Athlete { get; set; }
+        public MedicalEvaluation Evaluation { get; set; }
+        public EvaluationSession Session { get; set; }
 
         // Body chart
-        public BodyChartView ActiveView
-        {
-            get { return Views[ActiveViewIdx]; }
-            set { ActiveViewIdx = Views.IndexOf(value); }
-        }
-        public int ActiveViewIdx { get; set; } = 0;
-        public readonly ObservableCollection<BodyChartView> Views = BodyChartViews.GetViews();
-        public readonly ObservableCollection<BodyChartMark> Marks = new ObservableCollection<BodyChartMark>();
-        public ObservableCollection<Annotation> Annotations { get; set; } = lib.Annotations.GetAnnotations();
+        public int ActiveViewIdx { get; set; }
+        public readonly ObservableCollection<BodyChartView> Views;
+        public BodyChartView ActiveView { get { return Views[ActiveViewIdx]; } set { ActiveViewIdx = Views.IndexOf(value); } }
+
+        public ObservableCollection<BodyChartMark> Marks;
+        public ObservableCollection<Annotation> Annotations { get; }
 
         // Problems
-        public ObservableCollection<MajorProblem> Problems { get; set; } = new ObservableCollection<MajorProblem>();
+        public ObservableCollection<MajorProblem> Problems { get; set; }
 
         // Treatments
-        public ObservableCollection<TreatmentPlan> Treatments { get; set; } = new ObservableCollection<TreatmentPlan>();
+        public ObservableCollection<TreatmentPlan> Treatments { get; set; }
 
         // Observations
-        public ObservableCollection<SessionObservation> Observations { get; set; } = new ObservableCollection<SessionObservation>();
+        public ObservableCollection<SessionObservation> Observations { get; set; }
 
         // Others
-        public bool MedicalDischarge { get; set; } = false;
-        public DateTime? ExpectedRecoveryDate { get; set; }
+        public bool MedicalDischarge { get; set; }
 
-        private const int PhysiotherapistCC = 12123;
+        public bool CanBeEdited { get; set; }
+        public bool ExpectedRecoveryPickerEnabled { get { return CanBeEdited && !MedicalDischarge; } }
+
+        public ModalState(AthleteWithBody athlete, MedicalEvaluation evaluation = null, EvaluationSession session = null)
+        {
+            Athlete = athlete;
+            Evaluation = evaluation ?? new MedicalEvaluation();
+            Session = session ?? new EvaluationSession { Date = DateTime.Today };
+
+            ActiveViewIdx = 0;
+            Views = BodyChartViews.GetViews();
+            Annotations = lib.Annotations.GetAnnotations();
+
+            if (session != null)
+            {
+                Marks = session.GetMarks();
+                Problems = session.GetProblems();
+                Treatments = session.GetTreatments();
+                Observations = session.GetObservations();
+                MedicalDischarge = evaluation?.ClosingDate == session.Date;
+                CanBeEdited = false;
+            }
+            else
+            {
+                Marks = new ObservableCollection<BodyChartMark>();
+                Problems = new ObservableCollection<MajorProblem>();
+                Treatments = new ObservableCollection<TreatmentPlan>();
+                Observations = new ObservableCollection<SessionObservation>();
+                MedicalDischarge = false;
+                CanBeEdited = true;
+            }
+        }
 
         public void Save(SqlConnection cn)
         {
@@ -55,79 +69,11 @@ namespace CluSys.lib
 
         private int GetEvaluationId(SqlConnection cn)
         {
-            var evalId = -1;
-
-            var cmd = new SqlCommand
-            {
-                Connection = cn,
-                CommandText = $"SELECT Id FROM MedicalEvaluation WHERE AthleteCC={Patient.CC} AND ClosingDate IS NULL;",
-            };
-            var reader = cmd.ExecuteReader();
-            try
-            {
-                if (reader.HasRows)
-                {
-                    reader.Read();
-                    evalId = int.Parse(reader[0].ToString());
-                    UpdateEvaluation(cn, evalId);
-                }
-            }
-            finally
-            {
-                reader.Close();
-            }
-
-            if (evalId == -1)
-            {
-                var eval = new MedicalEvaluation
-                {
-                    AthleteCC = Patient.CC,
-                    ClosingDate = null,
-                    ExpectedRecovery = ExpectedRecoveryDate,
-                    Height = Height ?? 0,  // this should be the last value recorded
-                    OpeningDate = DateTime.Now,
-                    PhysiotherapistCC = PhysiotherapistCC.ToString(),
-                    Story = Story,
-                    Weightt = Weight ?? 0,  // same
-                };
-                eval.InsertMedicalEvaluation(cn);
-                cmd = new SqlCommand
-                {
-                    Connection = cn,
-                    CommandText = $"SELECT Id FROM MedicalEvaluation WHERE AthleteCC={Patient.CC} AND ClosingDate IS NULL;",
-                };
-                reader = cmd.ExecuteReader();
-                try
-                {
-                    reader.Read();
-                    evalId = int.Parse(reader[0].ToString());
-                }
-                finally
-                {
-                    reader.Close();
-                }
-            }
-
-            return evalId;
+            return -1;
         }
 
         private void UpdateEvaluation(SqlConnection cn, int evalId)
         {
-
-            var cmd = new SqlCommand
-            {
-                Connection = cn,
-                CommandText = $"UPDATE MedicalEvaluation SET Height={Height ?? 0}, Weightt={Weight ?? 0}, ExpectedRecovery={ExpectedRecoveryDate} WHERE ID={evalId}",
-            };
-
-            try
-            {
-                cmd.ExecuteNonQuery();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to update evaluation's value in the database. \n ERROR MESSAGE: \n" + ex.Message);
-            }
         }
     }
 }

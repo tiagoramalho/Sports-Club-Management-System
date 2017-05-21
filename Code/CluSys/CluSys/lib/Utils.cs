@@ -60,17 +60,31 @@ namespace CluSys.lib
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) { throw new NotSupportedException(); }
     }
 
-    public sealed class InvertBoolConverter : IValueConverter
+    public sealed class FirstUpperStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return !(bool?) value;
+            var str = (string) new StringConverter().Convert(value, targetType, parameter, culture);
+            if(!string.IsNullOrEmpty(str))
+                str = char.ToUpper(str[0]) + (str.Length > 1 ? str.Substring(1) : "");
+
+            return str;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) { throw new NotSupportedException(); }
+    }
+
+    public sealed class ExpectedRecoveryPickerEnabledConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            return !(bool?) value;
+            if (values == null || values.Length != 2)
+                return false;
+
+            return (bool) values[0] && !(bool) values[1];
         }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) { throw new NotImplementedException(); }
     }
 
     public sealed class NewSessionVisibilityConverter : IValueConverter

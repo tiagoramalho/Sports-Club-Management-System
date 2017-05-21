@@ -9,16 +9,12 @@ namespace CluSys.lib
 {
     internal class MajorProblem
     {
-
         public int Id { get; set; } = -1;
         public string Obs { get; set; }
         public int EvalId { get; set; }
         public int SessionId { get; set; }
 
-        public int CountId
-        {
-            get { return _container?.IndexOf(this) + 1 ?? Id; }
-        }
+        public int CountId { get { return _container?.IndexOf(this) + 1 ?? Id; } }
 
         private readonly ObservableCollection<MajorProblem> _container;
 
@@ -27,6 +23,7 @@ namespace CluSys.lib
             _container = container;
         }
 
+        /*
         private void InsertMajorProblem(SqlConnection cn)
         {
 
@@ -46,6 +43,7 @@ namespace CluSys.lib
                 throw new Exception("Failed to Insert MajorProblem in database. \n ERROR MESSAGE: \n" + ex.Message);
             }
         }
+        */
 
         private bool Equals(MajorProblem other)
         {
@@ -58,8 +56,7 @@ namespace CluSys.lib
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
-            return Equals((MajorProblem) obj);
+            return obj.GetType() == GetType() && Equals((MajorProblem) obj);
         }
 
         public override int GetHashCode()

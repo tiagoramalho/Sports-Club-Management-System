@@ -57,6 +57,8 @@ namespace CluSys.lib
                 return (Id * 397) ^ EvalId;
             }
         }
+
+        /*
         private void submitEvaluationSession(SqlConnection cn, EvaluationSession ES)
         {
             
@@ -80,12 +82,44 @@ namespace CluSys.lib
             }
 
         }
+        */
 
-        public static ObservableCollection<BodyChartMark> GetMarks(SqlConnection cn)
+        public MedicalEvaluation GetEvaluation(SqlConnection cn = null)
+        {
+            cn = cn ?? ClusysUtils.GetConnection();
+            SqlCommand cmd = new SqlCommand($"SELECT * FROM MedicalEvaluation WHERE Id={EvalId}", cn);
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            if (!reader.Read())
+                return null;
+            var evaluation = new MedicalEvaluation
+            {
+                Id = int.Parse(reader["ID"].ToString()),
+                Weightt = double.Parse(reader["Weightt"].ToString()),
+                Height = double.Parse(reader["Height"].ToString()),
+                Story = reader["Story"].ToString(),
+                OpeningDate = DateTime.Parse(reader["OpeningDate"].ToString()),
+                ClosingDate = reader["ClosingDATE"].ToString() != ""
+                    ? (DateTime?)DateTime.Parse(reader["ClosingDATE"].ToString())
+                    : null,
+                ExpectedRecoveryDate = reader["ExpectedRecovery"].ToString() != ""
+                    ? (DateTime?)DateTime.Parse(reader["ExpectedRecovery"].ToString())
+                    : null,
+                AthleteCC = reader["AthleteCC"].ToString(),
+                PhysiotherapistCC = reader["PhysiotherapistCC"].ToString(),
+            };
+
+            reader.Close();
+            return evaluation;
+        }
+
+        public ObservableCollection<BodyChartMark> GetMarks(SqlConnection cn = null)
         {
             var bodyMarks = new ObservableCollection<BodyChartMark>();
-            SqlCommand cmd = new SqlCommand("SELECT * FROM BocyChartMark", cn);
-            SqlDataReader reader = cmd.ExecuteReader();
+
+            cn = cn ?? ClusysUtils.GetConnection();
+            var cmd = new SqlCommand($"SELECT * FROM BodyChartMark WHERE EvalId={EvalId} AND SessionId={Id}", cn);
+            var reader = cmd.ExecuteReader();
 
             while (reader.Read())
                 bodyMarks.Add(new BodyChartMark
@@ -102,6 +136,72 @@ namespace CluSys.lib
             
             cn.Close();
             return bodyMarks;
+        }
+
+        public ObservableCollection<MajorProblem> GetProblems(SqlConnection cn = null)
+        {
+            var problems = new ObservableCollection<MajorProblem>();
+
+            cn = cn ?? ClusysUtils.GetConnection();
+            var cmd = new SqlCommand($"SELECT * FROM MajorProblem WHERE EvalId={EvalId} AND SessionId={Id}", cn);
+            var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+                problems.Add(new MajorProblem
+                {
+                    Id = int.Parse(reader["ID"].ToString()),
+                    Obs = reader["Obs"].ToString(),
+                    EvalId = int.Parse(reader["EvalId"].ToString()),
+                    SessionId = int.Parse(reader["SessionId"].ToString()),
+                });
+            
+            cn.Close();
+            return problems;
+        }
+
+        public ObservableCollection<TreatmentPlan> GetTreatments(SqlConnection cn = null)
+        {
+            var treatments = new ObservableCollection<TreatmentPlan>();
+
+            cn = cn ?? ClusysUtils.GetConnection();
+            var cmd = new SqlCommand($"SELECT * FROM TreatmentPlan WHERE EvalId={EvalId} AND SessionId={Id}", cn);
+            var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+                treatments.Add(new TreatmentPlan
+                {
+                    Id = int.Parse(reader["ID"].ToString()),
+                    Description= reader["Obs"].ToString(),
+                    Objective = reader["Objective"].ToString(),
+                    EvalId = int.Parse(reader["EvalId"].ToString()),
+                    SessionId = int.Parse(reader["SessionId"].ToString()),
+                    ProbId = int.Parse(reader["ProbId"].ToString()),
+                });
+            
+            cn.Close();
+            return treatments;
+        }
+
+        public ObservableCollection<SessionObservation> GetObservations(SqlConnection cn = null)
+        {
+            var observations = new ObservableCollection<SessionObservation>();
+
+            cn = cn ?? ClusysUtils.GetConnection();
+            var cmd = new SqlCommand($"SELECT * FROM SessionObs WHERE EvalId={EvalId} AND SessionId={Id}", cn);
+            var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+                observations.Add(new SessionObservation
+                {
+                    Id = int.Parse(reader["ID"].ToString()),
+                    Description = reader["Obs"].ToString(),
+                    DateClosed = reader["DateClosed"].ToString() == "" ? null : (DateTime?)DateTime.Parse(reader["DateClosed"].ToString()),
+                    EvalId = int.Parse(reader["EvalId"].ToString()),
+                    SessionId = int.Parse(reader["SessionId"].ToString()),
+                });
+            
+            cn.Close();
+            return observations;
         }
     }
 }

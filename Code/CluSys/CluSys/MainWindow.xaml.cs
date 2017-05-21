@@ -1,30 +1,17 @@
 ﻿using CluSys.lib;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Globalization;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Collections.Specialized;
-using System.Reflection;
-using System.Windows.Markup;
 using MahApps.Metro.Controls;
-using MaterialDesignThemes.Wpf;
 
 namespace CluSys
 {
@@ -54,7 +41,7 @@ namespace CluSys
             AthletesWithOpenEvaluations.ItemsSource = Athletes.AthletesWithOpenEvaluations(_cn);
 
             // Modal
-            EvaluationModal.DataContext = new ModalState();
+            EvaluationModal.DataContext = new ModalState((AthleteWithBody)AthleteContent.DataContext);
             EvaluationModal.PreviewMouseUp += (sender, args) => { if (!_withinMarkPopup) BodyChartMarkPopup.IsPopupOpen = false; };
         }
 
@@ -99,7 +86,7 @@ namespace CluSys
             if (item == null)
                 return;
 
-            var athlete = new AthleteWithBody(_cn, item.Content as Athlete);
+            var athlete = new AthleteWithBody(item.Content as Athlete, _cn);
 
             // Nothing to do if athlete already open
             if(Equals(AthleteContent.DataContext, athlete))
@@ -113,7 +100,7 @@ namespace CluSys
             // Reset the athlete's content
             ResetAthleteContent();
             // Get this athlete's evaluations
-            EvaluationsList.ItemsSource = athlete.Evaluations(_cn);
+            EvaluationsList.ItemsSource = athlete.GetEvaluations(_cn);
             // Filter them based on date
             FilterEvaluations(SliderRange);
 
@@ -127,7 +114,7 @@ namespace CluSys
             var me = (sender as Control)?.DataContext as MedicalEvaluation;
 
             SessionsExpander.DataContext = me;
-            SessionsList.ItemsSource = me?.Sessions(_cn);
+            SessionsList.ItemsSource = me?.Sessions;
             SessionsExpander.IsExpanded = true;
         }
 
@@ -156,14 +143,14 @@ namespace CluSys
                                               dr.LowerDate <= me.ClosingDate && me.ClosingDate <= dr.UpperDate));
                 };
 
-            var seView = (CollectionView) CollectionViewSource.GetDefaultView(SessionsList.ItemsSource);
-            if (seView != null)
-                seView.Filter = session =>
-                {
-                    var se = session as EvaluationSession;
+            //-var seView = (CollectionView) CollectionViewSource.GetDefaultView(SessionsList.ItemsSource);
+            //-if (seView != null)
+            //-    seView.Filter = session =>
+            //-    {
+            //-        var se = session as EvaluationSession;
 
-                    return se != null && dr.LowerDate <= se.Date && se.Date <= dr.UpperDate;
-                };
+            //-        return se != null && dr.LowerDate <= se.Date && se.Date <= dr.UpperDate;
+            //-    };
         }
 
         /******************************************************************************************************
@@ -185,6 +172,9 @@ namespace CluSys
 
             if (mark == null)
             {
+                if (ms.CanBeEdited == false)
+                    return;
+
                 mark = new BodyChartMark { ViewId = activeView.Id, X = point.X, Y = point.Y, PainLevel = 2 };
 
                 ms.Marks.Add(mark);
@@ -373,6 +363,15 @@ namespace CluSys
         private void SaveSession(object sender, RoutedEventArgs e)
         {
             SessionModal.IsOpen = false;  // close the modal
+        }
+
+        private void OpenSession(object sender, RoutedEventArgs e)
+        {
+            var session = (EvaluationSession)((Control)sender).DataContext;
+            var evaluation = session.GetEvaluation();
+
+            EvaluationModal.DataContext = new ModalState((AthleteWithBody)AthleteContent.DataContext, evaluation, session);
+            SessionModal.IsOpen = true;
         }
     }
 }

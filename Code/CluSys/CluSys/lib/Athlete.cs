@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CluSys.lib
 {
@@ -24,7 +21,20 @@ namespace CluSys.lib
         public string DominantSide { get; set; }
         public string ModalityId { get; set; }
 
-        public ObservableCollection<MedicalEvaluation> Evaluations(SqlConnection conn)
+        public int Age
+        {
+            get
+            {
+                var today = DateTime.Today;
+                var age = today.Year - Birthdate.Year;
+                age -= Birthdate > today.AddYears(-age) ? 1 : 0;
+                return age;
+            }
+        }
+
+        public Athlete() { CC = null; }
+
+        public ObservableCollection<MedicalEvaluation> GetEvaluations(SqlConnection conn)
         {
             var evaluations = new ObservableCollection<MedicalEvaluation>();
             SqlCommand cmd = new SqlCommand($"SELECT * FROM MedicalEvaluation WHERE AthleteCC={CC};", conn);
@@ -39,7 +49,7 @@ namespace CluSys.lib
                     Story = reader["Story"].ToString(),
                     OpeningDate = DateTime.Parse(reader["OpeningDate"].ToString()),
                     ClosingDate = reader["ClosingDATE"].ToString() != "" ? (DateTime?)DateTime.Parse(reader["ClosingDATE"].ToString()) : null,
-                    ExpectedRecovery = reader["ExpectedRecovery"].ToString() != "" ? (DateTime?)DateTime.Parse(reader["ExpectedRecovery"].ToString()) : null,
+                    ExpectedRecoveryDate = reader["ExpectedRecovery"].ToString() != "" ? (DateTime?)DateTime.Parse(reader["ExpectedRecovery"].ToString()) : null,
                     AthleteCC = reader["AthleteCC"].ToString(),
                     PhysiotherapistCC = reader["PhysiotherapistCC"].ToString(),
                 });
@@ -58,8 +68,7 @@ namespace CluSys.lib
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
-            return Equals((Athlete) obj);
+            return obj.GetType() == GetType() && Equals((Athlete) obj);
         }
 
         public override int GetHashCode()
@@ -67,6 +76,7 @@ namespace CluSys.lib
             return CC != null ? StringComparer.OrdinalIgnoreCase.GetHashCode(CC) : 0;
         }
 
+        /*
         public DateTime? getExpectedRecovery(SqlConnection conn) { 
             SqlCommand cmd = new SqlCommand("SELECT ExpectedRecovery FROM MedicalEvaluation WHERE AthleteCC = "+ CC +" and ClosingDATE is null; ", conn);
             SqlDataReader reader = cmd.ExecuteReader();
@@ -79,30 +89,22 @@ namespace CluSys.lib
             reader.Close();
             return DateTime.Parse(reader["ExpectedRecovery"].ToString());
         }
-        
+        */
     }
 
     [Serializable]
-    class AthleteWithBody : Athlete
+    internal class AthleteWithBody : Athlete
     {
         public double Height { get; set; }
         public double Weight { get; set; }
         public bool ActiveEvaluation { get; set; }
 
-        public AthleteWithBody(SqlConnection conn, Athlete ath)
+        public AthleteWithBody() { }
+
+        public AthleteWithBody(Athlete ath, SqlConnection conn)
         {
-            CC = ath.CC;
-            FirstName = ath.FirstName;
-            MiddleName = ath.MiddleName;
-            LastName = ath.LastName;
-            Birthdate = ath.Birthdate;
-            Photo = ath.Photo;
-            Phone = ath.Phone;
-            Email = ath.Email;
-            Password = ath.Password;
-            Job = ath.Job;
-            DominantSide = ath.DominantSide;
-            ModalityId = ath.ModalityId;
+            foreach (PropertyDescriptor item in TypeDescriptor.GetProperties(ath))
+                item.SetValue(this, item.GetValue(ath));
 
             SqlCommand cmd = new SqlCommand("SELECT Weightt, Height, ClosingDATE FROM (SELECT Weightt, Height, OpeningDate, ClosingDATE FROM MedicalEvaluation WHERE AthleteCC = " + CC + ")  AS T WHERE OpeningDate >= all(SELECT OpeningDate FROM MedicalEvaluation WHERE AthleteCC = " + CC + ");", conn);
             SqlDataReader reader = cmd.ExecuteReader();
