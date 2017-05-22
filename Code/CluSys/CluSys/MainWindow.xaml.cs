@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Globalization;
 using MahApps.Metro.Controls;
+using MaterialDesignThemes.Wpf;
 
 namespace CluSys
 {
@@ -143,14 +144,14 @@ namespace CluSys
                                               dr.LowerDate <= me.ClosingDate && me.ClosingDate <= dr.UpperDate));
                 };
 
-            //-var seView = (CollectionView) CollectionViewSource.GetDefaultView(SessionsList.ItemsSource);
-            //-if (seView != null)
-            //-    seView.Filter = session =>
-            //-    {
-            //-        var se = session as EvaluationSession;
+            var seView = (CollectionView) CollectionViewSource.GetDefaultView(SessionsList.ItemsSource);
+            if (seView != null)
+                seView.Filter = session =>
+                {
+                    var se = session as EvaluationSession;
 
-            //-        return se != null && dr.LowerDate <= se.Date && se.Date <= dr.UpperDate;
-            //-    };
+                    return se != null && dr.LowerDate <= se.Date && se.Date <= dr.UpperDate;
+                };
         }
 
         /******************************************************************************************************
@@ -168,7 +169,7 @@ namespace CluSys
             var activeView = ms.ActiveView;
             var point = new Point(e.GetPosition(BodyChart).X - BodyChartMark.DrawRadius, e.GetPosition(BodyChart).Y - BodyChartMark.DrawRadius);
 
-            BodyChartMark mark = ms.Marks.FirstOrDefault(m => Point.Subtract(point, new Point(m.X, m.Y)).Length < 4 * BodyChartMark.DrawRadius);
+            var mark = ms.Marks.FirstOrDefault(m => Point.Subtract(point, new Point(m.X, m.Y)).Length < 4 * BodyChartMark.DrawRadius);
 
             if (mark == null)
             {
@@ -231,7 +232,7 @@ namespace CluSys
         private void LeftView(object sender, RoutedEventArgs e)
         {
             var ms = (ModalState) EvaluationModal.DataContext;
-            var newIdx = ms.ActiveViewIdx + 1;  // or overflow
+            var newIdx = ms.ActiveViewIdx + 1;
 
             RotateView(ms, newIdx >= ms.Views.Count ? 0 : newIdx);
         }
@@ -239,7 +240,7 @@ namespace CluSys
         private void RightView(object sender, RoutedEventArgs e)
         {
             var ms = (ModalState) EvaluationModal.DataContext;
-            var newIdx = ms.ActiveViewIdx - 1;  // or "underflow"
+            var newIdx = ms.ActiveViewIdx - 1;
 
             RotateView(ms, newIdx < 0 ? ms.Views.Count - 1 : newIdx);
         }
@@ -360,8 +361,7 @@ namespace CluSys
             ms.Observations.Remove(obs);
         }
 
-        private void SaveSession(object sender, RoutedEventArgs e)
-        {
+        private void SaveSession(object sender, RoutedEventArgs e) {
             SessionModal.IsOpen = false;  // close the modal
         }
 
@@ -373,5 +373,29 @@ namespace CluSys
             EvaluationModal.DataContext = new ModalState((AthleteWithBody)AthleteContent.DataContext, evaluation, session);
             SessionModal.IsOpen = true;
         }
+
+        private void NewSession(object sender, RoutedEventArgs e)
+        {
+            EvaluationModal.DataContext = new ModalState((AthleteWithBody)AthleteContent.DataContext);
+            SessionModal.IsOpen = true;
+        }
+
+        private void TryClickOutOfModal(object sender, MouseButtonEventArgs e)
+        {
+            if (_withinMarkPopup)
+                return;
+            else
+                BodyChartMarkPopup.IsPopupOpen = false;
+
+            if (SessionModal.IsOpen && !EvaluationModal.IsMouseOver)
+            {
+                if (((ModalState) EvaluationModal.DataContext).CanBeEdited)
+                    EvaluationModal.IsTopDrawerOpen = true;
+                else
+                    SessionModal.IsOpen = false;
+            }
+        }
+
+        private void CloseDrawerAndModal(object sender, RoutedEventArgs e) { EvaluationModal.IsTopDrawerOpen = SessionModal.IsOpen = false; }
     }
 }
