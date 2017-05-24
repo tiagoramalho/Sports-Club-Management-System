@@ -145,7 +145,7 @@ CREATE TABLE MedicalEvaluation (
 
 CREATE TABLE EvaluationSession (
   EvalId INT  NOT NULL,
-  Id     INT  NOT NULL, -- sequential within the evaluation
+  Id     INT  NOT NULL DEFAULT -1, -- sequential within the evaluation
   Date   DATE NOT NULL,
 
   PRIMARY KEY (EvalId, Id),
@@ -153,7 +153,7 @@ CREATE TABLE EvaluationSession (
 );
 
 CREATE TABLE Annotation (
-  Symbol  VARCHAR(10) NOT NULL,
+  Symbol  VARCHAR(25) NOT NULL,
   Meaning NVARCHAR(50),
 
   PRIMARY KEY (Symbol)
@@ -184,7 +184,7 @@ CREATE TABLE BodyChartMark (
 
 CREATE TABLE BodyAnnotation (
   BodyId   INT         NOT NULL,
-  AnnotSym VARCHAR(10) NOT NULL,
+  AnnotSym VARCHAR(25) NOT NULL,
 
   PRIMARY KEY (BodyId, AnnotSym),
   FOREIGN KEY (BodyId) REFERENCES BodyChartMark (Id),
