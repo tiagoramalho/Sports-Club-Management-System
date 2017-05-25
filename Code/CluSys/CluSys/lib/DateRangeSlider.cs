@@ -1,7 +1,5 @@
 using System;
-using System.ComponentModel;
 using System.Globalization;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using MahApps.Metro.Controls;
@@ -60,10 +58,7 @@ namespace CluSys.lib
     {
         private readonly DateRangeSlider _drs;
 
-        public DateRangeConverter(DateRangeSlider drs)
-        {
-            _drs = drs;
-        }
+        public DateRangeConverter(DateRangeSlider drs) { _drs = drs; }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

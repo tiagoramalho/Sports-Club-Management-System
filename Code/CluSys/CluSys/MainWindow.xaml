@@ -39,7 +39,7 @@
         <lib:PainToColorConverter x:Key="PainToColorConverter" />
         <lib:FirstUpperStringConverter x:Key="FirstUpperStringConverter" />
     </Window.Resources>
-    <materialDesign:DialogHost x:Name="SessionModal">
+    <materialDesign:DialogHost x:Name="SessionModal" PreviewMouseUp="TryClickOutOfModal">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100px" />
@@ -147,7 +147,7 @@
                                             <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
 
-                                        <TextBlock Text="{Binding Path=name}"
+                                        <TextBlock Text="{Binding Path=Name}"
                                            Foreground="White" Background="{DynamicResource PrimaryHueMidBrush}"
                                            FontWeight="Bold" Padding="8 24 8 0" />
                                         <ListBox Grid.Row="1" Margin="8 24 8 0" PreviewMouseUp="OpenAthlete"
@@ -184,7 +184,7 @@
                 </ScrollViewer>
             </Grid>
 
-            <ContentControl x:Name="AthleteContent" Visibility="Hidden" Grid.Column="1" Margin="8" d:DataContext="{d:DesignInstance lib:AthleteWithBody}">
+            <ContentControl x:Name="AthleteContent" Visibility="Hidden" Grid.Column="1" Margin="8" d:DataContext="{d:DesignInstance lib:Athlete}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -220,7 +220,7 @@
                     </DockPanel>
 
                     <GroupBox Grid.Row="2" Header="Sessões" Margin="16">
-                    <!--
+                        <!--
                         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                             <ItemsControl x:Name="EvaluationsList">
                                 <ItemsControl.ItemTemplate>
@@ -322,7 +322,7 @@
                                 </ItemsControl>
                                 <Button Grid.Column="1" Style="{DynamicResource MaterialDesignFloatingActionMiniDarkButton}"
                                         Margin="8" HorizontalAlignment="Center" ToolTip="Nova avaliação/sessão"
-                                        Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
+                                        Click="NewSession">
                                     <materialDesign:PackIcon Kind="Plus" Height="24" Width="24" />
                                 </Button>
                             </Grid>
@@ -372,7 +372,7 @@
                                     </ItemsControl>
                                     <Button Grid.Column="1" Visibility="{Binding Converter={StaticResource NewSessionVisibilityConverter}}" Style="{DynamicResource MaterialDesignFloatingActionMiniButton}"
                                         Margin="8" HorizontalAlignment="Center" ToolTip="Nova sessão"
-                                        Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
+                                        Click="NewSession">
                                         <materialDesign:PackIcon Kind="Plus" Height="24" Width="24" />
                                     </Button>
                                 </Grid>
@@ -420,71 +420,70 @@
         </Grid>
 
         <materialDesign:DialogHost.DialogContent>
-            <ScrollViewer x:Name="EvaluationModal" Width="480" Height="720" VerticalScrollBarVisibility="Auto"
-                          Background="{DynamicResource MaterialDesignPaper}"
-                          d:DataContext="{d:DesignInstance lib:ModalState}">
-                <StackPanel Margin="24" HorizontalAlignment="Stretch">
-                    <TextBlock Margin="16" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" Text="Dados da Avaliação Clínica" />
+            <materialDesign:DrawerHost x:Name="EvaluationModal" d:DataContext="{d:DesignInstance lib:ModalState}">
+                <ScrollViewer Width="480" Height="720" VerticalScrollBarVisibility="Auto" Background="{DynamicResource MaterialDesignPaper}">
+                    <StackPanel Margin="24" HorizontalAlignment="Stretch">
+                        <TextBlock Margin="16" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" Text="Dados da Avaliação Clínica" />
 
-                    <DockPanel Margin="16" VerticalAlignment="Center">
-                        <materialDesign:PackIcon Margin="4 0 4 0" Kind="Weight" Foreground="{Binding ElementName=WeightBox, Path=BorderBrush}" />
-                        <TextBox x:Name="WeightBox" IsEnabled="{Binding Path=CanBeEdited}" materialDesign:HintAssist.Hint="Peso (kg)">
-                            <TextBox.Text>
-                                <Binding Path="Athlete.Weight" UpdateSourceTrigger="PropertyChanged">
-                                    <Binding.ValidationRules>
-                                        <lib:GreaterThanZeroValudationRule ValidatesOnTargetUpdated="True" />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
+                        <DockPanel Margin="16" VerticalAlignment="Center">
+                            <materialDesign:PackIcon Margin="4 0 4 0" Kind="Weight" Foreground="{Binding ElementName=WeightBox, Path=BorderBrush}" />
+                            <TextBox x:Name="WeightBox" IsEnabled="{Binding Path=CanBeEdited}" materialDesign:HintAssist.Hint="Peso (kg)">
+                                <TextBox.Text>
+                                    <Binding Path="Athlete.Weight" UpdateSourceTrigger="PropertyChanged">
+                                        <Binding.ValidationRules>
+                                            <lib:GreaterThanZeroValudationRule ValidatesOnTargetUpdated="True" />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
 
-                        <materialDesign:PackIcon Margin="12 0 4 0" Kind="Ruler" Foreground="{Binding ElementName=HeightBox, Path=BorderBrush}" />
-                        <TextBox x:Name="HeightBox" IsEnabled="{Binding Path=CanBeEdited}" materialDesign:HintAssist.Hint="Altura (m)">
-                            <TextBox.Text>
-                                <Binding Path="Athlete.Height" UpdateSourceTrigger="PropertyChanged">
-                                    <Binding.ValidationRules>
-                                        <lib:GreaterThanZeroValudationRule ValidatesOnTargetUpdated="True" />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
+                            <materialDesign:PackIcon Margin="12 0 4 0" Kind="Ruler" Foreground="{Binding ElementName=HeightBox, Path=BorderBrush}" />
+                            <TextBox x:Name="HeightBox" IsEnabled="{Binding Path=CanBeEdited}" materialDesign:HintAssist.Hint="Altura (m)">
+                                <TextBox.Text>
+                                    <Binding Path="Athlete.Height" UpdateSourceTrigger="PropertyChanged">
+                                        <Binding.ValidationRules>
+                                            <lib:GreaterThanZeroValudationRule ValidatesOnTargetUpdated="True" />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
 
-                        <DatePicker Width="100" DockPanel.Dock="Right" Margin="12 0 4 0" SelectedDate="{Binding Path=Session.Date}"  
+                            <DatePicker Width="100" DockPanel.Dock="Right" Margin="12 0 4 0" SelectedDate="{Binding Path=Session.Date}"  
                                     IsEnabled="{Binding Path=CanBeEdited}"
                                     HorizontalAlignment="Right"
                                     
                                     materialDesign:HintAssist.Hint="Data da avaliação"
                                     Style="{DynamicResource MaterialDesignFloatingHintDatePicker}" />
-                    </DockPanel>
+                        </DockPanel>
 
-                    <TextBox TextWrapping="Wrap" Height="50" VerticalAlignment="Stretch" Margin="16 8 16 16"
+                        <TextBox TextWrapping="Wrap" Height="50" VerticalAlignment="Stretch" Margin="16 8 16 16"
                              IsEnabled="{Binding Path=CanBeEdited}"
                              AcceptsReturn="True"                 
                              Text="{Binding Path=Evaluation.Story}"
                              SpellCheck.IsEnabled="True"
                              VerticalScrollBarVisibility="Auto"
                              materialDesign:HintAssist.Hint="História da lesão" />
-                    
-                    <GroupBox Header="Body chart" Margin="16">
-                        <DockPanel LastChildFill="True" Margin="0 0 0 32">
-                            <Button DockPanel.Dock="Left" PreviewMouseUp="LeftView" Style="{DynamicResource MaterialDesignToolButton}" materialDesign:RippleAssist.IsDisabled="True">
-                                <materialDesign:PackIcon Kind="ArrowLeft"  />
-                            </Button>
-                            <Button DockPanel.Dock="Right" PreviewMouseUp="RightView" Style="{DynamicResource MaterialDesignToolButton}" materialDesign:RippleAssist.IsDisabled="True">
-                                <materialDesign:PackIcon Kind="ArrowRight" />
-                            </Button>
-                            <materialDesign:PopupBox x:Name="BodyChartMarkPopup" DockPanel.Dock="Top" Visibility="Hidden" StaysOpen="True" HorizontalAlignment="Right"
+
+                        <GroupBox Header="Body chart" Margin="16">
+                            <DockPanel LastChildFill="True" Margin="0 0 0 32">
+                                <Button DockPanel.Dock="Left" PreviewMouseUp="LeftView" Style="{DynamicResource MaterialDesignToolButton}" materialDesign:RippleAssist.IsDisabled="True">
+                                    <materialDesign:PackIcon Kind="ArrowLeft"  />
+                                </Button>
+                                <Button DockPanel.Dock="Right" PreviewMouseUp="RightView" Style="{DynamicResource MaterialDesignToolButton}" materialDesign:RippleAssist.IsDisabled="True">
+                                    <materialDesign:PackIcon Kind="ArrowRight" />
+                                </Button>
+                                <materialDesign:PopupBox x:Name="BodyChartMarkPopup" DockPanel.Dock="Top" Visibility="Hidden" StaysOpen="True" HorizontalAlignment="Right"
                                                      MouseLeave="BodyChartMarkPopup_OnMouseLeave" MouseEnter="BodyChartMarkPopup_OnMouseEnter"
                                                      d:DataContext="{d:DesignInstance lib:BodyChartMark}">
-                                <StackPanel>
-                                    <ListBox x:Name="AnnotationsList" IsEnabled="{Binding ElementName=EvaluationModal, Path=DataContext.CanBeEdited}" SelectionChanged="AnnotationSelectionChanged" Margin="8" ItemsSource="{Binding ElementName=EvaluationModal, Path=DataContext.Annotations}" SelectionMode="Extended" Style="{DynamicResource MaterialDesignToolToggleFlatListBox}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <materialDesign:PackIcon Kind="{Binding Path=Symbol}" materialDesign:HintAssist.Hint="{Binding Path=Meaning}" />
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ListBox>
-                                    <TextBox Margin="8" TextWrapping="Wrap" VerticalAlignment="Stretch"
+                                    <StackPanel>
+                                        <ListBox x:Name="AnnotationsList" IsEnabled="{Binding ElementName=EvaluationModal, Path=DataContext.CanBeEdited}" SelectionChanged="AnnotationSelectionChanged" Margin="8" ItemsSource="{Binding ElementName=EvaluationModal, Path=DataContext.Annotations}" SelectionMode="Extended" Style="{DynamicResource MaterialDesignToolToggleFlatListBox}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <materialDesign:PackIcon Kind="{Binding Path=Symbol}" materialDesign:HintAssist.Hint="{Binding Path=Meaning}" />
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ListBox>
+                                        <TextBox Margin="8" TextWrapping="Wrap" VerticalAlignment="Stretch"
                                              Width="280" Height="65"
                                              AcceptsReturn="True"                 
                                              IsEnabled="{Binding ElementName=EvaluationModal, Path=DataContext.CanBeEdited}"
@@ -492,222 +491,246 @@
                                              VerticalScrollBarVisibility="Auto"
                                              SpellCheck.IsEnabled="True"
                                              materialDesign:HintAssist.Hint="Descrição" />
-                                    <materialDesign:RatingBar Max="10" IsEnabled="{Binding ElementName=EvaluationModal, Path=DataContext.CanBeEdited}" Value="{Binding Path=PainLevel, Mode=TwoWay}" Margin="8" Orientation="Horizontal" HorizontalAlignment="Center">
-                                        <materialDesign:RatingBar.ValueItemTemplate>
-                                            <DataTemplate DataType="sys:Int32">
-                                                <Grid Margin="2">
-                                                    <materialDesign:PackIcon Kind="CheckboxBlankCircle" Height="24" Width="24" Foreground="{Binding Converter={StaticResource PainToColorConverter}}" />
-                                                    <TextBlock Text="{Binding}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="8" Foreground="{DynamicResource PrimaryHueMidForegroundBrush}" />
-                                                </Grid>
-                                            </DataTemplate>
-                                        </materialDesign:RatingBar.ValueItemTemplate>
-                                    </materialDesign:RatingBar>
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                        <Button Click="DeleteMark" IsEnabled="{Binding ElementName=EvaluationModal, Path=DataContext.CanBeEdited}" Margin="8 -2 4 8" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="MaterialDesignFlatButton">
-                                            <StackPanel Orientation="Horizontal">
-                                                <materialDesign:PackIcon Margin="0 0 8 0" Kind="Delete" />
-                                                <TextBlock Text="Apagar" />
-                                            </StackPanel>
-                                        </Button>
-                                        <Button Click="SaveMark" IsEnabled="{Binding ElementName=EvaluationModal, Path=DataContext.CanBeEdited}" Margin="4 -2 8 8" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="MaterialDesignFlatButton">
-                                            <StackPanel Orientation="Horizontal">
-                                                <materialDesign:PackIcon Margin="0 0 8 0" Kind="ContentSave" />
-                                                <TextBlock Text="Guardar" />
-                                            </StackPanel>
-                                        </Button>
+                                        <materialDesign:RatingBar Max="10" IsEnabled="{Binding ElementName=EvaluationModal, Path=DataContext.CanBeEdited}" Value="{Binding Path=PainLevel, Mode=TwoWay}" Margin="8" Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <materialDesign:RatingBar.ValueItemTemplate>
+                                                <DataTemplate DataType="sys:Int32">
+                                                    <Grid Margin="2">
+                                                        <materialDesign:PackIcon Kind="CheckboxBlankCircle" Height="24" Width="24" Foreground="{Binding Converter={StaticResource PainToColorConverter}}" />
+                                                        <TextBlock Text="{Binding}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="8" Foreground="{DynamicResource PrimaryHueMidForegroundBrush}" />
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </materialDesign:RatingBar.ValueItemTemplate>
+                                        </materialDesign:RatingBar>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                            <Button Click="DeleteMark" IsEnabled="{Binding ElementName=EvaluationModal, Path=DataContext.CanBeEdited}" Margin="8 -2 4 8" Style="{DynamicResource MaterialDesignFlatButton}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <materialDesign:PackIcon Margin="0 0 8 0" Kind="Delete" />
+                                                    <TextBlock Text="Apagar" />
+                                                </StackPanel>
+                                            </Button>
+                                            <Button Click="SaveMark" IsEnabled="{Binding ElementName=EvaluationModal, Path=DataContext.CanBeEdited}" Margin="4 -2 8 8" Style="{DynamicResource MaterialDesignFlatButton}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <materialDesign:PackIcon Margin="0 0 8 0" Kind="ContentSave" />
+                                                    <TextBlock Text="Guardar" />
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
                                     </StackPanel>
-                                </StackPanel>
-                            </materialDesign:PopupBox>
-                            <Canvas x:Name="BodyChartCanvas" Width="300" Height="600" Margin="8 0 8 0">
-                                <Image x:Name="BodyChart" Width="300" Height="600" DataContext="{Binding Path=ActiveView}" Source="{Binding Path=ImageBody}" HorizontalAlignment="Center" Mouse.MouseUp="BodyChartClick" />
-                            </Canvas>
-                        </DockPanel>
-                    </GroupBox>
+                                </materialDesign:PopupBox>
+                                <Canvas x:Name="BodyChartCanvas" Width="300" Height="600" Margin="8 0 8 0">
+                                    <Image x:Name="BodyChart" Width="300" Height="600" DataContext="{Binding Path=ActiveView}" Source="{Binding Path=Image}" HorizontalAlignment="Center" Mouse.MouseUp="BodyChartClick" />
+                                </Canvas>
+                            </DockPanel>
+                        </GroupBox>
 
-                    <GroupBox Header="Problemas" Margin="16">
-                        <StackPanel>
-                            <ItemsControl x:Name="ProblemsList" Margin="16 8 16 12" ItemsSource="{Binding Path=Problems}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border Padding="8" BorderThickness="0 0 0 1" BorderBrush="{DynamicResource MaterialDesignDivider}">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*" />
-                                                    <ColumnDefinition Width="Auto" />
-                                                </Grid.ColumnDefinitions>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto" />
-                                                    <RowDefinition Height="Auto" />
-                                                </Grid.RowDefinitions>
-                                                <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Path=CountId, StringFormat={}Problema {0}}" FontWeight="Bold" />
-                                                <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding Path=Obs}" />
-                                                <Button DataContext="{Binding}" Click="DeleteProblem" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Style="{DynamicResource MaterialDesignToolButton}"
-                                                        IsEnabled="{Binding ElementName=EvaluationModal, Path=DataContext.CanBeEdited}"
+                        <GroupBox Header="Problemas" Margin="16">
+                            <StackPanel>
+                                <ItemsControl x:Name="ProblemsList" Margin="16 8 16 12" ItemsSource="{Binding Path=Problems}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Padding="8" BorderThickness="0 0 0 1" BorderBrush="{DynamicResource MaterialDesignDivider}">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+                                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Path=CountId, StringFormat={}Problema {0}}" FontWeight="Bold" />
+                                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding Path=Description}" />
+                                                    <Button DataContext="{Binding}" Click="DeleteProblem" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Style="{DynamicResource MaterialDesignToolButton}"
+                                                        Visibility="{Binding ElementName=EvaluationModal, Path=DataContext.CanBeEdited, Converter={StaticResource BooleanToVisibilityConverter}}"
                                                         Margin="8" HorizontalAlignment="Center" ToolTip="Apagar problema">
-                                                    <materialDesign:PackIcon Kind="MinusCircle" />
-                                                </Button>
-                                            </Grid>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                            <Grid Visibility="{Binding Path=CanBeEdited, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <TextBox Grid.ColumnSpan="2" TextWrapping="Wrap" Height="40" Margin="16 4 16 0"
+                                                        <materialDesign:PackIcon Kind="MinusCircle" />
+                                                    </Button>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <Grid Visibility="{Binding Path=CanBeEdited, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <TextBox Grid.ColumnSpan="2" TextWrapping="Wrap" Height="40" Margin="16 4 16 0"
                                      x:Name="NewProblemText"
                                      AcceptsReturn="True"                 
                                      SpellCheck.IsEnabled="True"
                                      VerticalScrollBarVisibility="Auto"
                                      materialDesign:HintAssist.Hint="Novo problema" />
-                                <Button Grid.Row="1" Grid.Column="1" Margin="16 12 16 12" HorizontalAlignment="Center" VerticalAlignment="Center" Click="AddProblem" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="Adicionar novo problema">Adicionar</Button>
-                            </Grid>
-                        </StackPanel>
-                    </GroupBox>
+                                    <Button Grid.Row="1" Grid.Column="1" Margin="16 12 16 12" HorizontalAlignment="Center" VerticalAlignment="Center" Click="AddProblem" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="Adicionar novo problema">Adicionar</Button>
+                                </Grid>
+                            </StackPanel>
+                        </GroupBox>
 
-                    <GroupBox Header="Tratamentos" Margin="16">
-                        <StackPanel>
-                            <ItemsControl ItemsSource="{Binding Path=Treatments}" Margin="16 8 16 16" x:Name="TreatmentsList">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border Padding="8" BorderThickness="0 0 0 1" BorderBrush="{DynamicResource MaterialDesignDivider}">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*" />
-                                                    <ColumnDefinition Width="Auto" />
-                                                </Grid.ColumnDefinitions>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto" />
-                                                    <RowDefinition Height="Auto" />
-                                                    <RowDefinition Height="Auto" />
-                                                </Grid.RowDefinitions>
-                                                <TextBlock Grid.Row="0" Grid.Column="0" FontWeight="DemiBold" Text="{Binding Path=Description}" />
-                                                <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding Path=Objective}" />
-                                                <TextBlock Grid.Row="2" Grid.Column="0" Text="{Binding Path=RefProblem, Converter={StaticResource RefProblemConverter}}" />
-                                                <Button DataContext="{Binding}" IsEnabled="{Binding ElementName=EvaluationModal, Path=DataContext.CanBeEdited}" Click="DeleteTreatment" Grid.Row="0" Grid.Column="1" Grid.RowSpan="3" Style="{DynamicResource MaterialDesignToolButton}" Margin="8" HorizontalAlignment="Center" ToolTip="Apagar tratamento">
-                                                    <materialDesign:PackIcon Kind="MinusCircle" />
-                                                </Button>
-                                            </Grid>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                            <Grid Visibility="{Binding Path=CanBeEdited, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
+                        <GroupBox Header="Tratamentos" Margin="16">
+                            <StackPanel>
+                                <ItemsControl ItemsSource="{Binding Path=Treatments}" Margin="16 8 16 16" x:Name="TreatmentsList">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Padding="8" BorderThickness="0 0 0 1" BorderBrush="{DynamicResource MaterialDesignDivider}">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+                                                    <TextBlock Grid.Row="0" Grid.Column="0" FontWeight="DemiBold" Text="{Binding Path=Description}" />
+                                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding Path=Objective}" />
+                                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="{Binding Path=RefProblem, Converter={StaticResource RefProblemConverter}}" />
+                                                    <Button DataContext="{Binding}" Visibility="{Binding ElementName=EvaluationModal, Path=DataContext.CanBeEdited, Converter={StaticResource BooleanToVisibilityConverter}}" Click="DeleteTreatment" Grid.Row="0" Grid.Column="1" Grid.RowSpan="3" Style="{DynamicResource MaterialDesignToolButton}" Margin="8" HorizontalAlignment="Center" ToolTip="Apagar tratamento">
+                                                        <materialDesign:PackIcon Kind="MinusCircle" />
+                                                    </Button>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <Grid Visibility="{Binding Path=CanBeEdited, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
 
-                                <TextBox TextWrapping="Wrap" Grid.ColumnSpan="2" Height="40" VerticalAlignment="Stretch" Margin="16 4 16 0"
+                                    <TextBox TextWrapping="Wrap" Grid.ColumnSpan="2" Height="40" VerticalAlignment="Stretch" Margin="16 4 16 0"
                                      x:Name="NewTreatmentDescription"
                                      AcceptsReturn="True"                 
                                      SpellCheck.IsEnabled="True"
                                      VerticalScrollBarVisibility="Auto"
                                      materialDesign:HintAssist.Hint="Descrição" />
-                                <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="Wrap" Height="40" VerticalAlignment="Stretch" Margin="16 4 16 0"
+                                    <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="Wrap" Height="40" VerticalAlignment="Stretch" Margin="16 4 16 0"
                                      x:Name="NewTreatmentObjective"
                                      AcceptsReturn="True"                 
                                      SpellCheck.IsEnabled="True"
                                      VerticalScrollBarVisibility="Auto"
                                      materialDesign:HintAssist.Hint="Objetivo" />
-                                <ComboBox Grid.Row="2" Grid.Column="0" Width="100" materialDesign:HintAssist.Hint="Problema" 
+                                    <ComboBox Grid.Row="2" Grid.Column="0" Width="100" materialDesign:HintAssist.Hint="Problema" 
                                           x:Name="NewTreatmentRefProblem"
                                           Margin="16 4 16 16"
                                           HorizontalAlignment="Left"
                                           VerticalAlignment="Center"
                                           ItemsSource="{Binding Path=Problems}"
                                           Style="{DynamicResource MaterialDesignFloatingHintComboBox}">
-                                    <ComboBox.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <VirtualizingStackPanel />
-                                        </ItemsPanelTemplate>
-                                    </ComboBox.ItemsPanel>
-                                    <ComboBox.ItemTemplate>
+                                        <ComboBox.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <VirtualizingStackPanel />
+                                            </ItemsPanelTemplate>
+                                        </ComboBox.ItemsPanel>
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Path=CountId}" />
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                    <Button Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="16 4 16 0" Click="AddTreatment" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="Adicionar tratamento">Adicionar</Button>
+                                </Grid>
+                            </StackPanel>
+                        </GroupBox>
+
+                        <GroupBox Header="Cuidados a ter" Margin="16">
+                            <StackPanel>
+                                <ItemsControl x:Name="ObservationsList" Margin="16 8 16 16" ItemsSource="{Binding Path=Observations}">
+                                    <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding Path=CountId}" />
-                                        </DataTemplate>
-                                    </ComboBox.ItemTemplate>
-                                </ComboBox>
-                                <Button Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="16 4 16 0" Click="AddTreatment" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="Adicionar tratamento">Adicionar</Button>
-                            </Grid>
-                        </StackPanel>
-                    </GroupBox>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
 
-                    <GroupBox Header="Cuidados a ter" Margin="16">
-                        <StackPanel>
-                            <ItemsControl x:Name="ObservationsList" Margin="16 8 16 16" ItemsSource="{Binding Path=Observations}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="Auto" />
-                                            </Grid.ColumnDefinitions>
-
-                                            <Border BorderThickness="0 0 0 1" BorderBrush="{DynamicResource MaterialDesignDivider}">
-                                                <TextBlock VerticalAlignment="Center" Text="{Binding Path=Description}" />
-                                            </Border>
-                                            <Button IsEnabled="{Binding ElementName=EvaluationModal, Path=DataContext.CanBeEdited}" DataContext="{Binding}" VerticalAlignment="Center" Click="DeleteObservation" Style="{DynamicResource MaterialDesignToolButton}"
+                                                <Border BorderThickness="0 0 0 1" BorderBrush="{DynamicResource MaterialDesignDivider}">
+                                                    <TextBlock VerticalAlignment="Center" Text="{Binding Path=Obs}" />
+                                                </Border>
+                                                <Button Visibility="{Binding ElementName=EvaluationModal, Path=DataContext.CanBeEdited, Converter={StaticResource BooleanToVisibilityConverter}}" DataContext="{Binding}" VerticalAlignment="Center" Click="DeleteObservation" Style="{DynamicResource MaterialDesignToolButton}"
                                                         Margin="16 0 -4 -12" HorizontalAlignment="Center" Grid.Column="1" ToolTip="Apagar observação">
-                                                <materialDesign:PackIcon Kind="MinusCircle" />
-                                            </Button>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                            <Grid Visibility="{Binding Path=CanBeEdited, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
+                                                    <materialDesign:PackIcon Kind="MinusCircle" />
+                                                </Button>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <Grid Visibility="{Binding Path=CanBeEdited, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
 
-                                <TextBox TextWrapping="Wrap" Height="40" VerticalAlignment="Stretch" Margin="16"
+                                    <TextBox Grid.ColumnSpan="2" TextWrapping="Wrap" Height="40" VerticalAlignment="Stretch" Margin="16"
                                      x:Name="NewObservationText"
                                      AcceptsReturn="True"                 
                                      SpellCheck.IsEnabled="True"
                                      VerticalScrollBarVisibility="Auto"
                                      materialDesign:HintAssist.Hint="Novo problema" />
-                                <Button Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 0 12 -12" Click="AddObservation" Style="{DynamicResource MaterialDesignToolButton}" ToolTip="Adicionar nova observação">
-                                    <materialDesign:PackIcon Kind="PlusCircle" />
-                                </Button>
-                            </Grid>
-                        </StackPanel>
-                    </GroupBox>
+                                    <Button Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="16 4 16 0" Click="AddObservation" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="Adicionar nova observação">Adicionar</Button>
+                                </Grid>
+                            </StackPanel>
+                        </GroupBox>
 
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <CheckBox IsEnabled="{Binding Path=CanBeEdited}" Margin="16" IsChecked="{Binding MedicalDischarge}">Alta médica</CheckBox>
-                        <DatePicker Width="180" Grid.Column="1" Margin="16"  
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <CheckBox IsEnabled="{Binding Path=CanBeEdited}" Margin="16" IsChecked="{Binding MedicalDischarge}">Alta médica</CheckBox>
+                            <DatePicker Width="180" Grid.Column="1" Margin="16"  
                                     SelectedDate="{Binding Evaluation.ExpectedRecoveryDate}"
                                     HorizontalAlignment="Right"
                                     materialDesign:HintAssist.Hint="Expectativa de recuperação"
                                     Style="{DynamicResource MaterialDesignFloatingHintDatePicker}">
-                            <DatePicker.IsEnabled>
-                                <MultiBinding Converter="{StaticResource ExpectedRecoveryPickerEnabledConverter}">
-                                    <Binding Path="CanBeEdited" />
-                                    <Binding Path="MedicalDischarge" />
-                                </MultiBinding>
-                            </DatePicker.IsEnabled>
-                        </DatePicker>
+                                <DatePicker.IsEnabled>
+                                    <MultiBinding Converter="{StaticResource ExpectedRecoveryPickerEnabledConverter}">
+                                        <Binding Path="CanBeEdited" />
+                                        <Binding Path="MedicalDischarge" />
+                                    </MultiBinding>
+                                </DatePicker.IsEnabled>
+                            </DatePicker>
+                        </Grid>
+                        <Button Visibility="{Binding Path=CanBeEdited, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="16 16 16 0" Click="SaveSession" HorizontalAlignment="Right" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="Adicionar sessão">Guardar</Button>
+                    </StackPanel>
+                </ScrollViewer>
+                <materialDesign:DrawerHost.TopDrawerContent>
+                    <Grid Margin="16" HorizontalAlignment="Center">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.ColumnSpan="3" Margin="4" VerticalAlignment="Center">Sair da sessão? Alterações serão perdidas.</TextBlock>
+                        <Button Grid.Row="1" Grid.Column="1" Command="{x:Static materialDesign:DrawerHost.CloseDrawerCommand}" Style="{DynamicResource MaterialDesignFlatButton}"
+                                Margin="4" VerticalAlignment="Center">
+                            Não
+                        </Button>
+                        <Button Grid.Row="1" Grid.Column="2" Click="CloseDrawerAndModal" Style="{DynamicResource MaterialDesignFlatButton}"
+                                Margin="4" VerticalAlignment="Center">
+                            Sim
+                        </Button>
                     </Grid>
-
-                    <Button IsEnabled="{Binding Path=CanBeEdited}" Margin="16 16 16 0" Click="SaveSession" HorizontalAlignment="Right" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="Adicionar sessão">Guardar</Button>
-                </StackPanel>
-            </ScrollViewer>
+                </materialDesign:DrawerHost.TopDrawerContent>
+            </materialDesign:DrawerHost>
         </materialDesign:DialogHost.DialogContent>
     </materialDesign:DialogHost>
 </metro:MetroWindow>

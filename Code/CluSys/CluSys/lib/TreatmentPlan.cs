@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Data.SqlClient;
 using System.Globalization;
-using System.Windows;
 using System.Windows.Data;
 
 namespace CluSys.lib
@@ -16,27 +14,6 @@ namespace CluSys.lib
         public int ProbId { get; set; }
 
         public MajorProblem RefProblem { get; set; }
-
-        private void InsertTreatmentPlan(SqlConnection cn)
-        {
-            SqlCommand cmd = new SqlCommand();
-            cmd.CommandText = "INSERT INTO TreatmentPlan (Obs, Objective, EvalId, SessionId, ProbId) " + "VALUES (@Obs, @Objective, @EvalId, @SessionId, @ProbId)";
-            cmd.Parameters.AddWithValue("@Obs", Description);
-            cmd.Parameters.AddWithValue("@objective", Objective);
-            cmd.Parameters.AddWithValue("@EvalId", EvalId);
-            cmd.Parameters.AddWithValue("@SessionId", SessionId);
-            cmd.Parameters.AddWithValue("@ProbId", ProbId);
-            cmd.Connection = cn;
-
-            try
-            {
-                cmd.ExecuteNonQuery();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to Insert TreatmentPlan in database. \n ERROR MESSAGE: \n" + ex.Message);
-            }
-        }
     }
 
     public sealed class RefProblemConverter : IValueConverter
@@ -51,9 +28,6 @@ namespace CluSys.lib
             return id > 0 ? $"Prob.: {id}" : "Prob.: n/a";
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) { throw new NotImplementedException(); }
     }
 }

@@ -1,8 +1,6 @@
 ﻿using CluSys.lib;
 using System;
 using System.Collections.ObjectModel;
-using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,14 +15,12 @@ namespace CluSys
 {
     public partial class MainWindow
     {
-        private SqlConnection _cn;
         private bool _withinMarkPopup = false;
         private readonly ObservableCollection<Athlete> _openAthletes;
 
         public MainWindow()
         {
             // Init
-            OpenConnection();
             _openAthletes = new ObservableCollection<Athlete>();
 
             InitializeComponent();
@@ -37,23 +33,12 @@ namespace CluSys
             BindingOperations.GetBinding(MaxDateRange, DatePicker.SelectedDateProperty)?.ValidationRules.Add(SliderRange.MaxDateValidator);
 
             OpenAthletesList.ItemsSource = _openAthletes;  // empty on start
-            ModalityList.ItemsSource = Modalities.LoadSQL(_cn);
-            AthletesWithOpenEvaluations.ItemsSource = Athletes.AthletesWithOpenEvaluations(_cn);
+            ModalityList.ItemsSource = Modalities.GetModalities();
+            AthletesWithOpenEvaluations.ItemsSource = Athletes.AthletesWithOpenEvaluations();
 
             // Modal
-            EvaluationModal.DataContext = new ModalState((AthleteWithBody)AthleteContent.DataContext);
+            EvaluationModal.DataContext = new ModalState((Athlete)AthleteContent.DataContext);
             EvaluationModal.PreviewMouseUp += (sender, args) => { if (!_withinMarkPopup) BodyChartMarkPopup.IsPopupOpen = false; };
-        }
-
-        private bool OpenConnection()
-        {
-            if (_cn == null)
-                _cn = ClusysUtils.GetConnection();
-
-            if (_cn.State != ConnectionState.Open)
-                _cn.Open();
-
-            return _cn.State == ConnectionState.Open;
         }
 
         private void FilterAthletes(object sender, TextChangedEventArgs e)
@@ -86,7 +71,7 @@ namespace CluSys
             if (item == null)
                 return;
 
-            var athlete = new AthleteWithBody(item.Content as Athlete, _cn);
+            var athlete = new Athlete();
 
             // Nothing to do if athlete already open
             if(Equals(AthleteContent.DataContext, athlete))
@@ -100,7 +85,7 @@ namespace CluSys
             // Reset the athlete's content
             ResetAthleteContent();
             // Get this athlete's evaluations
-            EvaluationsList.ItemsSource = athlete.GetEvaluations(_cn);
+            EvaluationsList.ItemsSource = athlete.GetEvaluations();
             // Filter them based on date
             FilterEvaluations(SliderRange);
 
@@ -143,14 +128,14 @@ namespace CluSys
                                               dr.LowerDate <= me.ClosingDate && me.ClosingDate <= dr.UpperDate));
                 };
 
-            //-var seView = (CollectionView) CollectionViewSource.GetDefaultView(SessionsList.ItemsSource);
-            //-if (seView != null)
-            //-    seView.Filter = session =>
-            //-    {
-            //-        var se = session as EvaluationSession;
+            var seView = (CollectionView) CollectionViewSource.GetDefaultView(SessionsList.ItemsSource);
+            if (seView != null)
+                seView.Filter = session =>
+                {
+                    var se = session as EvaluationSession;
 
-            //-        return se != null && dr.LowerDate <= se.Date && se.Date <= dr.UpperDate;
-            //-    };
+                    return se != null && dr.LowerDate <= se.Date && se.Date <= dr.UpperDate;
+                };
         }
 
         /******************************************************************************************************
@@ -168,7 +153,7 @@ namespace CluSys
             var activeView = ms.ActiveView;
             var point = new Point(e.GetPosition(BodyChart).X - BodyChartMark.DrawRadius, e.GetPosition(BodyChart).Y - BodyChartMark.DrawRadius);
 
-            BodyChartMark mark = ms.Marks.FirstOrDefault(m => Point.Subtract(point, new Point(m.X, m.Y)).Length < 4 * BodyChartMark.DrawRadius);
+            var mark = ms.Marks.FirstOrDefault(m => Point.Subtract(point, new Point(m.X, m.Y)).Length < 4 * BodyChartMark.DrawRadius);
 
             if (mark == null)
             {
@@ -231,7 +216,7 @@ namespace CluSys
         private void LeftView(object sender, RoutedEventArgs e)
         {
             var ms = (ModalState) EvaluationModal.DataContext;
-            var newIdx = ms.ActiveViewIdx + 1;  // or overflow
+            var newIdx = ms.ActiveViewIdx + 1;
 
             RotateView(ms, newIdx >= ms.Views.Count ? 0 : newIdx);
         }
@@ -239,7 +224,7 @@ namespace CluSys
         private void RightView(object sender, RoutedEventArgs e)
         {
             var ms = (ModalState) EvaluationModal.DataContext;
-            var newIdx = ms.ActiveViewIdx - 1;  // or "underflow"
+            var newIdx = ms.ActiveViewIdx - 1;
 
             RotateView(ms, newIdx < 0 ? ms.Views.Count - 1 : newIdx);
         }
@@ -271,7 +256,7 @@ namespace CluSys
         private void AddProblem(object sender, RoutedEventArgs e)
         {
             var ms = (ModalState) EvaluationModal.DataContext;
-            var prob = new MajorProblem(ms.Problems) { Obs = NewProblemText.Text };
+            var prob = new MajorProblem(ms.Problems) { Description = NewProblemText.Text };
 
             if (ms.Problems.Contains(prob))
                 return;
@@ -340,7 +325,7 @@ namespace CluSys
         private void AddObservation(object sender, RoutedEventArgs e)
         {
             var ms = (ModalState) EvaluationModal.DataContext;
-            var obs = new SessionObservation { Description = NewObservationText.Text };
+            var obs = new SessionObservation { Obs = NewObservationText.Text };
 
             if (ms.Observations.Contains(obs))
                 return;
@@ -360,18 +345,41 @@ namespace CluSys
             ms.Observations.Remove(obs);
         }
 
-        private void SaveSession(object sender, RoutedEventArgs e)
-        {
+        private void SaveSession(object sender, RoutedEventArgs e) {
             SessionModal.IsOpen = false;  // close the modal
         }
 
         private void OpenSession(object sender, RoutedEventArgs e)
         {
             var session = (EvaluationSession)((Control)sender).DataContext;
-            var evaluation = session.GetEvaluation();
+            var evaluation = session.GetMedicalEvaluation();
 
-            EvaluationModal.DataContext = new ModalState((AthleteWithBody)AthleteContent.DataContext, evaluation, session);
+            EvaluationModal.DataContext = new ModalState((Athlete)AthleteContent.DataContext, evaluation, session);
             SessionModal.IsOpen = true;
         }
+
+        private void NewSession(object sender, RoutedEventArgs e)
+        {
+            EvaluationModal.DataContext = new ModalState((Athlete)AthleteContent.DataContext);
+            SessionModal.IsOpen = true;
+        }
+
+        private void TryClickOutOfModal(object sender, MouseButtonEventArgs e)
+        {
+            if (_withinMarkPopup)
+                return;
+            else
+                BodyChartMarkPopup.IsPopupOpen = false;
+
+            if (SessionModal.IsOpen && !EvaluationModal.IsMouseOver)
+            {
+                if (((ModalState) EvaluationModal.DataContext).CanBeEdited)
+                    EvaluationModal.IsTopDrawerOpen = true;
+                else
+                    SessionModal.IsOpen = false;
+            }
+        }
+
+        private void CloseDrawerAndModal(object sender, RoutedEventArgs e) { EvaluationModal.IsTopDrawerOpen = SessionModal.IsOpen = false; }
     }
 }
