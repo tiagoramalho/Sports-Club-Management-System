@@ -1,4 +1,3 @@
--- Start clean
 USE master;
 GO
 DROP DATABASE CluSys;
@@ -144,9 +143,9 @@ CREATE TABLE MedicalEvaluation (
 );
 
 CREATE TABLE EvaluationSession (
-  EvalId INT  NOT NULL,
-  Id     INT  NOT NULL DEFAULT -1, -- sequential within the evaluation
-  Date   DATE NOT NULL,
+  EvalId INT            NOT NULL,
+  Id     INT DEFAULT -1 NOT NULL, -- sequential within the evaluation
+  Date   DATE           NOT NULL,
 
   PRIMARY KEY (EvalId, Id),
   FOREIGN KEY (EvalId) REFERENCES MedicalEvaluation (Id)

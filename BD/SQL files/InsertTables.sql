@@ -69,7 +69,6 @@ INSERT INTO MedicalEvaluation VALUES
   ('50.5', '1.60', NULL, '20170411', '20170511', NULL, '1245', '12123'),
   ('82.5', '1.84', NULL, '20170421', NULL, '20170421', '1241', '12123');
 
--- Will not work until refactor
 INSERT INTO EvaluationSession (EvalId, Date) VALUES
   ('1', '20150622'),
   ('1', '20150624'),
@@ -86,14 +85,14 @@ INSERT INTO EvaluationSession (EvalId, Date) VALUES
   ('4', '20170513');
 
 INSERT INTO MajorProblem VALUES
-  ('Dores no ombro', '2', '4'),
-  ('Clavícula deslocada', '2', '4'),
-  ('Clavícula deslocada', '2', '5'),
-  ('Clavícula com poucas alteraçoes', '2', '6'),
-  ('Pé partido', '3', '8'),
-  ('Ligamentos rasgados', '3', '9'),
-  ('Pé com pouca mobilidade', '3', '10'),
-  ('Corrigir estabilidade', '3', '10'),
+  ('Dores no ombro', '2', '1'),
+  ('Clavícula deslocada', '2', '1'),
+  ('Clavícula deslocada', '2', '2'),
+  ('Clavícula com poucas alteraçoes', '2', '3'),
+  ('Pé partido', '3', '1'),
+  ('Ligamentos rasgados', '3', '2'),
+  ('Pé com pouca mobilidade', '3', '3'),
+  ('Corrigir estabilidade', '3', '3'),
   ('Entorse de 2 grau', '1', '1'),
   ('Dores na zona do aquiles', '1', '2');
 
