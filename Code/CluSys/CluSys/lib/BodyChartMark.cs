@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Data.SqlClient;
 using System.Globalization;
-using System.Runtime.CompilerServices;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using JetBrains.Annotations;
 
 namespace CluSys.lib
 {
@@ -25,7 +21,7 @@ namespace CluSys.lib
         public int PainLevel { get; set; }
         public double X { get; set; }
         public double Y { get; set; }
-        public string Obs { get; set; }
+        public string Description { get; set; }
 
         public ObservableCollection<Annotation> Annotations { get; } = new ObservableCollection<Annotation>();
 
@@ -59,8 +55,7 @@ namespace CluSys.lib
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
-            return Equals((BodyChartMark) obj);
+            return obj.GetType() == GetType() && Equals((BodyChartMark) obj);
         }
 
         public override int GetHashCode()
@@ -73,29 +68,6 @@ namespace CluSys.lib
                 hash = hash * 23 + X.GetHashCode();
                 hash = hash * 23 + Y.GetHashCode();
                 return hash;
-            }
-        }
-
-        public void InsertBodyChartMark(SqlConnection cn)
-        {
-            var cmd = new SqlCommand();
-            cmd.CommandText = "INSERT INTO BodyChartMark (x, y, PainLevel, Obs, EvalId, SessionId, ViewId) " + "VALUES (@x, @y, @PainLevel, @Obs, @EvalId, @SessionId, @ViewId)";
-            cmd.Parameters.AddWithValue("@x", X);
-            cmd.Parameters.AddWithValue("@y", Y);
-            cmd.Parameters.AddWithValue("@PainLevel", PainLevel);
-            cmd.Parameters.AddWithValue("@Obs", Obs);
-            cmd.Parameters.AddWithValue("@EvalId", EvalId);
-            cmd.Parameters.AddWithValue("@SessionId", SessionId);
-            cmd.Parameters.AddWithValue("@ViewId", ViewId);
-            cmd.Connection = cn;
-
-            try
-            {
-                cmd.ExecuteNonQuery();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to Insert BocyChartMark in database. \n ERROR MESSAGE: \n" + ex.Message);
             }
         }
 

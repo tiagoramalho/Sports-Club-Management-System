@@ -1,8 +1,6 @@
 ﻿using CluSys.lib;
 using System;
 using System.Collections.ObjectModel;
-using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,20 +10,17 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Globalization;
 using MahApps.Metro.Controls;
-using MaterialDesignThemes.Wpf;
 
 namespace CluSys
 {
     public partial class MainWindow
     {
-        private SqlConnection _cn;
         private bool _withinMarkPopup = false;
         private readonly ObservableCollection<Athlete> _openAthletes;
 
         public MainWindow()
         {
             // Init
-            OpenConnection();
             _openAthletes = new ObservableCollection<Athlete>();
 
             InitializeComponent();
@@ -38,23 +33,12 @@ namespace CluSys
             BindingOperations.GetBinding(MaxDateRange, DatePicker.SelectedDateProperty)?.ValidationRules.Add(SliderRange.MaxDateValidator);
 
             OpenAthletesList.ItemsSource = _openAthletes;  // empty on start
-            ModalityList.ItemsSource = Modalities.LoadSQL(_cn);
-            AthletesWithOpenEvaluations.ItemsSource = Athletes.AthletesWithOpenEvaluations(_cn);
+            ModalityList.ItemsSource = Modalities.GetModalities();
+            AthletesWithOpenEvaluations.ItemsSource = Athletes.AthletesWithOpenEvaluations();
 
             // Modal
-            EvaluationModal.DataContext = new ModalState((AthleteWithBody)AthleteContent.DataContext);
+            EvaluationModal.DataContext = new ModalState((Athlete)AthleteContent.DataContext);
             EvaluationModal.PreviewMouseUp += (sender, args) => { if (!_withinMarkPopup) BodyChartMarkPopup.IsPopupOpen = false; };
-        }
-
-        private bool OpenConnection()
-        {
-            if (_cn == null)
-                _cn = ClusysUtils.GetConnection();
-
-            if (_cn.State != ConnectionState.Open)
-                _cn.Open();
-
-            return _cn.State == ConnectionState.Open;
         }
 
         private void FilterAthletes(object sender, TextChangedEventArgs e)
@@ -87,7 +71,7 @@ namespace CluSys
             if (item == null)
                 return;
 
-            var athlete = new AthleteWithBody(item.Content as Athlete, _cn);
+            var athlete = new Athlete();
 
             // Nothing to do if athlete already open
             if(Equals(AthleteContent.DataContext, athlete))
@@ -101,7 +85,7 @@ namespace CluSys
             // Reset the athlete's content
             ResetAthleteContent();
             // Get this athlete's evaluations
-            EvaluationsList.ItemsSource = athlete.GetEvaluations(_cn);
+            EvaluationsList.ItemsSource = athlete.GetEvaluations();
             // Filter them based on date
             FilterEvaluations(SliderRange);
 
@@ -272,7 +256,7 @@ namespace CluSys
         private void AddProblem(object sender, RoutedEventArgs e)
         {
             var ms = (ModalState) EvaluationModal.DataContext;
-            var prob = new MajorProblem(ms.Problems) { Obs = NewProblemText.Text };
+            var prob = new MajorProblem(ms.Problems) { Description = NewProblemText.Text };
 
             if (ms.Problems.Contains(prob))
                 return;
@@ -341,7 +325,7 @@ namespace CluSys
         private void AddObservation(object sender, RoutedEventArgs e)
         {
             var ms = (ModalState) EvaluationModal.DataContext;
-            var obs = new SessionObservation { Description = NewObservationText.Text };
+            var obs = new SessionObservation { Obs = NewObservationText.Text };
 
             if (ms.Observations.Contains(obs))
                 return;
@@ -368,15 +352,15 @@ namespace CluSys
         private void OpenSession(object sender, RoutedEventArgs e)
         {
             var session = (EvaluationSession)((Control)sender).DataContext;
-            var evaluation = session.GetEvaluation();
+            var evaluation = session.GetMedicalEvaluation();
 
-            EvaluationModal.DataContext = new ModalState((AthleteWithBody)AthleteContent.DataContext, evaluation, session);
+            EvaluationModal.DataContext = new ModalState((Athlete)AthleteContent.DataContext, evaluation, session);
             SessionModal.IsOpen = true;
         }
 
         private void NewSession(object sender, RoutedEventArgs e)
         {
-            EvaluationModal.DataContext = new ModalState((AthleteWithBody)AthleteContent.DataContext);
+            EvaluationModal.DataContext = new ModalState((Athlete)AthleteContent.DataContext);
             SessionModal.IsOpen = true;
         }
 

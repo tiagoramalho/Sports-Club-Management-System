@@ -1,55 +1,25 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Data.SqlClient;
-using System.Globalization;
-using System.Linq;
-using System.Windows.Data;
 
 namespace CluSys.lib
 {
     internal class MajorProblem
     {
         public int Id { get; set; } = -1;
-        public string Obs { get; set; }
+        public string Description { get; set; }
         public int EvalId { get; set; }
         public int SessionId { get; set; }
 
+        private readonly ObservableCollection<MajorProblem> _container;
         public int CountId { get { return _container?.IndexOf(this) + 1 ?? Id; } }
 
-        private readonly ObservableCollection<MajorProblem> _container;
-
-        public MajorProblem(ObservableCollection<MajorProblem> container = null)
-        {
-            _container = container;
-        }
-
-        /*
-        private void InsertMajorProblem(SqlConnection cn)
-        {
-
-            SqlCommand cmd = new SqlCommand();
-            cmd.CommandText = "INSERT INTO MajorProblem (Obs, EvalId, SessionId) " + "VALUES (@Obs, @EvalId, @SessionId)";
-            cmd.Parameters.AddWithValue("@Obs", Obs);
-            cmd.Parameters.AddWithValue("@EvalId", EvalId);
-            cmd.Parameters.AddWithValue("@SessionId", SessionId);
-            cmd.Connection = cn;
-
-            try
-            {
-                cmd.ExecuteNonQuery();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to Insert MajorProblem in database. \n ERROR MESSAGE: \n" + ex.Message);
-            }
-        }
-        */
+        public MajorProblem(ObservableCollection<MajorProblem> container = null) { _container = container; }
 
         private bool Equals(MajorProblem other)
         {
             if (Id != -1 && other.Id != -1)
                 return Id == other.Id;
-            return string.Equals(Obs, other.Obs, StringComparison.OrdinalIgnoreCase);
+            return string.Equals(Description, other.Description, StringComparison.OrdinalIgnoreCase);
         }
 
         public override bool Equals(object obj)
@@ -63,7 +33,7 @@ namespace CluSys.lib
         {
             if (Id != -1)
                 return Id.GetHashCode();
-            return Obs != null ? StringComparer.OrdinalIgnoreCase.GetHashCode(Obs) : 0;
+            return Description != null ? StringComparer.OrdinalIgnoreCase.GetHashCode(Description) : 0;
         }
     }
 }

@@ -6,7 +6,7 @@ namespace CluSys.lib
 {
     internal class ModalState
     {
-        public AthleteWithBody Athlete { get; set; }
+        public Athlete Athlete { get; set; }
         public MedicalEvaluation Evaluation { get; set; }
         public EvaluationSession Session { get; set; }
 
@@ -33,7 +33,7 @@ namespace CluSys.lib
         public bool CanBeEdited { get; set; }
         public bool ExpectedRecoveryPickerEnabled { get { return CanBeEdited && !MedicalDischarge; } }
 
-        public ModalState(AthleteWithBody athlete, MedicalEvaluation evaluation = null, EvaluationSession session = null)
+        public ModalState(Athlete athlete, MedicalEvaluation evaluation = null, EvaluationSession session = null)
         {
             Athlete = athlete;
             Evaluation = evaluation ?? new MedicalEvaluation();

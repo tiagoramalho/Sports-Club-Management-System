@@ -8,48 +8,43 @@ namespace CluSys.lib
     internal class BodyChartView
     {
         public int Id { get; set; }
-        public string ImageBody { get; set; }
-        public int OrderImage { get; set; }
+        public string Image { get; set; }
+        public int Order { get; set; }
 
-        private bool Equals(BodyChartView other)
-        {
-            return Id == other.Id;
-        }
+        private bool Equals(BodyChartView other) { return Id == other.Id; }
 
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
-            return Equals((BodyChartView) obj);
+            return obj.GetType() == GetType() && Equals((BodyChartView) obj);
         }
 
-        public override int GetHashCode()
-        {
-            return Id;
-        }
+        public override int GetHashCode() { return Id; }
     }
 
-    static class BodyChartViews
+    internal static class BodyChartViews
     {
-        public static ObservableCollection<BodyChartView> GetViews(SqlConnection cn = null)
+        public static ObservableCollection<BodyChartView> GetViews()
         {
-            if (cn == null) cn = ClusysUtils.GetConnection();
+            using (var cn = ClusysUtils.GetConnection())
+            {
+                cn.Open();
 
-            var bodyViews = new ObservableCollection<BodyChartView>();
-            SqlCommand cmd = new SqlCommand("SELECT * FROM BodyChartView", cn);
-            SqlDataReader reader = cmd.ExecuteReader();
+                var bodyViews = new ObservableCollection<BodyChartView>();
+                var cmd = new SqlCommand("SELECT * FROM BodyChartView", cn);
+                var reader = cmd.ExecuteReader();
 
-            while (reader.Read())
-                bodyViews.Add(new BodyChartView
-                {
-                    Id = int.Parse(reader["ID"].ToString()),
-                    ImageBody = reader["ImageBody"].ToString(),
-                    OrderImage = int.Parse(reader["OrderImage"].ToString()),
-                });
+                while (reader.Read())
+                    bodyViews.Add(new BodyChartView
+                    {
+                        Id = int.Parse(reader["Id"].ToString()),
+                        Image = reader["Image"].ToString(),
+                        Order = int.Parse(reader["Order"].ToString()),
+                    });
 
-            cn.Close();
-            return bodyViews;
+                return bodyViews;
+            }
         }
     }
 }

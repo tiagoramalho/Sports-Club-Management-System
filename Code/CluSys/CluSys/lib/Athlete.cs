@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Data.SqlClient;
 
 namespace CluSys.lib
@@ -16,10 +15,54 @@ namespace CluSys.lib
         public string Photo { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }
-        public string Password { get; set; }
+        public byte[] Password { get; set; }
         public string Job { get; set; }
         public string DominantSide { get; set; }
         public string ModalityId { get; set; }
+        public bool ActiveEvaluation { get; set; } = false;  // TODO: will remove this
+
+        private double? _height;
+        public double Height
+        {
+            get
+            {
+                if (_height == null)
+                    using (var cn = ClusysUtils.GetConnection())
+                    {
+                        cn.Open();
+
+                        var cmd = new SqlCommand($"SELECT Height FROM F_GetWeightAndHeight ({CC});", cn);
+                        var reader = cmd.ExecuteReader();
+
+                        _height = reader.Read() ? double.Parse(reader["Height"].ToString()) : double.NaN;
+                    }
+
+                return (double) _height;
+            }
+            set { _height = value; }
+        }
+
+        private double? _weight;
+        public double Weight
+        {
+            get
+            {
+                if (_weight == null)
+                    using (var cn = ClusysUtils.GetConnection())
+                    {
+                        cn.Open();
+
+                        var cmd = new SqlCommand($"SELECT Weight FROM F_GetWeightAndHeight ({CC});", cn);
+                        var reader = cmd.ExecuteReader();
+
+                        _weight = reader.Read() ? double.Parse(reader["Weight"].ToString()) : double.NaN;
+                    }
+
+                return (double) _weight;
+            }
+
+            set { _weight = value; }
+        }
 
         public int Age
         {
@@ -34,35 +77,35 @@ namespace CluSys.lib
 
         public Athlete() { CC = null; }
 
-        public ObservableCollection<MedicalEvaluation> GetEvaluations(SqlConnection conn)
+        public ObservableCollection<MedicalEvaluation> GetEvaluations()
         {
-            var evaluations = new ObservableCollection<MedicalEvaluation>();
-            SqlCommand cmd = new SqlCommand($"SELECT * FROM MedicalEvaluation WHERE AthleteCC={CC};", conn);
-            SqlDataReader reader = cmd.ExecuteReader();
+            using (var cn = ClusysUtils.GetConnection())
+            {
+                cn.Open();
 
-            while (reader.Read())
-                evaluations.Add(new MedicalEvaluation(evaluations)
-                {
-                    Id = int.Parse(reader["ID"].ToString()),
-                    Weightt = double.Parse(reader["Weightt"].ToString()),
-                    Height = double.Parse(reader["Height"].ToString()),
-                    Story = reader["Story"].ToString(),
-                    OpeningDate = DateTime.Parse(reader["OpeningDate"].ToString()),
-                    ClosingDate = reader["ClosingDATE"].ToString() != "" ? (DateTime?)DateTime.Parse(reader["ClosingDATE"].ToString()) : null,
-                    ExpectedRecoveryDate = reader["ExpectedRecovery"].ToString() != "" ? (DateTime?)DateTime.Parse(reader["ExpectedRecovery"].ToString()) : null,
-                    AthleteCC = reader["AthleteCC"].ToString(),
-                    PhysiotherapistCC = reader["PhysiotherapistCC"].ToString(),
-                });
+                var evaluations = new ObservableCollection<MedicalEvaluation>();
+                var cmd = new SqlCommand($"SELECT * FROM MedicalEvaluation WHERE AthleteCC={CC};", cn);
+                var reader = cmd.ExecuteReader();
 
-            reader.Close();
+                while (reader.Read())
+                    evaluations.Add(new MedicalEvaluation(evaluations)
+                    {
+                        Id = int.Parse(reader["Id"].ToString()),
+                        Weight = double.Parse(reader["Weight"].ToString()),
+                        Height = double.Parse(reader["Height"].ToString()),
+                        Story = reader["Story"].ToString(),
+                        OpeningDate = DateTime.Parse(reader["OpeningDate"].ToString()),
+                        ClosingDate = reader["ClosingDate"].ToString() == "" ? null : (DateTime?) DateTime.Parse(reader["ClosingDATE"].ToString()),
+                        ExpectedRecovery = reader["ExpectedRecovery"].ToString() == "" ? null : (DateTime?) DateTime.Parse(reader["ExpectedRecovery"].ToString()),
+                        AthleteCC = reader["AthleteCC"].ToString(),
+                        PhysiotherapistCC = reader["PhysiotherapistCC"].ToString(),
+                    });
 
-            return evaluations;
+                return evaluations;
+            }
         }
 
-        private bool Equals(Athlete other)
-        {
-            return string.Equals(CC, other.CC, StringComparison.OrdinalIgnoreCase);
-        }
+        private bool Equals(Athlete other) { return string.Equals(CC, other.CC, StringComparison.OrdinalIgnoreCase); }
 
         public override bool Equals(object obj)
         {
@@ -71,92 +114,44 @@ namespace CluSys.lib
             return obj.GetType() == GetType() && Equals((Athlete) obj);
         }
 
-        public override int GetHashCode()
-        {
-            return CC != null ? StringComparer.OrdinalIgnoreCase.GetHashCode(CC) : 0;
-        }
-
-        /*
-        public DateTime? getExpectedRecovery(SqlConnection conn) { 
-            SqlCommand cmd = new SqlCommand("SELECT ExpectedRecovery FROM MedicalEvaluation WHERE AthleteCC = "+ CC +" and ClosingDATE is null; ", conn);
-            SqlDataReader reader = cmd.ExecuteReader();
-            reader.Read();
-            if(reader["ExpectedRecovery"].ToString() == "")
-            {
-                reader.Close();
-                return null;
-            }
-            reader.Close();
-            return DateTime.Parse(reader["ExpectedRecovery"].ToString());
-        }
-        */
+        public override int GetHashCode() { return CC == null ? 0 : StringComparer.OrdinalIgnoreCase.GetHashCode(CC); }
     }
 
     [Serializable]
-    internal class AthleteWithBody : Athlete
-    {
-        public double Height { get; set; }
-        public double Weight { get; set; }
-        public bool ActiveEvaluation { get; set; }
-
-        public AthleteWithBody() { }
-
-        public AthleteWithBody(Athlete ath, SqlConnection conn)
-        {
-            foreach (PropertyDescriptor item in TypeDescriptor.GetProperties(ath))
-                item.SetValue(this, item.GetValue(ath));
-
-            SqlCommand cmd = new SqlCommand("SELECT Weightt, Height, ClosingDATE FROM (SELECT Weightt, Height, OpeningDate, ClosingDATE FROM MedicalEvaluation WHERE AthleteCC = " + CC + ")  AS T WHERE OpeningDate >= all(SELECT OpeningDate FROM MedicalEvaluation WHERE AthleteCC = " + CC + ");", conn);
-            SqlDataReader reader = cmd.ExecuteReader();
-
-            if (reader.Read())
-            {
-                Weight = double.Parse(reader["Weightt"].ToString());
-                Height = double.Parse(reader["Height"].ToString());
-                ActiveEvaluation = reader["ClosingDATE"].ToString() == "";
-            }
-            else
-            {
-                Weight = double.NaN;
-                Height = double.NaN;
-                ActiveEvaluation = false;
-            }
-            reader.Close();
-        }
-    }
-
-    [Serializable()]
     internal class Athletes
     {
-        public static ObservableCollection<Athlete> AthletesWithOpenEvaluations(SqlConnection conn)
+        public static ObservableCollection<Athlete> AthletesWithOpenEvaluations()
         {
-            var athletes = new ObservableCollection<Athlete>();
-
-            SqlCommand cmd = new SqlCommand("SELECT * FROM Athlete WHERE CC in (SELECT AthleteCC FROM MedicalEvaluation WHERE ClosingDate is NULL);", conn);
-            SqlDataReader reader = cmd.ExecuteReader();
-
-            while (reader.Read())
+            using (var cn = ClusysUtils.GetConnection())
             {
-                athletes.Add(new Athlete()
+                cn.Open();
+
+                var athletes = new ObservableCollection<Athlete>();
+
+                var cmd = new SqlCommand("SELECT * FROM F_GetAthletesWithOpenEvaluations ();", cn);
+                var reader = cmd.ExecuteReader();
+
+                while (reader.Read())
                 {
-                    CC = reader["CC"].ToString(),
-                    FirstName = reader["FirstName"].ToString(),
-                    MiddleName = reader["MiddleName"].ToString(),
-                    LastName = reader["LastName"].ToString(),
-                    Birthdate = DateTime.Parse(reader["Birthdate"].ToString()),
-                    Photo = reader["Photo"].ToString(),
-                    Phone = reader["Phone"].ToString(),
-                    Email = reader["Email"].ToString(),
-                    Password = reader["PWD"].ToString(),
-                    Job = reader["Job"].ToString(),
-                    DominantSide = reader["DominantSide"].ToString(),
-                    ModalityId = reader["ModalityId"].ToString()
-                });
+                    athletes.Add(new Athlete
+                    {
+                        CC = reader["CC"].ToString(),
+                        FirstName = reader["FirstName"].ToString(),
+                        MiddleName = reader["MiddleName"].ToString(),
+                        LastName = reader["LastName"].ToString(),
+                        Birthdate = DateTime.Parse(reader["Birthdate"].ToString()),
+                        Photo = reader["Photo"].ToString(),
+                        Phone = reader["Phone"].ToString(),
+                        Email = reader["Email"].ToString(),
+                        Password = reader["Password"] as byte[],
+                        Job = reader["Job"].ToString(),
+                        DominantSide = reader["DominantSide"].ToString(),
+                        ModalityId = reader["ModalityId"].ToString()
+                    });
+                }
+
+                return athletes;
             }
-
-            reader.Close();
-
-            return athletes;
         }
     }
 }
