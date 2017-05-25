@@ -126,7 +126,7 @@ CREATE TABLE MedicalEvaluation (
 CREATE TABLE EvaluationSession (
   EvalId      INT  NOT NULL,
   dateSession DATE NOT NULL,
-  ID          INT  NOT NULL IDENTITY (1, 1),
+  ID          INT  NOT NULL,
   PRIMARY KEY (EvalId, ID),
   FOREIGN KEY (EvalId) REFERENCES MedicalEvaluation (ID)
 );

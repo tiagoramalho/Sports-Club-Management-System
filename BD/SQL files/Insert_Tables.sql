@@ -67,7 +67,7 @@ INSERT INTO Coach VALUES
 INSERT INTO Trains VALUES
   ('Futebol', 'Seniores', '123123', 1);
 
-INSERT INTO MedicalEvaluation VALUES
+INSERT INTO MedicalEvaluation VALUES 
   ('70.2', '1.70', 'Torci o pé ao cair de um salto', '20150622','20150630', '20150629', '1247', '12123'),
   ('81.5', '1.85', NULL, '20160518', '20160601', NULL, '1247', '12123'),
   ('82.0', '1.85', NULL, '20160801', '20160901', NULL, '1247', '12123'),
