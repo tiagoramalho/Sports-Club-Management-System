@@ -19,7 +19,7 @@ namespace CluSys.lib
                 {
                     conn.Open();
 
-                    var cmd = new SqlCommand($"SELECT dbo.GetNumberOfProblems ({EvalId}, {Id}) AS NumberOfProblems;", conn);
+                    var cmd = new SqlCommand($"SELECT dbo.F_GetNumberOfProblems ({EvalId}, {Id}) AS NumberOfProblems;", conn);
                     var reader = cmd.ExecuteReader();
                     return reader.Read() ? int.Parse(reader["NumberOfProblems"].ToString()) : 0;
                 }
@@ -34,7 +34,7 @@ namespace CluSys.lib
                 {
                     conn.Open();
 
-                    var cmd = new SqlCommand($"SELECT dbo.GetNumberOfTreatments ({EvalId}, {Id}) AS NumberOfTreatments;", conn);
+                    var cmd = new SqlCommand($"SELECT dbo.F_GetNumberOfTreatments ({EvalId}, {Id}) AS NumberOfTreatments;", conn);
                     var reader = cmd.ExecuteReader();
                     return reader.Read() ? int.Parse(reader["NumberOfTreatments"].ToString()) : 0;
                 }
@@ -95,8 +95,8 @@ namespace CluSys.lib
                     bodyMarks.Add(new BodyChartMark
                     {
                         Id = int.Parse(reader["Id"].ToString()),
-                        X = double.Parse(reader["x"].ToString()),
-                        Y = double.Parse(reader["y"].ToString()),
+                        X = double.Parse(reader["X"].ToString()),
+                        Y = double.Parse(reader["X"].ToString()),
                         PainLevel = int.Parse(reader["PainLevel"].ToString()),
                         Description = reader["Description"].ToString(),
                         EvalId = int.Parse(reader["EvalId"].ToString()),
@@ -164,7 +164,7 @@ namespace CluSys.lib
                 cn.Open();
 
                 var observations = new ObservableCollection<SessionObservation>();
-                var cmd = new SqlCommand($"SELECT * FROM SessionObs WHERE EvalId={EvalId} AND SessionId={Id}", cn);
+                var cmd = new SqlCommand($"SELECT * FROM SessionObservation WHERE EvalId={EvalId} AND SessionId={Id}", cn);
                 var reader = cmd.ExecuteReader();
 
                 while (reader.Read())

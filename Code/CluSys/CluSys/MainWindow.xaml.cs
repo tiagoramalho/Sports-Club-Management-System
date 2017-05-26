@@ -37,7 +37,6 @@ namespace CluSys
             AthletesWithOpenEvaluations.ItemsSource = Athletes.AthletesWithOpenEvaluations();
 
             // Modal
-            EvaluationModal.DataContext = new ModalState((Athlete)AthleteContent.DataContext);
             EvaluationModal.PreviewMouseUp += (sender, args) => { if (!_withinMarkPopup) BodyChartMarkPopup.IsPopupOpen = false; };
         }
 
@@ -50,7 +49,7 @@ namespace CluSys
                 return;
 
             var view = (CollectionView)CollectionViewSource.GetDefaultView(lb.ItemsSource);
-            view.Filter = (a) => {
+            view.Filter = a => {
                 var athlete = a as Athlete;
 
                 return (athlete?.FirstName + " " + athlete?.LastName).IndexOf(filterText, StringComparison.OrdinalIgnoreCase) >= 0;
@@ -71,7 +70,7 @@ namespace CluSys
             if (item == null)
                 return;
 
-            var athlete = new Athlete();
+            var athlete = (Athlete) item.Content;
 
             // Nothing to do if athlete already open
             if(Equals(AthleteContent.DataContext, athlete))
@@ -347,6 +346,7 @@ namespace CluSys
 
         private void SaveSession(object sender, RoutedEventArgs e) {
             SessionModal.IsOpen = false;  // close the modal
+            (EvaluationModal.DataContext as ModalState)?.Save();
         }
 
         private void OpenSession(object sender, RoutedEventArgs e)
@@ -368,8 +368,7 @@ namespace CluSys
         {
             if (_withinMarkPopup)
                 return;
-            else
-                BodyChartMarkPopup.IsPopupOpen = false;
+            BodyChartMarkPopup.IsPopupOpen = false;
 
             if (SessionModal.IsOpen && !EvaluationModal.IsMouseOver)
             {

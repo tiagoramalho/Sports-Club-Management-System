@@ -212,7 +212,7 @@
                     </StackPanel>
 
                     <DockPanel Grid.Row="1" Margin="16" LastChildFill="True">
-                        <materialDesign:Chip Visibility="{Binding Path=ActiveEvaluation, Converter={StaticResource BooleanToVisibilityConverter}}" Content="Em tratamento de lesão" Margin="4" IsEnabled="False" DockPanel.Dock="Right" />
+                        <materialDesign:Chip Visibility="{Binding Path=ActiveEvaluation, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" Content="Em tratamento de lesão" Margin="4" IsEnabled="False" DockPanel.Dock="Right" />
                         <materialDesign:Chip Icon="I" Content="{Binding Path=Age, Converter={StaticResource StringConverter}, ConverterParameter='{}{0} anos'}" Margin="4" IsEnabled="False" />
                         <materialDesign:Chip Icon="A" Content="{Binding Path=Height, Converter={StaticResource StringConverter}, ConverterParameter='{}{0:N2} m'}" Margin="4" IsEnabled="False" />
                         <materialDesign:Chip Icon="P" Content="{Binding Path=Weight, Converter={StaticResource StringConverter}, ConverterParameter='{}{0:N2} kg'}" Margin="4" IsEnabled="False" />
@@ -487,7 +487,7 @@
                                              Width="280" Height="65"
                                              AcceptsReturn="True"                 
                                              IsEnabled="{Binding ElementName=EvaluationModal, Path=DataContext.CanBeEdited}"
-                                             Text="{Binding Path=Obs}"
+                                             Text="{Binding Path=Description}"
                                              VerticalScrollBarVisibility="Auto"
                                              SpellCheck.IsEnabled="True"
                                              materialDesign:HintAssist.Hint="Descrição" />
@@ -693,7 +693,7 @@
                             </Grid.ColumnDefinitions>
                             <CheckBox IsEnabled="{Binding Path=CanBeEdited}" Margin="16" IsChecked="{Binding MedicalDischarge}">Alta médica</CheckBox>
                             <DatePicker Width="180" Grid.Column="1" Margin="16"  
-                                    SelectedDate="{Binding Evaluation.ExpectedRecoveryDate}"
+                                    SelectedDate="{Binding Evaluation.ExpectedRecovery}"
                                     HorizontalAlignment="Right"
                                     materialDesign:HintAssist.Hint="Expectativa de recuperação"
                                     Style="{DynamicResource MaterialDesignFloatingHintDatePicker}">

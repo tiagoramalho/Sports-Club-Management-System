@@ -77,9 +77,8 @@ namespace CluSys.lib
             if (value == null || methodName == null)
                 return value;
 
-            var methodInfo = value.GetType().GetMethod(methodName, new Type[1] { typeof(SqlConnection) });
-
-            return methodInfo == null ? value : methodInfo.Invoke(value, new object[1] { ClusysUtils.GetConnection() } );
+            var methodInfo = value.GetType().GetMethod(methodName);
+            return methodInfo == null ? value : methodInfo.Invoke(value, new object[0]);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) { throw new NotSupportedException(); }

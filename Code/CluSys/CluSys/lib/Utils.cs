@@ -1,28 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
 
 namespace CluSys.lib
 {
     internal static class ClusysUtils
     {
-        public static SqlConnection GetConnection()
-        {
-            var conn = new SqlConnection("data source= RJ-JESUS\\SQLEXPRESS2014;integrated security=true;initial catalog=CluSys");
-
-            conn.Open();
-            return conn;
-        }
+        public static SqlConnection GetConnection() { return new SqlConnection("data source= RJ-JESUS\\SQLEXPRESS2014;integrated security=true;initial catalog=CluSys"); }
 
         public static T FindByType<T>(Visual v)
         {
@@ -78,7 +66,7 @@ namespace CluSys.lib
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values == null || values.Length != 2)
+            if (values == null || values.Length != 2 || values[0] == DependencyProperty.UnsetValue || values[1] == DependencyProperty.UnsetValue)
                 return false;
 
             return (bool) values[0] && !(bool) values[1];

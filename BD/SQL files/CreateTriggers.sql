@@ -30,7 +30,7 @@ GO
 
 CREATE TRIGGER EvaluationSessionIdIncrementer ON EvaluationSession INSTEAD OF INSERT AS
   INSERT INTO EvaluationSession
-    SELECT i.EvalId, COALESCE(ES.Count, ROW_NUMBER() OVER (PARTITION BY i.EvalId ORDER BY i.EvalId, i.Date)), i.Date
+    SELECT i.EvalId, COALESCE(ES.Count, 0) + ROW_NUMBER() OVER (PARTITION BY i.EvalId ORDER BY i.EvalId, i.Date), i.Date
     FROM inserted AS i
     LEFT JOIN (SELECT EvalId, MAX(Id) AS Count
                FROM EvaluationSession

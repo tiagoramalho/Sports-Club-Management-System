@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace CluSys.lib
 {
     internal class ModalState
     {
+        private const string PhysiotherapistCC = "12123";
+
         public Athlete Athlete { get; set; }
         public MedicalEvaluation Evaluation { get; set; }
         public EvaluationSession Session { get; set; }
@@ -31,7 +34,6 @@ namespace CluSys.lib
         public bool MedicalDischarge { get; set; }
 
         public bool CanBeEdited { get; set; }
-        public bool ExpectedRecoveryPickerEnabled { get { return CanBeEdited && !MedicalDischarge; } }
 
         public ModalState(Athlete athlete, MedicalEvaluation evaluation = null, EvaluationSession session = null)
         {
@@ -63,16 +65,47 @@ namespace CluSys.lib
             }
         }
 
-        public void Save(SqlConnection cn)
+        public void Save()
         {
+            GetEvalId(); GetSessionId();
         }
 
-        private int GetEvaluationId(SqlConnection cn)
+        private void GetEvalId()
         {
-            return -1;
+            using (var cn = ClusysUtils.GetConnection())
+            {
+                cn.Open();
+
+                var cmd = new SqlCommand("P_GetOrCreateEvaluation", cn) {CommandType = CommandType.StoredProcedure};
+                cmd.Parameters.Add(new SqlParameter("@AthleteCC", Athlete.CC));
+                cmd.Parameters.Add(new SqlParameter("@PhysiotherapistCC", PhysiotherapistCC));
+                cmd.Parameters.Add(new SqlParameter("@OpeningDate", Session.Date));
+                cmd.Parameters.Add(new SqlParameter("@EvalId", SqlDbType.Int) { Direction = ParameterDirection.Output });
+                cmd.ExecuteNonQuery();
+
+                Evaluation.Id = Session.EvalId = Convert.ToInt32(cmd.Parameters["@EvalId"].Value);
+            }
         }
 
-        private void UpdateEvaluation(SqlConnection cn, int evalId)
+        private void GetSessionId()
+        {
+            using (var cn = ClusysUtils.GetConnection())
+            {
+                cn.Open();
+
+                var cmd = new SqlCommand("P_GetOrCreateSession", cn) {CommandType = CommandType.StoredProcedure};
+                cmd.Parameters.Add(new SqlParameter("@AthleteCC", Athlete.CC));
+                cmd.Parameters.Add(new SqlParameter("@PhysiotherapistCC", PhysiotherapistCC));
+                cmd.Parameters.Add(new SqlParameter("@Date", Session.Date));
+                cmd.Parameters.Add(new SqlParameter("@EvalId", Session.EvalId));
+                cmd.Parameters.Add(new SqlParameter("@SessionId", SqlDbType.Int) { Direction = ParameterDirection.Output });
+                cmd.ExecuteNonQuery();
+
+                Session.Id = Convert.ToInt32(cmd.Parameters["@SessionId"].Value);
+            }
+        }
+
+        private void UpdateEvaluation(int evalId)
         {
         }
     }

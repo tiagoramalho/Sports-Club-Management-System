@@ -19,7 +19,22 @@ namespace CluSys.lib
         public string Job { get; set; }
         public string DominantSide { get; set; }
         public string ModalityId { get; set; }
-        public bool ActiveEvaluation { get; set; } = false;  // TODO: will remove this
+
+        public bool ActiveEvaluation
+        {
+            get
+            {
+                using (var cn = ClusysUtils.GetConnection())
+                {
+                    cn.Open();
+
+                    var cmd = new SqlCommand($"SELECT dbo.F_HasActiveEvaluation ('{CC}') AS Result;", cn);
+                    var reader = cmd.ExecuteReader();
+
+                    return reader.Read() && bool.Parse(reader["Result"].ToString());
+                }
+            }
+        }
 
         private double? _height;
         public double Height
@@ -31,7 +46,7 @@ namespace CluSys.lib
                     {
                         cn.Open();
 
-                        var cmd = new SqlCommand($"SELECT Height FROM F_GetWeightAndHeight ({CC});", cn);
+                        var cmd = new SqlCommand($"SELECT Height FROM F_GetWeightAndHeight ('{CC}');", cn);
                         var reader = cmd.ExecuteReader();
 
                         _height = reader.Read() ? double.Parse(reader["Height"].ToString()) : double.NaN;
@@ -52,7 +67,7 @@ namespace CluSys.lib
                     {
                         cn.Open();
 
-                        var cmd = new SqlCommand($"SELECT Weight FROM F_GetWeightAndHeight ({CC});", cn);
+                        var cmd = new SqlCommand($"SELECT Weight FROM F_GetWeightAndHeight ('{CC}');", cn);
                         var reader = cmd.ExecuteReader();
 
                         _weight = reader.Read() ? double.Parse(reader["Weight"].ToString()) : double.NaN;
@@ -75,8 +90,6 @@ namespace CluSys.lib
             }
         }
 
-        public Athlete() { CC = null; }
-
         public ObservableCollection<MedicalEvaluation> GetEvaluations()
         {
             using (var cn = ClusysUtils.GetConnection())
@@ -84,7 +97,7 @@ namespace CluSys.lib
                 cn.Open();
 
                 var evaluations = new ObservableCollection<MedicalEvaluation>();
-                var cmd = new SqlCommand($"SELECT * FROM MedicalEvaluation WHERE AthleteCC={CC};", cn);
+                var cmd = new SqlCommand($"SELECT * FROM MedicalEvaluation WHERE AthleteCC='{CC}';", cn);
                 var reader = cmd.ExecuteReader();
 
                 while (reader.Read())
