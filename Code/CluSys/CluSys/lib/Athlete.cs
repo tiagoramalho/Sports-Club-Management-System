@@ -37,7 +37,7 @@ namespace CluSys.lib
         }
 
         private double? _height;
-        public double Height
+        public double? Height
         {
             get
             {
@@ -49,16 +49,16 @@ namespace CluSys.lib
                         var cmd = new SqlCommand($"SELECT Height FROM F_GetWeightAndHeight ('{CC}');", cn);
                         var reader = cmd.ExecuteReader();
 
-                        _height = reader.Read() ? double.Parse(reader["Height"].ToString()) : double.NaN;
+                        _height = reader.Read() ? (double?) double.Parse(reader["Height"].ToString()) : null;
                     }
 
-                return (double) _height;
+                return _height;
             }
             set { _height = value; }
         }
 
         private double? _weight;
-        public double Weight
+        public double? Weight
         {
             get
             {
@@ -70,10 +70,10 @@ namespace CluSys.lib
                         var cmd = new SqlCommand($"SELECT Weight FROM F_GetWeightAndHeight ('{CC}');", cn);
                         var reader = cmd.ExecuteReader();
 
-                        _weight = reader.Read() ? double.Parse(reader["Weight"].ToString()) : double.NaN;
+                        _weight = reader.Read() ? (double?)double.Parse(reader["Weight"].ToString()) : null;
                     }
 
-                return (double) _weight;
+                return _weight;
             }
 
             set { _weight = value; }

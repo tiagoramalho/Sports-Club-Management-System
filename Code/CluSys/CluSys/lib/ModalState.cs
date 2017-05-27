@@ -18,17 +18,21 @@ namespace CluSys.lib
         public readonly ObservableCollection<BodyChartView> Views;
         public BodyChartView ActiveView { get { return Views[ActiveViewIdx]; } set { ActiveViewIdx = Views.IndexOf(value); } }
 
-        public ObservableCollection<BodyChartMark> Marks;
+        public readonly ObservableCollection<BodyChartMark> Marks;
+        public readonly ObservableCollection<BodyChartMark> DeletedMarks;
         public ObservableCollection<Annotation> Annotations { get; }
 
         // Problems
         public ObservableCollection<MajorProblem> Problems { get; set; }
+        public readonly ObservableCollection<MajorProblem> DeletedProblems;
 
         // Treatments
         public ObservableCollection<TreatmentPlan> Treatments { get; set; }
+        public readonly ObservableCollection<TreatmentPlan> DeletedTreatments;
 
         // Observations
         public ObservableCollection<SessionObservation> Observations { get; set; }
+        public readonly ObservableCollection<SessionObservation> DeletedObservations;
 
         // Others
         public bool MedicalDischarge { get; set; }
@@ -45,12 +49,17 @@ namespace CluSys.lib
             Views = BodyChartViews.GetViews();
             Annotations = lib.Annotations.GetAnnotations();
 
-            if (session != null)
+            DeletedMarks = new ObservableCollection<BodyChartMark>();
+            DeletedProblems = new ObservableCollection<MajorProblem>();
+            DeletedTreatments = new ObservableCollection<TreatmentPlan>();
+            DeletedObservations = new ObservableCollection<SessionObservation>();
+
+            if (evaluation != null && session != null)
             {
                 Marks = session.GetMarks();
                 Problems = session.GetProblems();
                 Treatments = session.GetTreatments();
-                Observations = session.GetObservations();
+                Observations = evaluation.GetObservations();
                 MedicalDischarge = evaluation?.ClosingDate == session.Date;
                 CanBeEdited = false;
             }
@@ -68,6 +77,18 @@ namespace CluSys.lib
         public void Save()
         {
             GetEvalId(); GetSessionId();
+            UpdateEvaluation();
+
+            SaveMarks();
+            SaveProblems();
+            SaveTreatments();
+            SaveObservations();
+
+            /* ... */
+            DeletedMarks.Clear();
+            DeletedProblems.Clear();
+            DeletedTreatments.Clear();
+            DeletedObservations.Clear();
         }
 
         private void GetEvalId()
@@ -105,8 +126,196 @@ namespace CluSys.lib
             }
         }
 
-        private void UpdateEvaluation(int evalId)
+        private void UpdateEvaluation()
         {
+            using (var cn = ClusysUtils.GetConnection())
+            {
+                cn.Open();
+
+                using (var cmd = new SqlCommand("P_UpdateEvaluation", cn) {CommandType = CommandType.StoredProcedure})
+                {
+                    cmd.Parameters.Add(new SqlParameter("@EvalId", Evaluation.Id));
+                    if(Athlete.Weight != null && Athlete.Weight > 0) cmd.Parameters.Add(new SqlParameter("@Weight", Athlete.Weight));
+                    if(Athlete.Height != null && Athlete.Height > 0) cmd.Parameters.Add(new SqlParameter("@Height", Athlete.Height));
+                    if(Evaluation.Story != null) cmd.Parameters.Add(new SqlParameter("@Story", Evaluation.Story));
+                    if (MedicalDischarge) cmd.Parameters.Add(new SqlParameter("@ClosingDate", Session.Date));
+                    if(Evaluation.ExpectedRecovery != null) cmd.Parameters.Add(new SqlParameter("@ExpectedRecovery", Evaluation.ExpectedRecovery));
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        private void SaveMarks()
+        {
+            using (var cn = ClusysUtils.GetConnection())
+            {
+                cn.Open();
+
+                using (var cmd = new SqlCommand("INSERT INTO BodyChartMark (X, Y, PainLevel, Description, EvalId, SessionId, ViewId) VALUES (@X, @Y, @PainLevel, @Description, @EvalId, @SessionId, @ViewId); SELECT SCOPE_IDENTITY();", cn))
+                {
+                    cmd.Parameters.Add(new SqlParameter("@X", SqlDbType.Float));
+                    cmd.Parameters.Add(new SqlParameter("@Y", SqlDbType.Float));
+                    cmd.Parameters.Add(new SqlParameter("@PainLevel", SqlDbType.TinyInt));
+                    cmd.Parameters.Add(new SqlParameter("@Description", SqlDbType.NVarChar));
+                    cmd.Parameters.Add(new SqlParameter("@EvalId", SqlDbType.Int));
+                    cmd.Parameters.Add(new SqlParameter("@SessionId", SqlDbType.Int));
+                    cmd.Parameters.Add(new SqlParameter("@ViewId", SqlDbType.Int));
+
+                    foreach (var mark in Marks)
+                    {
+                        if (mark.Id == -1)
+                        {
+                            Console.WriteLine(mark.X + @" " + mark.Y);
+                            cmd.Parameters["@X"].Value = mark.X;
+                            cmd.Parameters["@Y"].Value = mark.Y;
+                            cmd.Parameters["@PainLevel"].Value = mark.PainLevel;
+                            cmd.Parameters["@Description"].Value = (object) mark.Description ?? DBNull.Value;
+                            cmd.Parameters["@EvalId"].Value = mark.EvalId = Evaluation.Id;
+                            cmd.Parameters["@SessionId"].Value = mark.SessionId = Session.Id;
+                            cmd.Parameters["@ViewId"].Value = mark.ViewId;
+                            mark.Id = int.Parse(cmd.ExecuteScalar().ToString());
+                        }
+                    }
+                }
+                using (var cmd = new SqlCommand("DELETE FROM BodyChartMark WHERE Id = @Id", cn))
+                {
+                    cmd.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int));
+
+                    foreach (var mark in DeletedMarks)
+                    {
+                        if (mark.Id != -1)
+                        {
+                            cmd.Parameters["@Id"].Value = mark.Id;
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                }
+            }
+        }
+
+        private void SaveProblems()
+        {
+            using (var cn = ClusysUtils.GetConnection())
+            {
+                cn.Open();
+
+                using (var cmd = new SqlCommand("INSERT INTO MajorProblem (Description, EvalId, SessionId) VALUES (@Description, @EvalId, @SessionId); SELECT SCOPE_IDENTITY();", cn))
+                {
+                    cmd.Parameters.Add(new SqlParameter("@Description", SqlDbType.NVarChar));
+                    cmd.Parameters.Add(new SqlParameter("@EvalId", SqlDbType.Int));
+                    cmd.Parameters.Add(new SqlParameter("@SessionId", SqlDbType.Int));
+
+                    foreach (var prob in Problems)
+                    {
+                        if (prob.Id == -1)
+                        {
+                            cmd.Parameters["@Description"].Value = prob.Description;
+                            cmd.Parameters["@EvalId"].Value = prob.EvalId = Evaluation.Id;
+                            cmd.Parameters["@SessionId"].Value = prob.SessionId = Session.Id;
+                            prob.Id = int.Parse(cmd.ExecuteScalar().ToString());
+                        }
+                    }
+                }
+                using (var cmd = new SqlCommand("DELETE FROM MajorProblem WHERE Id = @Id", cn))
+                {
+                    cmd.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int));
+
+                    foreach (var prob in DeletedProblems)
+                    {
+                        if (prob.Id != -1)
+                        {
+                            cmd.Parameters["@Id"].Value = prob.Id;
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                }
+            }
+        }
+
+        private void SaveTreatments()
+        {
+            using (var cn = ClusysUtils.GetConnection())
+            {
+                cn.Open();
+
+                using (var cmd = new SqlCommand("INSERT INTO TreatmentPlan (Description, Objective, EvalId, SessionId, ProbId) VALUES (@Description, @Objective, @EvalId, @SessionId, @ProbId); SELECT SCOPE_IDENTITY();", cn))
+                {
+                    cmd.Parameters.Add(new SqlParameter("@Description", SqlDbType.NVarChar));
+                    cmd.Parameters.Add(new SqlParameter("@Objective", SqlDbType.NVarChar));
+                    cmd.Parameters.Add(new SqlParameter("@EvalId", SqlDbType.Int));
+                    cmd.Parameters.Add(new SqlParameter("@SessionId", SqlDbType.Int));
+                    cmd.Parameters.Add(new SqlParameter("@ProbId", SqlDbType.Int));
+
+                    foreach (var treatment in Treatments)
+                    {
+                        if (treatment.Id == -1)
+                        {
+                            cmd.Parameters["@Description"].Value = (object) treatment.Description ?? DBNull.Value;
+                            cmd.Parameters["@Objective"].Value = (object) treatment.Objective ?? DBNull.Value;
+                            cmd.Parameters["@EvalId"].Value = treatment.EvalId = Evaluation.Id;
+                            cmd.Parameters["@SessionId"].Value = treatment.SessionId = Session.Id;
+                            cmd.Parameters["@ProbId"].Value = (object) treatment.ProbId ?? DBNull.Value;
+                            treatment.Id = int.Parse(cmd.ExecuteScalar().ToString());
+                        }
+                    }
+                }
+                using (var cmd = new SqlCommand("DELETE FROM TreatmentPlan WHERE Id = @Id", cn))
+                {
+                    cmd.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int));
+
+                    foreach (var treatment in DeletedTreatments)
+                    {
+                        if (treatment.Id != -1)
+                        {
+                            cmd.Parameters["@Id"].Value = treatment.Id;
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                }
+            }
+        }
+
+        private void SaveObservations()
+        {
+            /* TODO: Create a SQL Function to get the list of observations (for the _evaluation_)
+             * Here use this session's date to mark each of them as closed (from the deleted list!) */
+            using (var cn = ClusysUtils.GetConnection())
+            {
+                cn.Open();
+
+                using (var cmd = new SqlCommand("INSERT INTO SessionObservation (Obs, EvalId, SessionId) VALUES (@Obs, @EvalId, @SessionId); SELECT SCOPE_IDENTITY();", cn))
+                {
+                    cmd.Parameters.Add(new SqlParameter("@Obs", SqlDbType.NVarChar));
+                    cmd.Parameters.Add(new SqlParameter("@EvalId", SqlDbType.Int));
+                    cmd.Parameters.Add(new SqlParameter("@SessionId", SqlDbType.Int));
+
+                    foreach (var obs in Observations)
+                    {
+                        if (obs.Id == -1)
+                        {
+                            cmd.Parameters["@Obs"].Value = obs.Obs;
+                            cmd.Parameters["@EvalId"].Value = obs.EvalId = Evaluation.Id;
+                            cmd.Parameters["@SessionId"].Value = obs.SessionId = Session.Id;
+                            obs.Id = int.Parse(cmd.ExecuteScalar().ToString());
+                        }
+                    }
+                }
+                using (var cmd = new SqlCommand("UPDATE SessionObservation SET DateClosed = @DateClosed WHERE Id = @Id", cn))
+                {
+                    cmd.Parameters.Add(new SqlParameter("@DateClosed", SqlDbType.Date));
+                    cmd.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int));
+
+                    foreach (var obs in DeletedObservations)
+                    {
+                        if (obs.Id != -1)
+                        {
+                            cmd.Parameters["@DateClosed"].Value = Session.Date;
+                            cmd.Parameters["@Id"].Value = obs.Id;
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                }
+            }
         }
     }
 }

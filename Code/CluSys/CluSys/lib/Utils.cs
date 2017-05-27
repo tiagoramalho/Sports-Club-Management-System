@@ -38,8 +38,6 @@ namespace CluSys.lib
             var format = parameter as string;
 
             if (value == null || format == null)
-                return value;
-            else if (value is double && double.IsNaN((double)value))
                 return "n/a";
 
             return string.Format(format, value);

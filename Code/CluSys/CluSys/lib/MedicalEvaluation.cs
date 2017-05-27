@@ -27,7 +27,6 @@ namespace CluSys.lib
         {
             get
             {
-
                 using (var conn = ClusysUtils.GetConnection())
                 {
                     conn.Open();
@@ -47,6 +46,34 @@ namespace CluSys.lib
                     return sessions;
                 }
             }
+        }
+
+        public ObservableCollection<SessionObservation> GetObservations()
+        {
+            var obs = new ObservableCollection<SessionObservation>();
+
+            using (var conn = ClusysUtils.GetConnection())
+            {
+                conn.Open();
+
+                using (var cmd = new SqlCommand($"SELECT * FROM dbo.F_GetOpenObservations ({Id});", conn))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                            obs.Add(new SessionObservation
+                            {
+                                Id = int.Parse(reader["Id"].ToString()),
+                                Obs = reader["Obs"].ToString(),
+                                DateClosed = string.IsNullOrEmpty(reader["DateClosed"].ToString()) ? null : (DateTime?) DateTime.Parse(reader["DateClosed"].ToString()),
+                                EvalId = int.Parse(reader["EvalId"].ToString()),
+                                SessionId = int.Parse(reader["SessionId"].ToString())
+                            });
+                    }
+                }
+            }
+
+            return obs;
         }
 
         private bool Equals(MedicalEvaluation other) { return Id == other.Id; }

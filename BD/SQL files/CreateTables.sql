@@ -22,7 +22,8 @@ CREATE TABLE Class (
 
   PRIMARY KEY (ModalityId, Name),
   FOREIGN KEY (ModalityId) REFERENCES Modality (Name)
-    ON UPDATE CASCADE
+    ON UPDATE CASCADE,
+  CHECK (FinalAge > InitialAge)
 );
 
 CREATE TABLE Athlete (
@@ -139,7 +140,11 @@ CREATE TABLE MedicalEvaluation (
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   FOREIGN KEY (PhysiotherapistCC) REFERENCES Physiotherapist (CC)
-    ON UPDATE CASCADE
+    ON UPDATE CASCADE,
+  CHECK (Weight IS NULL OR Weight > 0),
+  CHECK (Height IS NULL OR Height > 0),
+  CHECK (ClosingDate IS NULL OR ClosingDate >= OpeningDate),
+  CHECK (ExpectedRecovery IS NULL OR ExpectedRecovery >= OpeningDate)
 );
 
 CREATE TABLE EvaluationSession (
@@ -213,7 +218,7 @@ CREATE TABLE FunctionalTestResult (
 
 CREATE TABLE MajorProblem (
   Id          INT IDENTITY (1, 1) NOT NULL,
-  Description NVARCHAR(MAX),
+  Description NVARCHAR(MAX)       NOT NULL,
   EvalId      INT                 NOT NULL,
   SessionId   INT                 NOT NULL,
 
@@ -236,7 +241,7 @@ CREATE TABLE TreatmentPlan (
 
 CREATE TABLE SessionObservation (
   Id         INT IDENTITY (1, 1) NOT NULL,
-  Obs        NVARCHAR(MAX),
+  Obs        NVARCHAR(MAX)       NOT NULL,
   DateClosed DATE,
   EvalId     INT                 NOT NULL,
   SessionId  INT                 NOT NULL,

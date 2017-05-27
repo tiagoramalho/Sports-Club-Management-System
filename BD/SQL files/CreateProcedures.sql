@@ -32,3 +32,15 @@ CREATE PROC P_GetOrCreateSession(@AthleteCC CHAR(12), @PhysiotherapistCC CHAR(12
     RETURN;
   END
 GO
+
+CREATE PROC P_UpdateEvaluation(@EvalId INT, @Weight DECIMAL(5, 2) = NULL, @Height DECIMAL(3, 2) = NULL, @Story NVARCHAR(MAX) = NULL, @ClosingDate DATE = NULL, @ExpectedRecovery Date = NULL) AS
+  BEGIN
+    UPDATE MedicalEvaluation SET
+      Weight = ISNULL(@Weight, Weight),
+      Height = ISNULL(@Height, Height),
+      Story = ISNULL(@Story, Story),
+      ClosingDate = ISNULL(@ClosingDate, ClosingDate),
+      ExpectedRecovery = ISNULL(@ExpectedRecovery, ExpectedRecovery)
+    WHERE Id = @EvalId
+  END
+GO

@@ -9,8 +9,8 @@ CREATE FUNCTION F_ActiveEvaluation(@CC CHAR(12))
             WHERE AthleteCC = @CC AND ClosingDate IS NULL);
   END
 GO
-SELECT dbo.F_ActiveEvaluation('124');
-SELECT dbo.F_ActiveEvaluation('1247');
+-- SELECT dbo.F_ActiveEvaluation('124');
+-- SELECT dbo.F_ActiveEvaluation('1247');
 GO
 
 CREATE FUNCTION F_HasActiveEvaluation(@CC CHAR(12))
@@ -25,8 +25,8 @@ CREATE FUNCTION F_HasActiveEvaluation(@CC CHAR(12))
     RETURN @ret;
   END
 GO
-SELECT dbo.F_HasActiveEvaluation('124');
-SELECT dbo.F_HasActiveEvaluation('1247');
+-- SELECT dbo.F_HasActiveEvaluation('124');
+-- SELECT dbo.F_HasActiveEvaluation('1247');
 GO
 
 CREATE FUNCTION F_GetWeightAndHeight(@CC CHAR(12))
@@ -45,10 +45,8 @@ CREATE FUNCTION F_GetWeightAndHeight(@CC CHAR(12))
          FROM MedicalEvaluation
          WHERE AthleteCC = @CC;
 GO
-SELECT *
-FROM F_GetWeightAndHeight('1243');
-SELECT *
-FROM F_GetWeightAndHeight('1247');
+-- SELECT * FROM F_GetWeightAndHeight('1243');
+-- SELECT * FROM F_GetWeightAndHeight('1247');
 GO
 
 CREATE FUNCTION F_GetAthletesWithOpenEvaluations()
@@ -59,8 +57,7 @@ CREATE FUNCTION F_GetAthletesWithOpenEvaluations()
                       FROM MedicalEvaluation
                       WHERE AthleteCC = CC AND ClosingDate IS NULL))
 GO
-SELECT *
-FROM F_GetAthletesWithOpenEvaluations();
+-- SELECT * FROM F_GetAthletesWithOpenEvaluations();
 GO
 
 CREATE FUNCTION F_GetNumberOfProblems(@EvalId INT, @SessionId INT)
@@ -73,7 +70,7 @@ CREATE FUNCTION F_GetNumberOfProblems(@EvalId INT, @SessionId INT)
     RETURN @NumberOfRows
   END
 GO
-SELECT dbo.F_GetNumberOfProblems(2, 3) AS NumberOfProblems;
+-- SELECT dbo.F_GetNumberOfProblems(2, 3) AS NumberOfProblems;
 GO
 
 CREATE FUNCTION F_GetNumberOfTreatments(@EvalId INT, @SessionId INT)
@@ -85,4 +82,8 @@ CREATE FUNCTION F_GetNumberOfTreatments(@EvalId INT, @SessionId INT)
     WHERE EvalId = @EvalId AND SessionId = @SessionId;
     RETURN @NumberOfRows
   END
+GO
+
+CREATE FUNCTION F_GetOpenObservations(@EvalId INT) RETURNS TABLE AS
+  RETURN (SELECT * FROM SessionObservation WHERE EvalId = @EvalId AND DateClosed IS NULL);
 GO

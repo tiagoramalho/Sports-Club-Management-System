@@ -11,7 +11,7 @@ namespace CluSys.lib
         public string Objective { get; set; }
         public int EvalId { get; set; }
         public int SessionId { get; set; }
-        public int ProbId { get; set; }
+        public int? ProbId { get; set; }
 
         public MajorProblem RefProblem { get; set; }
     }
