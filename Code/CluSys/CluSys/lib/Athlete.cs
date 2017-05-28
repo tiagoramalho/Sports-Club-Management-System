@@ -36,47 +36,40 @@ namespace CluSys.lib
             }
         }
 
-        private double? _height;
         public double? Height
         {
             get
             {
-                if (_height == null)
-                    using (var cn = ClusysUtils.GetConnection())
-                    {
-                        cn.Open();
+                using (var cn = ClusysUtils.GetConnection())
+                {
+                    cn.Open();
 
-                        var cmd = new SqlCommand($"SELECT Height FROM F_GetWeightAndHeight ('{CC}');", cn);
-                        var reader = cmd.ExecuteReader();
+                    var cmd = new SqlCommand($"SELECT * FROM F_GetHeight ('{CC}');", cn);
+                    var reader = cmd.ExecuteReader();
 
-                        if (reader.Read()) _height = double.TryParse(reader["Height"].ToString(), out double height) ? (double?)height : null;
-                    }
+                    if (reader.Read()) return double.TryParse(reader["Height"].ToString(), out double height) ? (double?) height : null;
+                }
 
-                return _height;
+                return null;
             }
-            set { _height = value; }
         }
 
-        private double? _weight;
         public double? Weight
         {
             get
             {
-                if (_weight == null)
-                    using (var cn = ClusysUtils.GetConnection())
-                    {
-                        cn.Open();
+                using (var cn = ClusysUtils.GetConnection())
+                {
+                    cn.Open();
 
-                        var cmd = new SqlCommand($"SELECT Weight FROM F_GetWeightAndHeight ('{CC}');", cn);
-                        var reader = cmd.ExecuteReader();
+                    var cmd = new SqlCommand($"SELECT * FROM F_GetWeight ('{CC}');", cn);
+                    var reader = cmd.ExecuteReader();
 
-                        if (reader.Read()) _weight = double.TryParse(reader["Weight"].ToString(), out double weight) ? (double?)weight : null;
-                    }
+                    if (reader.Read()) return double.TryParse(reader["Weight"].ToString(), out double weight) ? (double?)weight : null;
+                }
 
-                return _weight;
+                return null;
             }
-
-            set { _weight = value; }
         }
 
         public int Age

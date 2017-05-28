@@ -195,8 +195,11 @@ namespace CluSys
             ms.Save();
             SessionModal.IsOpen = false;  // close the modal
 
-            /* Update the lists */
+            /* Update the athlete's home list */
             AthletesWithOpenEvaluations.ItemsSource = Athletes.AthletesWithOpenEvaluations();
+            /* Update the athlete's content */
+            AthleteContent.DataContext = null; AthleteContent.DataContext = ms.Athlete;
+            /* Update the sessions' lists */
             EvaluationsList.ItemsSource = ms.Athlete.GetEvaluations();
             OpenSessions(ms.Evaluation, null);
             FilterEvaluations();

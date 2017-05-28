@@ -31,14 +31,21 @@ GO
 -- SELECT dbo.F_HasActiveEvaluation('1247');
 GO
 
-CREATE FUNCTION F_GetWeightAndHeight(@CC CHAR(12))
+CREATE FUNCTION F_GetWeight(@CC CHAR(12))
   RETURNS TABLE AS
   RETURN SELECT TOP 1
            FIRST_VALUE(Weight)
            OVER (
              ORDER BY CASE WHEN Weight IS NULL
                THEN 1
-                      ELSE 0 END, OpeningDate DESC ) AS Weight,
+                      ELSE 0 END, OpeningDate DESC ) AS Weight
+         FROM MedicalEvaluation
+         WHERE AthleteCC = @CC;
+GO
+
+CREATE FUNCTION F_GetHeight(@CC CHAR(12))
+  RETURNS TABLE AS
+  RETURN SELECT TOP 1
            FIRST_VALUE(Height)
            OVER (
              ORDER BY CASE WHEN Height IS NULL
@@ -47,8 +54,8 @@ CREATE FUNCTION F_GetWeightAndHeight(@CC CHAR(12))
          FROM MedicalEvaluation
          WHERE AthleteCC = @CC;
 GO
--- SELECT * FROM F_GetWeightAndHeight('1243');
--- SELECT * FROM F_GetWeightAndHeight('1247');
+-- SELECT * FROM F_GetHeight('1243');
+-- SELECT * FROM F_GetHeight('1247');
 GO
 
 CREATE FUNCTION F_GetAthletesWithOpenEvaluations()

@@ -60,7 +60,7 @@ namespace CluSys.lib
                 Problems = session.GetProblems();
                 Treatments = session.GetTreatments();
                 Observations = evaluation.GetObservations();
-                MedicalDischarge = evaluation?.ClosingDate == session.Date;
+                MedicalDischarge = evaluation.ClosingDate == session.Date;
                 CanBeEdited = false;
             }
             else
@@ -79,90 +79,71 @@ namespace CluSys.lib
             using (var cn = ClusysUtils.GetConnection())
             {
                 cn.Open();
-
-                SqlCommand command = cn.CreateCommand();
-                SqlTransaction transaction;
-
-                transaction = cn.BeginTransaction("SampleTransaction");
-              
-                command.Connection = cn;
-                command.Transaction = transaction;
-
-                try
+                using (var transaction = cn.BeginTransaction("SampleTransaction"))
                 {
-                    GetEvalId(cn, transaction);
-                    GetSessionId(cn, transaction);
-                    UpdateEvaluation(cn, transaction);
-        
-                    SaveMarks(cn, transaction);
-                    SaveProblems(cn, transaction);
-                    SaveTreatments(cn, transaction);
-                    SaveObservations(cn, transaction);
-                    transaction.Commit();
-
-
-
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Commit Exception Type: {0}", ex.GetType());
-                    Console.WriteLine("  Message: {0}", ex.Message);
-
                     try
                     {
-                        transaction.Rollback();
+                        GetEvalId(cn, transaction);
+                        GetSessionId(cn, transaction);
+                        UpdateEvaluation(cn, transaction);
+                        transaction.Commit();
+        
+                        SaveMarks(cn, transaction);
+                        transaction.Commit();
+                        SaveProblems(cn, transaction);
+                        transaction.Commit();
+                        SaveTreatments(cn, transaction);
+                        transaction.Commit();
+                        SaveObservations(cn, transaction);
+                        transaction.Commit();
                     }
-                    catch (Exception ex2)
+                    catch (Exception ex)
                     {
-                        // This catch block will handle any errors that may have occurred
-                        // on the server that would cause the rollback to fail, such as
-                        // a closed connection.
-                        Console.WriteLine("Rollback Exception Type: {0}", ex2.GetType());
-                        Console.WriteLine("  Message: {0}", ex2.Message);
-                    }
+                        Console.WriteLine("Commit Exception Type: {0}", ex.GetType());
+                        Console.WriteLine("  Message: {0}", ex.Message);
+
+                        // Attempt to roll back the transaction.
+                        try
+                        {
+                            transaction.Rollback();
+                        }
+                        catch (Exception ex2)
+                        {
+                            // This catch block will handle any errors that may have occurred
+                            // on the server that would cause the rollback to fail, such as
+                            // a closed connection.
+                            Console.WriteLine("Rollback Exception Type: {0}", ex2.GetType());
+                            Console.WriteLine("  Message: {0}", ex2.Message);
+                        }
                     
+                    }
                 }
             }
-
-            /* TODO: Begin transaction */
-            //GetEvalId();
-            //GetSessionId();
-            // UpdateEvaluation();
-
-            //SaveMarks();
-            //SaveProblems();
-            //SaveTreatments();
-            //SaveObservations();
 
             DeletedMarks.Clear();
             DeletedProblems.Clear();
             DeletedTreatments.Clear();
             DeletedObservations.Clear();
-            /* TODO: Complete transaction */
         }
-
-      
 
         private void GetEvalId(SqlConnection cn, SqlTransaction transaction)
         {
-            
+            using (var cmd = new SqlCommand("P_GetOrCreateEvaluation", cn, transaction) {CommandType = CommandType.StoredProcedure})
+            {
+                cmd.Parameters.Add(new SqlParameter("@AthleteCC", Athlete.CC));
+                cmd.Parameters.Add(new SqlParameter("@PhysiotherapistCC", PhysiotherapistCC));
+                cmd.Parameters.Add(new SqlParameter("@OpeningDate", Session.Date));
+                cmd.Parameters.Add(new SqlParameter("@EvalId", SqlDbType.Int) { Direction = ParameterDirection.Output });
+                cmd.ExecuteNonQuery();
 
-            var cmd = new SqlCommand("P_GetOrCreateEvaluation", cn, transaction) {CommandType = CommandType.StoredProcedure};
-            cmd.Parameters.Add(new SqlParameter("@AthleteCC", Athlete.CC));
-            cmd.Parameters.Add(new SqlParameter("@PhysiotherapistCC", PhysiotherapistCC));
-            cmd.Parameters.Add(new SqlParameter("@OpeningDate", Session.Date));
-            cmd.Parameters.Add(new SqlParameter("@EvalId", SqlDbType.Int) { Direction = ParameterDirection.Output });
-            cmd.ExecuteNonQuery();
-
-            Evaluation.Id = Session.EvalId = Convert.ToInt32(cmd.Parameters["@EvalId"].Value);
-            
+                Evaluation.Id = Session.EvalId = Convert.ToInt32(cmd.Parameters["@EvalId"].Value);
+            }
         }
 
         private void GetSessionId(SqlConnection cn, SqlTransaction transaction)
         {
-            
-
-                var cmd = new SqlCommand("P_GetOrCreateSession", cn, transaction) {CommandType = CommandType.StoredProcedure};
+            using (var cmd = new SqlCommand("P_GetOrCreateSession", cn, transaction) {CommandType = CommandType.StoredProcedure})
+            {
                 cmd.Parameters.Add(new SqlParameter("@AthleteCC", Athlete.CC));
                 cmd.Parameters.Add(new SqlParameter("@PhysiotherapistCC", PhysiotherapistCC));
                 cmd.Parameters.Add(new SqlParameter("@Date", Session.Date));
@@ -171,29 +152,25 @@ namespace CluSys.lib
                 cmd.ExecuteNonQuery();
 
                 Session.Id = Convert.ToInt32(cmd.Parameters["@SessionId"].Value);
-            
+            }
         }
 
         private void UpdateEvaluation(SqlConnection cn, SqlTransaction transaction)
         {
-            
             using (var cmd = new SqlCommand("P_UpdateEvaluation", cn, transaction) {CommandType = CommandType.StoredProcedure})
             {
                 cmd.Parameters.Add(new SqlParameter("@EvalId", Evaluation.Id));
-                if(Athlete.Weight != null && Athlete.Weight > 0) cmd.Parameters.Add(new SqlParameter("@Weight", Athlete.Weight));
-                if(Athlete.Height != null && Athlete.Height > 0) cmd.Parameters.Add(new SqlParameter("@Height", Athlete.Height));
+                if(Evaluation.Weight != null && Evaluation.Weight > 0) cmd.Parameters.Add(new SqlParameter("@Weight", Evaluation.Weight));
+                if(Evaluation.Height != null && Evaluation.Height > 0) cmd.Parameters.Add(new SqlParameter("@Height", Evaluation.Height));
                 if(Evaluation.Story != null) cmd.Parameters.Add(new SqlParameter("@Story", Evaluation.Story));
-                if (MedicalDischarge) cmd.Parameters.Add(new SqlParameter("@ClosingDate", Session.Date));
+                if(MedicalDischarge) cmd.Parameters.Add(new SqlParameter("@ClosingDate", Session.Date));
                 if(Evaluation.ExpectedRecovery != null) cmd.Parameters.Add(new SqlParameter("@ExpectedRecovery", Evaluation.ExpectedRecovery));
                 cmd.ExecuteNonQuery();
             }
-            
         }
 
         private void SaveMarks(SqlConnection cn, SqlTransaction transaction)
         {
-            
-
             using (var cmd = new SqlCommand("INSERT INTO BodyChartMark (X, Y, PainLevel, Description, EvalId, SessionId, ViewId) VALUES (@X, @Y, @PainLevel, @Description, @EvalId, @SessionId, @ViewId); SELECT SCOPE_IDENTITY();", cn, transaction))
             {
                 cmd.Parameters.Add(new SqlParameter("@X", SqlDbType.Float));
@@ -233,12 +210,10 @@ namespace CluSys.lib
                     }
                 }
             }
-            
         }
 
         private void SaveProblems(SqlConnection cn, SqlTransaction transaction)
         {
-            
             using (var cmd = new SqlCommand("INSERT INTO MajorProblem (Description, EvalId, SessionId) VALUES (@Description, @EvalId, @SessionId); SELECT SCOPE_IDENTITY();", cn, transaction))
             {
                 cmd.Parameters.Add(new SqlParameter("@Description", SqlDbType.NVarChar));
@@ -269,13 +244,10 @@ namespace CluSys.lib
                     }
                 }
             }
-            
         }
 
         private void SaveTreatments(SqlConnection cn, SqlTransaction transaction)
         {
-            
-
             using (var cmd = new SqlCommand("INSERT INTO TreatmentPlan (Description, Objective, EvalId, SessionId, ProbId) VALUES (@Description, @Objective, @EvalId, @SessionId, @ProbId); SELECT SCOPE_IDENTITY();", cn, transaction))
             {
                 cmd.Parameters.Add(new SqlParameter("@Description", SqlDbType.NVarChar));
@@ -310,13 +282,10 @@ namespace CluSys.lib
                     }
                 }
             }
-            
         }
 
         private void SaveObservations(SqlConnection cn, SqlTransaction transaction)
         {
-            
-
             using (var cmd = new SqlCommand("INSERT INTO SessionObservation (Obs, EvalId, SessionId) VALUES (@Obs, @EvalId, @SessionId); SELECT SCOPE_IDENTITY();", cn, transaction))
             {
                 cmd.Parameters.Add(new SqlParameter("@Obs", SqlDbType.NVarChar));
@@ -349,7 +318,6 @@ namespace CluSys.lib
                     }
                 }
             }
-            
         }
     }
 }

@@ -96,7 +96,7 @@ namespace CluSys.lib
                     {
                         Id = int.Parse(reader["Id"].ToString()),
                         X = double.Parse(reader["X"].ToString()),
-                        Y = double.Parse(reader["X"].ToString()),
+                        Y = double.Parse(reader["Y"].ToString()),
                         PainLevel = int.Parse(reader["PainLevel"].ToString()),
                         Description = reader["Description"].ToString(),
                         EvalId = int.Parse(reader["EvalId"].ToString()),
