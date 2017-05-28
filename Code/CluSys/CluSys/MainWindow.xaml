@@ -237,7 +237,7 @@
                                             <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueDarkBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
                                                 <Button Height="Auto" Click="OpenSessions">
                                                     <StackPanel Margin="-80 0 -80 0" >
-                                                        <TextBlock Margin="4" Text="{Binding Path=CountId, StringFormat={}Avaliação #{0}}" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" />
+                                                        <TextBlock Margin="4" Text="{Binding Path=CountId, StringFormat={}Lesão #{0}}" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" />
                                                         <Separator Style="{StaticResource MaterialDesignLightSeparator}"/>
                                                         <TextBlock Text="{Binding Path=OpeningDate, StringFormat=D, ConverterCulture=pt-PT}" Margin="4" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignBody2TextBlock}" />
                                                         <materialDesign:PackIcon HorizontalAlignment="Center" Kind="InformationVariant" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />

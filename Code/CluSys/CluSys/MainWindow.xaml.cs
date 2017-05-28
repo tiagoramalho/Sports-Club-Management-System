@@ -1,6 +1,7 @@
 ﻿using CluSys.lib;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -87,20 +88,11 @@ namespace CluSys
             // Get this athlete's evaluations
             EvaluationsList.ItemsSource = athlete.GetEvaluations();
             // Filter them based on date
-            FilterEvaluations(SliderRange);
+            FilterEvaluations();
 
             // Toogle visibility
             HomeContent.Visibility = Visibility.Hidden;
             AthleteContent.Visibility = Visibility.Visible;
-        }
-
-        private void OpenSessions(object sender, RoutedEventArgs e)
-        {
-            var me = (sender as Control)?.DataContext as MedicalEvaluation;
-
-            SessionsExpander.DataContext = me;
-            SessionsList.ItemsSource = me?.Sessions;
-            SessionsExpander.IsExpanded = true;
         }
 
         private void ResetAthleteContent()
@@ -110,32 +102,104 @@ namespace CluSys
             SessionsExpander.IsExpanded = false;
         }
 
-        private void FilterEvaluations(object sender, RangeParameterChangedEventArgs rangeParameterChangedEventArgs=null)
+        private void FilterEvaluations(object sender = null, RangeParameterChangedEventArgs rangeParameterChangedEventArgs=null)
         {
-            var dr = sender as DateRangeSlider;
+            var dr = sender == null ? SliderRange : sender as DateRangeSlider;
 
             if (dr == null)
                 return;
 
-            var meView = (CollectionView) CollectionViewSource.GetDefaultView(EvaluationsList.ItemsSource);
-            if (meView != null)
-                meView.Filter = delegate(object evaluation)
+            if (CollectionViewSource.GetDefaultView(EvaluationsList.ItemsSource) is CollectionView meView)
+            {
+                meView.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
+                meView.Filter = delegate (object evaluation)
                 {
                     var me = evaluation as MedicalEvaluation;
 
                     return me != null && (dr.LowerDate <= me.OpeningDate && me.OpeningDate <= dr.UpperDate
-                                          && (me.ClosingDate == null ||
-                                              dr.LowerDate <= me.ClosingDate && me.ClosingDate <= dr.UpperDate));
+                                          && (me.ClosingDate == null || dr.LowerDate <= me.ClosingDate && me.ClosingDate <= dr.UpperDate));
                 };
+                meView.Refresh();
+            }
 
-            var seView = (CollectionView) CollectionViewSource.GetDefaultView(SessionsList.ItemsSource);
-            if (seView != null)
-                seView.Filter = delegate(object session)
+            if (CollectionViewSource.GetDefaultView(SessionsList.ItemsSource) is CollectionView seView)
+            {
+                seView.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
+                seView.Filter = delegate (object session)
                 {
                     var se = session as EvaluationSession;
 
                     return se != null && dr.LowerDate <= se.Date && se.Date <= dr.UpperDate;
                 };
+                seView.Refresh();
+            }
+        }
+
+        /******************************************************************************************************
+         * Sessions
+         *****************************************************************************************************/
+
+        private void OpenSessions(object sender, RoutedEventArgs e)
+        {
+            MedicalEvaluation me;
+
+            if (sender is MedicalEvaluation)
+                me = (MedicalEvaluation) sender;
+            else if (sender is Control)
+                me = ((Control)sender).DataContext as MedicalEvaluation;
+            else return;
+
+            SessionsExpander.DataContext = me;
+            SessionsList.ItemsSource = me?.Sessions;
+            FilterEvaluations();
+
+            SessionsExpander.IsExpanded = true;
+        }
+
+        private void NewSession(object sender, RoutedEventArgs e)
+        {
+            ModalState ms;
+            EvaluationModal.DataContext = ms = new ModalState((Athlete)AthleteContent.DataContext);
+
+            // Scroll the modal
+            (EvaluationModal.Content as ScrollViewer)?.ScrollToTop();
+
+            // clean the current body points
+            UpdateBodyView(ms, 0);
+            SessionModal.IsOpen = true;
+        }
+
+        private void OpenSession(object sender, RoutedEventArgs e)
+        {
+            var session = (EvaluationSession)((Control)sender).DataContext;
+            var evaluation = session.GetMedicalEvaluation();
+
+            ModalState ms;
+            EvaluationModal.DataContext = ms = new ModalState((Athlete)AthleteContent.DataContext, evaluation, session);
+
+            // Scroll the modal
+            (EvaluationModal.Content as ScrollViewer)?.ScrollToTop();
+
+            // make the initial body points visible
+            UpdateBodyView(ms, 0);
+            SessionModal.IsOpen = true;
+        }
+
+        private void SaveSession(object sender, RoutedEventArgs e)
+        {
+            var ms = EvaluationModal.DataContext as ModalState;
+
+            if(ms == null)
+                return;
+
+            ms.Save();
+            SessionModal.IsOpen = false;  // close the modal
+
+            /* Update the lists */
+            AthletesWithOpenEvaluations.ItemsSource = Athletes.AthletesWithOpenEvaluations();
+            EvaluationsList.ItemsSource = ms.Athlete.GetEvaluations();
+            OpenSessions(ms.Evaluation, null);
+            FilterEvaluations();
         }
 
         /******************************************************************************************************
@@ -352,31 +416,9 @@ namespace CluSys
             ms.Observations.Remove(obs);
         }
 
-        private void SaveSession(object sender, RoutedEventArgs e) {
-            SessionModal.IsOpen = false;  // close the modal
-            (EvaluationModal.DataContext as ModalState)?.Save();
-        }
-
-        private void OpenSession(object sender, RoutedEventArgs e)
-        {
-            var session = (EvaluationSession)((Control)sender).DataContext;
-            var evaluation = session.GetMedicalEvaluation();
-
-            ModalState ms;
-            EvaluationModal.DataContext = ms = new ModalState((Athlete)AthleteContent.DataContext, evaluation, session);
-            // make the initial points visible
-            UpdateBodyView(ms, 0);
-            SessionModal.IsOpen = true;
-        }
-
-        private void NewSession(object sender, RoutedEventArgs e)
-        {
-            ModalState ms;
-            EvaluationModal.DataContext = ms = new ModalState((Athlete)AthleteContent.DataContext);
-            // make the initial points visible
-            UpdateBodyView(ms, 0);
-            SessionModal.IsOpen = true;
-        }
+        /******************************************************************************************************
+         * Modals
+         *****************************************************************************************************/
 
         private void TryClickOutOfModal(object sender, MouseButtonEventArgs e)
         {
