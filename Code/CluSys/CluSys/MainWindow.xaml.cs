@@ -37,7 +37,7 @@ namespace CluSys
             AthletesWithOpenEvaluations.ItemsSource = Athletes.AthletesWithOpenEvaluations();
 
             // Modal
-            EvaluationModal.PreviewMouseUp += (sender, args) => { if (!_withinMarkPopup) BodyChartMarkPopup.IsPopupOpen = false; };
+            EvaluationModal.PreviewMouseUp += delegate { if (!_withinMarkPopup) BodyChartMarkPopup.IsPopupOpen = false; };
         }
 
         private void FilterAthletes(object sender, TextChangedEventArgs e)
@@ -49,7 +49,8 @@ namespace CluSys
                 return;
 
             var view = (CollectionView)CollectionViewSource.GetDefaultView(lb.ItemsSource);
-            view.Filter = a => {
+            view.Filter = delegate(object a)
+            {
                 var athlete = a as Athlete;
 
                 return (athlete?.FirstName + " " + athlete?.LastName).IndexOf(filterText, StringComparison.OrdinalIgnoreCase) >= 0;
@@ -118,7 +119,7 @@ namespace CluSys
 
             var meView = (CollectionView) CollectionViewSource.GetDefaultView(EvaluationsList.ItemsSource);
             if (meView != null)
-                meView.Filter = evaluation =>
+                meView.Filter = delegate(object evaluation)
                 {
                     var me = evaluation as MedicalEvaluation;
 
@@ -129,7 +130,7 @@ namespace CluSys
 
             var seView = (CollectionView) CollectionViewSource.GetDefaultView(SessionsList.ItemsSource);
             if (seView != null)
-                seView.Filter = session =>
+                seView.Filter = delegate(object session)
                 {
                     var se = session as EvaluationSession;
 
@@ -152,7 +153,10 @@ namespace CluSys
             var activeView = ms.ActiveView;
             var point = new Point(e.GetPosition(BodyChart).X - BodyChartMark.DrawRadius, e.GetPosition(BodyChart).Y - BodyChartMark.DrawRadius);
 
-            var mark = ms.Marks.FirstOrDefault(m => Point.Subtract(point, new Point(m.X, m.Y)).Length < 4 * BodyChartMark.DrawRadius);
+            var mark = ms.Marks.FirstOrDefault(delegate(BodyChartMark m)
+            {
+                return Point.Subtract(point, new Point(m.X, m.Y)).Length < 4 * BodyChartMark.DrawRadius;
+            });
 
             if (mark == null)
             {
@@ -205,7 +209,11 @@ namespace CluSys
             BodyChartMarkPopup.IsPopupOpen = false;
             BodyChartMarkPopup.DataContext = null;
 
-            var ellipse = bc.Children.OfType<Ellipse>().FirstOrDefault(point => Math.Abs((double)point.GetValue(Canvas.LeftProperty) - mark.X) < double.Epsilon && Math.Abs((double)point.GetValue(Canvas.TopProperty) - mark.Y) < double.Epsilon);
+            var ellipse = bc.Children.OfType<Ellipse>().FirstOrDefault(delegate(Ellipse point)
+            {
+                return Math.Abs((double) point.GetValue(Canvas.LeftProperty) - mark.X) < double.Epsilon &&
+                       Math.Abs((double) point.GetValue(Canvas.TopProperty) - mark.Y) < double.Epsilon;
+            });
             bc.Children.Remove(ellipse);
             ms.Marks.Remove(mark);
         }
