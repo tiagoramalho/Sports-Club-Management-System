@@ -15,7 +15,7 @@ namespace CluSys
 {
     public partial class MainWindow
     {
-        private bool _withinMarkPopup = false;
+        private bool _withinMarkPopup;
         private readonly ObservableCollection<Athlete> _openAthletes;
 
         public MainWindow()
@@ -217,7 +217,7 @@ namespace CluSys
             var ms = (ModalState) EvaluationModal.DataContext;
             var newIdx = ms.ActiveViewIdx + 1;
 
-            RotateView(ms, newIdx >= ms.Views.Count ? 0 : newIdx);
+            UpdateBodyView(ms, newIdx >= ms.Views.Count ? 0 : newIdx);
         }
 
         private void RightView(object sender, RoutedEventArgs e)
@@ -225,10 +225,10 @@ namespace CluSys
             var ms = (ModalState) EvaluationModal.DataContext;
             var newIdx = ms.ActiveViewIdx - 1;
 
-            RotateView(ms, newIdx < 0 ? ms.Views.Count - 1 : newIdx);
+            UpdateBodyView(ms, newIdx < 0 ? ms.Views.Count - 1 : newIdx);
         }
 
-        private void RotateView(ModalState ms, int newIdx)
+        private void UpdateBodyView(ModalState ms, int newIdx)
         {
             var bc = BodyChartCanvas;
 
@@ -354,13 +354,19 @@ namespace CluSys
             var session = (EvaluationSession)((Control)sender).DataContext;
             var evaluation = session.GetMedicalEvaluation();
 
-            EvaluationModal.DataContext = new ModalState((Athlete)AthleteContent.DataContext, evaluation, session);
+            ModalState ms;
+            EvaluationModal.DataContext = ms = new ModalState((Athlete)AthleteContent.DataContext, evaluation, session);
+            // make the initial points visible
+            UpdateBodyView(ms, 0);
             SessionModal.IsOpen = true;
         }
 
         private void NewSession(object sender, RoutedEventArgs e)
         {
-            EvaluationModal.DataContext = new ModalState((Athlete)AthleteContent.DataContext);
+            ModalState ms;
+            EvaluationModal.DataContext = ms = new ModalState((Athlete)AthleteContent.DataContext);
+            // make the initial points visible
+            UpdateBodyView(ms, 0);
             SessionModal.IsOpen = true;
         }
 

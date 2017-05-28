@@ -8,8 +8,8 @@ namespace CluSys.lib
     internal class MedicalEvaluation
     {
         public int Id { get; set; } = -1;
-        public double Weight { get; set; }
-        public double Height { get; set; }
+        public double? Weight { get; set; }
+        public double? Height { get; set; }
         public string Story { get; set; }
         public DateTime OpeningDate { get; set; }
         public DateTime? ClosingDate { get; set; }

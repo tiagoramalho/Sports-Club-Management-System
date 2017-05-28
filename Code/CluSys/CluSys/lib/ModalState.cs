@@ -76,6 +76,7 @@ namespace CluSys.lib
 
         public void Save()
         {
+            /* TODO: Begin transaction */
             GetEvalId(); GetSessionId();
             UpdateEvaluation();
 
@@ -84,11 +85,11 @@ namespace CluSys.lib
             SaveTreatments();
             SaveObservations();
 
-            /* ... */
             DeletedMarks.Clear();
             DeletedProblems.Clear();
             DeletedTreatments.Clear();
             DeletedObservations.Clear();
+            /* TODO: Complete transaction */
         }
 
         private void GetEvalId()
@@ -277,8 +278,6 @@ namespace CluSys.lib
 
         private void SaveObservations()
         {
-            /* TODO: Create a SQL Function to get the list of observations (for the _evaluation_)
-             * Here use this session's date to mark each of them as closed (from the deleted list!) */
             using (var cn = ClusysUtils.GetConnection())
             {
                 cn.Open();

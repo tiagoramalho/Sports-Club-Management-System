@@ -6,7 +6,6 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
 
         mc:Ignorable="d"
-        xmlns:src="clr-namespace:CluSys"
         xmlns:lib="clr-namespace:CluSys.lib"
 
         Icon="App.ico"
@@ -220,78 +219,6 @@
                     </DockPanel>
 
                     <GroupBox Grid.Row="2" Header="Sessões" Margin="16">
-                        <!--
-                        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                            <ItemsControl x:Name="EvaluationsList">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate DataType="lib:MedicalEvaluation">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto" />
-                                                <ColumnDefinition Width="Auto" />
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="Auto" />
-                                            </Grid.ColumnDefinitions>
-
-                                            <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueDarkBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
-                                                <Button Height="Auto" Click="OpenSessions">
-                                                    <StackPanel Margin="-80 0 -80 0" >
-                                                        <TextBlock Margin="4" Text="{Binding Path=CountId, StringFormat={}Avaliação #{0}}" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" />
-                                                        <Separator Style="{StaticResource MaterialDesignLightSeparator}"/>
-                                                        <TextBlock Text="{Binding Path=OpeningDate, StringFormat=D, ConverterCulture=pt-PT}" Margin="4" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignBody2TextBlock}" />
-                                                        <materialDesign:PackIcon HorizontalAlignment="Center" Kind="InformationVariant" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
-                                                    </StackPanel>
-                                                </Button>
-                                            </materialDesign:Card>
-
-                                            <Border Grid.Column="1" Background="{DynamicResource MaterialDesignDivider}" Width="1" VerticalAlignment="Stretch" SnapsToDevicePixels="True" />
-
-                                            <ScrollViewer Grid.Column="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
-                                                <ItemsControl ItemsSource="{Binding Path=Sessions}">
-                                                    <ItemsControl.ItemsPanel>
-                                                        <ItemsPanelTemplate>
-                                                            <WrapPanel IsItemsHost="True" />
-                                                        </ItemsPanelTemplate>
-                                                    </ItemsControl.ItemsPanel>
-                                                    <ItemsControl.ItemTemplate>
-                                                        <DataTemplate DataType="lib:EvaluationSession">
-                                                            <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource PrimaryHueLightForegroundBrush}">
-                                                                <Button Height="Auto" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
-                                                                    <StackPanel Margin="-80 0 -80 0">
-                                                                        <TextBlock Margin="4" Text="{Binding Path=Id, StringFormat={}Sessão #{0}}" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" />
-                                                                        <TextBlock Text="{Binding Path=Date, StringFormat=D, ConverterCulture=pt-PT}" Margin="4 0 4 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignBody2TextBlock}" />
-                                                                        <Separator Style="{StaticResource MaterialDesignLightSeparator}"/>
-                                                                        <Grid>
-                                                                            <Grid.ColumnDefinitions>
-                                                                                <ColumnDefinition Width="*" />
-                                                                                <ColumnDefinition Width="Auto" />
-                                                                            </Grid.ColumnDefinitions>
-                                                                            <StackPanel>
-                                                                                <TextBlock Margin="4 0 4 0" Text="{Binding Path=NumberOfProblems, StringFormat={}Problemas: {0}}" />
-                                                                                <TextBlock Margin="4" Text="{Binding Path=NumberOfTreatments, StringFormat={}Tratamentos: {0}}" />
-                                                                            </StackPanel>
-                                                                            <materialDesign:PackIcon Grid.Column="1" Margin="0 0 4 0" Kind="Eye" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                                                        </Grid>
-                                                                    </StackPanel>
-                                                                </Button>
-                                                            </materialDesign:Card>
-                                                        </DataTemplate>
-                                                    </ItemsControl.ItemTemplate>
-                                                </ItemsControl>
-                                            </ScrollViewer>
-
-                                            <Button Grid.Column="3"
-                                                    Style="{DynamicResource MaterialDesignFloatingActionMiniDarkButton}"
-                                                Margin="8" HorizontalAlignment="Center" ToolTip="Nova avaliação/sessão"
-                                                Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
-                                                <materialDesign:PackIcon Kind="Plus" Height="24" Width="24" />
-                                            </Button>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </ScrollViewer>
-                        -->
                         <StackPanel>
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -429,7 +356,7 @@
                             <materialDesign:PackIcon Margin="4 0 4 0" Kind="Weight" Foreground="{Binding ElementName=WeightBox, Path=BorderBrush}" />
                             <TextBox x:Name="WeightBox" IsEnabled="{Binding Path=CanBeEdited}" materialDesign:HintAssist.Hint="Peso (kg)">
                                 <TextBox.Text>
-                                    <Binding Path="Athlete.Weight" UpdateSourceTrigger="PropertyChanged">
+                                    <Binding Path="Evaluation.Weight" UpdateSourceTrigger="PropertyChanged">
                                         <Binding.ValidationRules>
                                             <lib:GreaterThanZeroValudationRule ValidatesOnTargetUpdated="True" />
                                         </Binding.ValidationRules>
@@ -440,7 +367,7 @@
                             <materialDesign:PackIcon Margin="12 0 4 0" Kind="Ruler" Foreground="{Binding ElementName=HeightBox, Path=BorderBrush}" />
                             <TextBox x:Name="HeightBox" IsEnabled="{Binding Path=CanBeEdited}" materialDesign:HintAssist.Hint="Altura (m)">
                                 <TextBox.Text>
-                                    <Binding Path="Athlete.Height" UpdateSourceTrigger="PropertyChanged">
+                                    <Binding Path="Evaluation.Height" UpdateSourceTrigger="PropertyChanged">
                                         <Binding.ValidationRules>
                                             <lib:GreaterThanZeroValudationRule ValidatesOnTargetUpdated="True" />
                                         </Binding.ValidationRules>

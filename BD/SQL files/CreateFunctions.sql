@@ -18,7 +18,9 @@ CREATE FUNCTION F_HasActiveEvaluation(@CC CHAR(12))
   BEGIN
     DECLARE @ret BIT;
 
-    IF (SELECT dbo.F_ActiveEvaluation(@CC)) IS NULL
+    If (SELECT TOP 1 1 FROM MedicalEvaluation WHERE AthleteCC = @CC) IS NULL
+      SET @ret = 0;
+    ELSE IF (SELECT dbo.F_ActiveEvaluation(@CC)) IS NULL
       SET @ret = 0;
     ELSE
       SET @ret = 1;

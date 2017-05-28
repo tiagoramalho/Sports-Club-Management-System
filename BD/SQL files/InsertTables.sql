@@ -39,7 +39,7 @@ INSERT INTO Athlete VALUES
   ('1235', 'Gabriel', 'Soares', 'Patricio', '19960402', '/assets/img/25.jpg', '931111115', 'gabriel@ua.pt', HASHBYTES('SHA2_512', 'gabriel'), 'engenheiro agronomo', 'destro', 'Futebol'),
   ('1236', 'Jorge', 'Miguel', 'Silva', '19930402', '/assets/img/27.jpg', '931111116', 'jorge@ua.pt', HASHBYTES('SHA2_512', 'jorge'), 'estudante', 'destro', 'Basquetebol'),
   ('1237', 'Samuel', 'Antunes', 'Biscaia', '19960622', '/assets/img/37.jpg', '931111117', 'samuel@ua.pt', HASHBYTES('SHA2_512', 'samuel'), 'estudante', 'destro', 'Basquetebol'),
-  ('1238', 'Joao', 'Ferreira', 'Gomes', '19960402', '/assets/img/64.jpg', '931111118', 'ferreira@ua.pt', HASHBYTES('SHA2_512', 'ferreira'), 'estudante', 'destro', 'Basquetebol'),
+  ('1238', 'João', 'Ferreira', 'Gomes', '19960402', '/assets/img/64.jpg', '931111118', 'ferreira@ua.pt', HASHBYTES('SHA2_512', 'ferreira'), 'estudante', 'destro', 'Basquetebol'),
   ('1239', 'Diogo', 'Filipe', 'Catraio', '19930402', '/assets/img/66.jpg', '931111119', 'diogo@ua.pt', HASHBYTES('SHA2_512', 'diogo'), 'estudante', 'destro', 'Basquetebol'),
   ('1241', 'Cilio', NULL, 'Sousa', '19960622', '/assets/img/68.jpg', '931111121', 'cilio@ua.pt', HASHBYTES('SHA2_512', 'cilio'), 'estudante', 'destro', 'Futebol'),
   ('1242', 'Jose', 'Pedro', 'Ribeiro', '19960402', '/assets/img/74.jpg', '931111122', 'jose@ua.pt', HASHBYTES('SHA2_512', 'jose'), 'estudante', 'esquerdino', 'Futebol'),

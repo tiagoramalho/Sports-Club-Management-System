@@ -67,14 +67,14 @@ namespace CluSys.lib
                 var evaluation = new MedicalEvaluation
                 {
                     Id = int.Parse(reader["Id"].ToString()),
-                    Weight = double.Parse(reader["Weight"].ToString()),
-                    Height = double.Parse(reader["Height"].ToString()),
+                    Weight = double.TryParse(reader["Weight"].ToString(), out double weight) ? (double?)weight : null,
+                    Height = double.TryParse(reader["Height"].ToString(), out double height) ? (double?)height : null,
                     Story = reader["Story"].ToString(),
                     OpeningDate = DateTime.Parse(reader["OpeningDate"].ToString()),
-                    ClosingDate = reader["ClosingDate"].ToString() == "" ? null : (DateTime?) DateTime.Parse(reader["ClosingDATE"].ToString()),
-                    ExpectedRecovery = reader["ExpectedRecovery"].ToString() == "" ? null : (DateTime?) DateTime.Parse(reader["ExpectedRecovery"].ToString()),
+                    ClosingDate = DateTime.TryParse(reader["ClosingDate"].ToString(), out DateTime closingDate) ? (DateTime?)closingDate : null,
+                    ExpectedRecovery = DateTime.TryParse(reader["ExpectedRecovery"].ToString(), out DateTime expectedRecovery) ? (DateTime?)expectedRecovery : null,
                     AthleteCC = reader["AthleteCC"].ToString(),
-                    PhysiotherapistCC = reader["PhysiotherapistCC"].ToString(),
+                    PhysiotherapistCC = reader["PhysiotherapistCC"].ToString()
                 };
 
                 return evaluation;
