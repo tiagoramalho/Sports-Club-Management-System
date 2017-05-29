@@ -28,10 +28,13 @@ namespace CluSys.lib
                 {
                     cn.Open();
 
-                    var cmd = new SqlCommand($"SELECT dbo.F_HasActiveEvaluation ('{CC}') AS Result;", cn);
-                    var reader = cmd.ExecuteReader();
-
-                    return reader.Read() && bool.Parse(reader["Result"].ToString());
+                    using (var cmd = new SqlCommand($"SELECT dbo.F_HasActiveEvaluation ('{CC}') AS Result;", cn))
+                    {
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            return reader.Read() && bool.Parse(reader["Result"].ToString());
+                        }
+                    }
                 }
             }
         }
@@ -44,10 +47,13 @@ namespace CluSys.lib
                 {
                     cn.Open();
 
-                    var cmd = new SqlCommand($"SELECT * FROM F_GetHeight ('{CC}');", cn);
-                    var reader = cmd.ExecuteReader();
-
-                    if (reader.Read()) return double.TryParse(reader["Height"].ToString(), out double height) ? (double?) height : null;
+                    using (var cmd = new SqlCommand($"SELECT * FROM F_GetHeight ('{CC}');", cn))
+                    {
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read()) return double.TryParse(reader["Height"].ToString(), out double height) ? (double?) height : null;
+                        }
+                    }
                 }
 
                 return null;
@@ -62,10 +68,13 @@ namespace CluSys.lib
                 {
                     cn.Open();
 
-                    var cmd = new SqlCommand($"SELECT * FROM F_GetWeight ('{CC}');", cn);
-                    var reader = cmd.ExecuteReader();
-
-                    if (reader.Read()) return double.TryParse(reader["Weight"].ToString(), out double weight) ? (double?)weight : null;
+                    using (var cmd = new SqlCommand($"SELECT * FROM F_GetWeight ('{CC}');", cn))
+                    {
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read()) return double.TryParse(reader["Weight"].ToString(), out double weight) ? (double?)weight : null;
+                        }
+                    }
                 }
 
                 return null;
@@ -90,22 +99,25 @@ namespace CluSys.lib
                 cn.Open();
 
                 var evaluations = new ObservableCollection<MedicalEvaluation>();
-                var cmd = new SqlCommand($"SELECT * FROM MedicalEvaluation WHERE AthleteCC='{CC}';", cn);
-                var reader = cmd.ExecuteReader();
-
-                while (reader.Read())
-                    evaluations.Add(new MedicalEvaluation(evaluations)
+                using (var cmd = new SqlCommand($"SELECT * FROM MedicalEvaluation WHERE AthleteCC='{CC}';", cn))
+                {
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        Id = int.Parse(reader["Id"].ToString()),
-                        Weight = double.TryParse(reader["Weight"].ToString(), out double weight) ? (double?)weight : null,
-                        Height = double.TryParse(reader["Height"].ToString(), out double height) ? (double?)height : null,
-                        Story = reader["Story"].ToString(),
-                        OpeningDate = DateTime.Parse(reader["OpeningDate"].ToString()),
-                        ClosingDate = DateTime.TryParse(reader["ClosingDate"].ToString(), out DateTime closingDate) ? (DateTime?)closingDate : null,
-                        ExpectedRecovery = DateTime.TryParse(reader["ExpectedRecovery"].ToString(), out DateTime expectedRecovery) ? (DateTime?)expectedRecovery : null,
-                        AthleteCC = reader["AthleteCC"].ToString(),
-                        PhysiotherapistCC = reader["PhysiotherapistCC"].ToString(),
-                    });
+                        while (reader.Read())
+                            evaluations.Add(new MedicalEvaluation(evaluations)
+                            {
+                                Id = int.Parse(reader["Id"].ToString()),
+                                Weight = double.TryParse(reader["Weight"].ToString(), out double weight) ? (double?)weight : null,
+                                Height = double.TryParse(reader["Height"].ToString(), out double height) ? (double?)height : null,
+                                Story = reader["Story"].ToString(),
+                                OpeningDate = DateTime.Parse(reader["OpeningDate"].ToString()),
+                                ClosingDate = DateTime.TryParse(reader["ClosingDate"].ToString(), out DateTime closingDate) ? (DateTime?)closingDate : null,
+                                ExpectedRecovery = DateTime.TryParse(reader["ExpectedRecovery"].ToString(), out DateTime expectedRecovery) ? (DateTime?)expectedRecovery : null,
+                                AthleteCC = reader["AthleteCC"].ToString(),
+                                PhysiotherapistCC = reader["PhysiotherapistCC"].ToString(),
+                            });
+                    }
+                }
 
                 return evaluations;
             }
@@ -134,26 +146,27 @@ namespace CluSys.lib
 
                 var athletes = new ObservableCollection<Athlete>();
 
-                var cmd = new SqlCommand("SELECT * FROM F_GetAthletesWithOpenEvaluations ();", cn);
-                var reader = cmd.ExecuteReader();
-
-                while (reader.Read())
+                using (var cmd = new SqlCommand("SELECT * FROM F_GetAthletesWithOpenEvaluations ();", cn))
                 {
-                    athletes.Add(new Athlete
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        CC = reader["CC"].ToString(),
-                        FirstName = reader["FirstName"].ToString(),
-                        MiddleName = reader["MiddleName"].ToString(),
-                        LastName = reader["LastName"].ToString(),
-                        Birthdate = DateTime.Parse(reader["Birthdate"].ToString()),
-                        Photo = reader["Photo"].ToString(),
-                        Phone = reader["Phone"].ToString(),
-                        Email = reader["Email"].ToString(),
-                        Password = reader["Password"] as byte[],
-                        Job = reader["Job"].ToString(),
-                        DominantSide = reader["DominantSide"].ToString(),
-                        ModalityId = reader["ModalityId"].ToString()
-                    });
+                        while (reader.Read())
+                            athletes.Add(new Athlete
+                            {
+                                CC = reader["CC"].ToString(),
+                                FirstName = reader["FirstName"].ToString(),
+                                MiddleName = reader["MiddleName"].ToString(),
+                                LastName = reader["LastName"].ToString(),
+                                Birthdate = DateTime.Parse(reader["Birthdate"].ToString()),
+                                Photo = reader["Photo"].ToString(),
+                                Phone = reader["Phone"].ToString(),
+                                Email = reader["Email"].ToString(),
+                                Password = reader["Password"] as byte[],
+                                Job = reader["Job"].ToString(),
+                                DominantSide = reader["DominantSide"].ToString(),
+                                ModalityId = reader["ModalityId"].ToString()
+                            });
+                    }
                 }
 
                 return athletes;

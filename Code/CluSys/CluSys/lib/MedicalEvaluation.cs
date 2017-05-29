@@ -20,7 +20,6 @@ namespace CluSys.lib
         private readonly ObservableCollection<MedicalEvaluation> _container;
         public int CountId { get { return _container?.IndexOf(this) + 1 ?? Id; } }
 
-
         public MedicalEvaluation(ObservableCollection<MedicalEvaluation> container = null) { _container = container; }
 
         public ObservableCollection<EvaluationSession> Sessions
@@ -32,16 +31,19 @@ namespace CluSys.lib
                     conn.Open();
 
                     var sessions = new ObservableCollection<EvaluationSession>();
-                    var cmd = new SqlCommand($"SELECT * FROM EvaluationSession WHERE EvalId={Id};", conn);
-                    var reader = cmd.ExecuteReader();
-
-                    while (reader.Read())
-                        sessions.Add(new EvaluationSession
+                    using (var cmd = new SqlCommand($"SELECT * FROM EvaluationSession WHERE EvalId={Id};", conn))
+                    {
+                        using (var reader = cmd.ExecuteReader())
                         {
-                            EvalId = int.Parse(reader["EvalId"].ToString()),
-                            Id = int.Parse(reader["Id"].ToString()),
-                            Date = DateTime.Parse(reader["Date"].ToString()),
-                        });
+                            while (reader.Read())
+                                sessions.Add(new EvaluationSession
+                                {
+                                    EvalId = int.Parse(reader["EvalId"].ToString()),
+                                    Id = int.Parse(reader["Id"].ToString()),
+                                    Date = DateTime.Parse(reader["Date"].ToString()),
+                                });
+                        }
+                    }
 
                     return sessions;
                 }

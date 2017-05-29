@@ -17,6 +17,7 @@ namespace CluSys
     public partial class MainWindow
     {
         private bool _withinMarkPopup;
+        private Athlete _oldAthlete;
         private readonly ObservableCollection<Athlete> _openAthletes;
 
         public MainWindow()
@@ -58,28 +59,41 @@ namespace CluSys
             };
         }
 
-        private void GoHome(object sender, RoutedEventArgs e)
+        private void GoHome(object sender = null, RoutedEventArgs e = null)
         {
+            _oldAthlete = null;
             // Toogle visibility
             AthleteContent.Visibility = Visibility.Hidden; AthleteContent.DataContext = null;
             HomeContent.Visibility = Visibility.Visible;
         }
 
-        private void OpenAthlete(object sender, MouseButtonEventArgs e)
+        private void OpenAthlete(object sender = null, MouseButtonEventArgs e = null)
         {
-            var item = ItemsControl.ContainerFromElement(sender as ListBox, (DependencyObject) e.OriginalSource) as ListBoxItem;
+            // Assume the sender is an athlete
+            var athlete = sender as Athlete;
 
-            if (item == null)
-                return;
+            // If it is not, get it from the sender's context
+            if (athlete == null)
+            {
+                // No mouse to process
+                if (e == null) return;
 
-            var athlete = (Athlete) item.Content;
+                athlete = (ItemsControl.ContainerFromElement(sender as ListBox, (DependencyObject) e.OriginalSource) as ListBoxItem)?.Content as Athlete;
+
+                // Couldn't process the input as an athlete, thus, return
+                if (athlete == null) return;
+            }
 
             // Nothing to do if athlete already open
             if(Equals(AthleteContent.DataContext, athlete))
                 return;
 
+            // Save the current athlete
+            _oldAthlete = AthleteContent.DataContext as Athlete;
+            // Place the new one
             AthleteContent.DataContext = athlete;
 
+            // Add it to the list if not already there
             if (!_openAthletes.Contains(athlete))
                 _openAthletes.Insert(0, athlete);
 
@@ -93,6 +107,19 @@ namespace CluSys
             // Toogle visibility
             HomeContent.Visibility = Visibility.Hidden;
             AthleteContent.Visibility = Visibility.Visible;
+        }
+
+        private void CloseAthlete(object sender, RoutedEventArgs e)
+        {
+            var athlete = (Athlete)((Control) sender).DataContext;
+
+            if (_oldAthlete == null || Equals(athlete, _oldAthlete))
+                GoHome();
+            else
+                OpenAthlete(_oldAthlete);
+
+            _oldAthlete = null;
+            _openAthletes.Remove(athlete);
         }
 
         private void ResetAthleteContent()
@@ -115,9 +142,11 @@ namespace CluSys
                 meView.Filter = delegate (object evaluation)
                 {
                     var me = evaluation as MedicalEvaluation;
+                    var lowerDate = dr.LowerDate.Date;
+                    var upperDate = dr.UpperDate.Date.AddDays(1).AddSeconds(-1);
 
-                    return me != null && (dr.LowerDate <= me.OpeningDate && me.OpeningDate <= dr.UpperDate
-                                          && (me.ClosingDate == null || dr.LowerDate <= me.ClosingDate && me.ClosingDate <= dr.UpperDate));
+                    return me != null && (lowerDate <= me.OpeningDate && me.OpeningDate <= upperDate
+                                          && (me.ClosingDate == null || lowerDate <= me.ClosingDate && me.ClosingDate <= upperDate));
                 };
                 meView.Refresh();
             }
@@ -128,8 +157,10 @@ namespace CluSys
                 seView.Filter = delegate (object session)
                 {
                     var se = session as EvaluationSession;
+                    var lowerDate = dr.LowerDate.Date;
+                    var upperDate = dr.UpperDate.Date.AddDays(1).AddSeconds(-1);
 
-                    return se != null && dr.LowerDate <= se.Date && se.Date <= dr.UpperDate;
+                    return se != null && lowerDate <= se.Date && se.Date <= upperDate;
                 };
                 seView.Refresh();
             }

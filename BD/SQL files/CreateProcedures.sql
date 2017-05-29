@@ -1,7 +1,7 @@
 USE CluSys
 GO
 
-CREATE PROC P_GetOrCreateEvaluation(@AthleteCC CHAR(12), @PhysiotherapistCC CHAR(12), @OpeningDate DATE = NULL, @EvalId INT OUTPUT) AS
+CREATE PROC P_GetOrCreateEvaluation(@AthleteCC CHAR(12), @PhysiotherapistCC CHAR(12), @OpeningDate DATETIME = NULL, @EvalId INT OUTPUT) AS
   BEGIN
     IF @OpeningDate IS NULL
       SET @OpeningDate = GETDATE();
@@ -15,7 +15,7 @@ CREATE PROC P_GetOrCreateEvaluation(@AthleteCC CHAR(12), @PhysiotherapistCC CHAR
   END
 GO
 
-CREATE PROC P_GetOrCreateSession(@AthleteCC CHAR(12), @PhysiotherapistCC CHAR(12), @Date DATE = NULL, @EvalId INT = NULL, @SessionId INT OUTPUT) AS
+CREATE PROC P_GetOrCreateSession(@AthleteCC CHAR(12), @PhysiotherapistCC CHAR(12), @Date DATETIME = NULL, @EvalId INT = NULL, @SessionId INT OUTPUT) AS
   BEGIN
     IF @EvalId IS NULL
       EXEC P_GetOrCreateEvaluation @AthleteCC, @PhysiotherapistCC, @Date, @EvalId;
@@ -33,7 +33,7 @@ CREATE PROC P_GetOrCreateSession(@AthleteCC CHAR(12), @PhysiotherapistCC CHAR(12
   END
 GO
 
-CREATE PROC P_UpdateEvaluation(@EvalId INT, @Weight DECIMAL(5, 2) = NULL, @Height DECIMAL(3, 2) = NULL, @Story NVARCHAR(MAX) = NULL, @ClosingDate DATE = NULL, @ExpectedRecovery Date = NULL) AS
+CREATE PROC P_UpdateEvaluation(@EvalId INT, @Weight DECIMAL(5, 2) = NULL, @Height DECIMAL(3, 2) = NULL, @Story NVARCHAR(MAX) = NULL, @ClosingDate DATETIME = NULL, @ExpectedRecovery DATETIME = NULL) AS
   BEGIN
     UPDATE MedicalEvaluation SET
       Weight = ISNULL(@Weight, Weight),

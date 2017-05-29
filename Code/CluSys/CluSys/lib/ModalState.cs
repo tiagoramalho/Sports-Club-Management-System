@@ -43,7 +43,7 @@ namespace CluSys.lib
         {
             Athlete = athlete;
             Evaluation = evaluation ?? new MedicalEvaluation();
-            Session = session ?? new EvaluationSession { Date = DateTime.Today };
+            Session = session ?? new EvaluationSession { Date = DateTime.Now };
 
             ActiveViewIdx = 0;
             Views = BodyChartViews.GetViews();
@@ -76,46 +76,62 @@ namespace CluSys.lib
 
         public void Save()
         {
+            Session.Date = Session.Date.Date.Add(DateTime.Now.TimeOfDay);
+
             using (var cn = ClusysUtils.GetConnection())
             {
                 cn.Open();
-                using (var transaction = cn.BeginTransaction("SampleTransaction"))
+
+                SqlTransaction transaction = null;
+
+                try
                 {
-                    try
+                    using (transaction = cn.BeginTransaction())
                     {
                         GetEvalId(cn, transaction);
                         GetSessionId(cn, transaction);
                         UpdateEvaluation(cn, transaction);
                         transaction.Commit();
-        
+                    }
+
+                    using (transaction = cn.BeginTransaction())
+                    {
                         SaveMarks(cn, transaction);
                         transaction.Commit();
+                    }
+                    using (transaction = cn.BeginTransaction())
+                    {
                         SaveProblems(cn, transaction);
                         transaction.Commit();
+                    }
+                    using (transaction = cn.BeginTransaction())
+                    {
                         SaveTreatments(cn, transaction);
                         transaction.Commit();
+                    }
+                    using (transaction = cn.BeginTransaction())
+                    {
                         SaveObservations(cn, transaction);
                         transaction.Commit();
                     }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("Commit Exception Type: {0}", ex.GetType());
-                        Console.WriteLine("  Message: {0}", ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Commit Exception Type: {0}", ex.GetType());
+                    Console.WriteLine("  Message: {0}", ex.Message);
 
-                        // Attempt to roll back the transaction.
-                        try
-                        {
-                            transaction.Rollback();
-                        }
-                        catch (Exception ex2)
-                        {
-                            // This catch block will handle any errors that may have occurred
-                            // on the server that would cause the rollback to fail, such as
-                            // a closed connection.
-                            Console.WriteLine("Rollback Exception Type: {0}", ex2.GetType());
-                            Console.WriteLine("  Message: {0}", ex2.Message);
-                        }
-                    
+                    // Attempt to roll back the transaction.
+                    try
+                    {
+                        transaction?.Rollback();
+                    }
+                    catch (Exception ex2)
+                    {
+                        // This catch block will handle any errors that may have occurred
+                        // on the server that would cause the rollback to fail, such as
+                        // a closed connection.
+                        Console.WriteLine("Rollback Exception Type: {0}", ex2.GetType());
+                        Console.WriteLine("  Message: {0}", ex2.Message);
                     }
                 }
             }
@@ -305,7 +321,7 @@ namespace CluSys.lib
             }
             using (var cmd = new SqlCommand("UPDATE SessionObservation SET DateClosed = @DateClosed WHERE Id = @Id", cn, transaction))
             {
-                cmd.Parameters.Add(new SqlParameter("@DateClosed", SqlDbType.Date));
+                cmd.Parameters.Add(new SqlParameter("@DateClosed", SqlDbType.DateTime));
                 cmd.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int));
 
                 foreach (var obs in DeletedObservations)

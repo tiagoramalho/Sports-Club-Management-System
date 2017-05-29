@@ -63,11 +63,14 @@
                 </Button>
                 <ListBox x:Name="OpenAthletesList"
                      PreviewMouseUp="OpenAthlete"
-                     HorizontalContentAlignment="Center"
+                     HorizontalContentAlignment="Stretch"
                      ScrollViewer.VerticalScrollBarVisibility="Hidden">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="lib:Athlete">
                             <StackPanel>
+                                <Button Margin="0 -3 -5 -12" Click="CloseAthlete" Height="24" Width="24" VerticalAlignment="Top" HorizontalAlignment="Right" Style="{DynamicResource MaterialDesignToolButton}">
+                                    <materialDesign:PackIcon Kind="Close" Opacity=".56" />
+                                </Button>
                                 <Ellipse Width="24" Height="24" Margin="0 0 0 4">
                                     <Ellipse.Fill>
                                         <ImageBrush ImageSource="{Binding Path=Photo}" Stretch="UniformToFill" />

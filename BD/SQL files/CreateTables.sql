@@ -129,9 +129,9 @@ CREATE TABLE MedicalEvaluation (
   Weight            DECIMAL(5, 2),
   Height            DECIMAL(3, 2),
   Story             NVARCHAR(MAX),
-  OpeningDate       DATE                NOT NULL,
-  ClosingDate       DATE,
-  ExpectedRecovery  DATE,
+  OpeningDate       DATETIME            NOT NULL,
+  ClosingDate       DATETIME,
+  ExpectedRecovery  DATETIME,
   AthleteCC         CHAR(12)            NOT NULL,
   PhysiotherapistCC CHAR(12)            NOT NULL,
 
@@ -150,7 +150,7 @@ CREATE TABLE MedicalEvaluation (
 CREATE TABLE EvaluationSession (
   EvalId INT            NOT NULL,
   Id     INT DEFAULT -1 NOT NULL, -- sequential within the evaluation
-  Date   DATE           NOT NULL,
+  Date   DATETIME       NOT NULL,
 
   PRIMARY KEY (EvalId, Id),
   FOREIGN KEY (EvalId) REFERENCES MedicalEvaluation (Id)
@@ -242,7 +242,7 @@ CREATE TABLE TreatmentPlan (
 CREATE TABLE SessionObservation (
   Id         INT IDENTITY (1, 1) NOT NULL,
   Obs        NVARCHAR(MAX)       NOT NULL,
-  DateClosed DATE,
+  DateClosed DATETIME,
   EvalId     INT                 NOT NULL,
   SessionId  INT                 NOT NULL,
 
