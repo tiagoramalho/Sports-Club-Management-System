@@ -89,6 +89,38 @@ namespace CluSys.lib
         }
     }
 
+    public sealed class DoubleToStringConverter : IValueConverter
+    {
+        private bool _comma;
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return _comma ? value?.ToString() + ',' : value?.ToString();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null)
+                return null;
+
+            double? res;
+            var doubleText = value.ToString().Replace(".", ",");
+
+            try
+            {
+                res = double.Parse(doubleText);
+                _comma = (doubleText.Length > 0 ? doubleText[doubleText.Length - 1] : '\0') == ',';
+            }
+            catch (Exception)
+            {
+                _comma = false;
+                return null;
+            }
+
+            return res;
+        }
+    }
+
     public sealed class GreaterThanZeroValudationRule : ValidationRule
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
@@ -100,14 +132,14 @@ namespace CluSys.lib
 
             try
             {
-                v = double.Parse(value.ToString());
+                v = double.Parse(value.ToString().Replace(".", ","));
             }
             catch (Exception)
             {
                 return new ValidationResult(false, "Imposível interpretar.");
             }
 
-            return v <= 0 ? new ValidationResult(false, "Valor deve positivo.") : ValidationResult.ValidResult;
+            return v <= 0 ? new ValidationResult(false, "Valor deve ser positivo.") : ValidationResult.ValidResult;
         }
     }
 }

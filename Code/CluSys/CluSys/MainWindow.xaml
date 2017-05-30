@@ -35,6 +35,7 @@
         <lib:ExpectedRecoveryPickerEnabledConverter x:Key="ExpectedRecoveryPickerEnabledConverter" />
         <lib:RefProblemConverter x:Key="RefProblemConverter" />
         <lib:NewSessionVisibilityConverter x:Key="NewSessionVisibilityConverter" />
+        <lib:DoubleToStringConverter x:Key="DoubleToStringConverter" />
         <lib:PainToColorConverter x:Key="PainToColorConverter" />
         <lib:FirstUpperStringConverter x:Key="FirstUpperStringConverter" />
     </Window.Resources>
@@ -359,7 +360,7 @@
                             <materialDesign:PackIcon Margin="4 0 4 0" Kind="Weight" Foreground="{Binding ElementName=WeightBox, Path=BorderBrush}" />
                             <TextBox x:Name="WeightBox" IsEnabled="{Binding Path=CanBeEdited}" materialDesign:HintAssist.Hint="Peso (kg)">
                                 <TextBox.Text>
-                                    <Binding Path="Evaluation.Weight" UpdateSourceTrigger="PropertyChanged">
+                                    <Binding Path="Evaluation.Weight" UpdateSourceTrigger="PropertyChanged" Converter="{StaticResource DoubleToStringConverter}">
                                         <Binding.ValidationRules>
                                             <lib:GreaterThanZeroValudationRule ValidatesOnTargetUpdated="True" />
                                         </Binding.ValidationRules>
@@ -370,7 +371,7 @@
                             <materialDesign:PackIcon Margin="12 0 4 0" Kind="Ruler" Foreground="{Binding ElementName=HeightBox, Path=BorderBrush}" />
                             <TextBox x:Name="HeightBox" IsEnabled="{Binding Path=CanBeEdited}" materialDesign:HintAssist.Hint="Altura (m)">
                                 <TextBox.Text>
-                                    <Binding Path="Evaluation.Height" UpdateSourceTrigger="PropertyChanged">
+                                    <Binding Path="Evaluation.Height" UpdateSourceTrigger="PropertyChanged" Converter="{StaticResource DoubleToStringConverter}">
                                         <Binding.ValidationRules>
                                             <lib:GreaterThanZeroValudationRule ValidatesOnTargetUpdated="True" />
                                         </Binding.ValidationRules>
