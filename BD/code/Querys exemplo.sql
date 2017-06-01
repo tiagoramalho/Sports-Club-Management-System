@@ -1,6 +1,6 @@
 USE CluSys;
-SELECT Weightt, Height, ClosingDATE FROM 
-	(SELECT Weightt, Height, OpeningDate, ClosingDATE FROM MedicalEvaluation WHERE AthleteCC=1247)  AS T
+SELECT Weight, Height, ClosingDATE FROM
+	(SELECT Weight, Height, OpeningDate, ClosingDATE FROM MedicalEvaluation WHERE AthleteCC=1247)  AS T
 	WHERE OpeningDate >= all (SELECT OpeningDate FROM MedicalEvaluation WHERE AthleteCC=1247);
 
 SELECT * FROM Athlete WHERE CC in (SELECT AthleteCC FROM MedicalEvaluation WHERE ClosingDate is NULL);
