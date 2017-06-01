@@ -1,7 +1,7 @@
-USE CluSys
+USE p1g2
 GO
 
-CREATE FUNCTION F_ActiveEvaluation(@CC CHAR(12))
+CREATE FUNCTION CluSys.F_ActiveEvaluation(@CC CHAR(12))
   RETURNS INT AS
   BEGIN
     RETURN (SELECT Id
@@ -9,29 +9,23 @@ CREATE FUNCTION F_ActiveEvaluation(@CC CHAR(12))
             WHERE AthleteCC = @CC AND ClosingDate IS NULL);
   END
 GO
--- SELECT dbo.F_ActiveEvaluation('124');
--- SELECT dbo.F_ActiveEvaluation('1247');
-GO
 
-CREATE FUNCTION F_HasActiveEvaluation(@CC CHAR(12))
+CREATE FUNCTION CluSys.F_HasActiveEvaluation(@CC CHAR(12))
   RETURNS BIT AS
   BEGIN
     DECLARE @ret BIT;
 
     If (SELECT TOP 1 1 FROM MedicalEvaluation WHERE AthleteCC = @CC) IS NULL
       SET @ret = 0;
-    ELSE IF (SELECT dbo.F_ActiveEvaluation(@CC)) IS NULL
+    ELSE IF (SELECT CluSys.F_ActiveEvaluation(@CC)) IS NULL
       SET @ret = 0;
     ELSE
       SET @ret = 1;
     RETURN @ret;
   END
 GO
--- SELECT dbo.F_HasActiveEvaluation('124');
--- SELECT dbo.F_HasActiveEvaluation('1247');
-GO
 
-CREATE FUNCTION F_GetWeight(@CC CHAR(12))
+CREATE FUNCTION CluSys.F_GetWeight(@CC CHAR(12))
   RETURNS TABLE AS
   RETURN SELECT TOP 1
            FIRST_VALUE(Weight)
@@ -43,7 +37,7 @@ CREATE FUNCTION F_GetWeight(@CC CHAR(12))
          WHERE AthleteCC = @CC;
 GO
 
-CREATE FUNCTION F_GetHeight(@CC CHAR(12))
+CREATE FUNCTION CluSys.F_GetHeight(@CC CHAR(12))
   RETURNS TABLE AS
   RETURN SELECT TOP 1
            FIRST_VALUE(Height)
@@ -54,11 +48,8 @@ CREATE FUNCTION F_GetHeight(@CC CHAR(12))
          FROM MedicalEvaluation
          WHERE AthleteCC = @CC;
 GO
--- SELECT * FROM F_GetHeight('1243');
--- SELECT * FROM F_GetHeight('1247');
-GO
 
-CREATE FUNCTION F_GetAthletesWithOpenEvaluations()
+CREATE FUNCTION CluSys.F_GetAthletesWithOpenEvaluations()
   RETURNS TABLE AS
   RETURN(SELECT *
          FROM Athlete
@@ -66,10 +57,8 @@ CREATE FUNCTION F_GetAthletesWithOpenEvaluations()
                       FROM MedicalEvaluation
                       WHERE AthleteCC = CC AND ClosingDate IS NULL))
 GO
--- SELECT * FROM F_GetAthletesWithOpenEvaluations();
-GO
 
-CREATE FUNCTION F_GetNumberOfProblems(@EvalId INT, @SessionId INT)
+CREATE FUNCTION CluSys.F_GetNumberOfProblems(@EvalId INT, @SessionId INT)
   RETURNS INT AS
   BEGIN
     DECLARE @NumberOfRows INT;
@@ -79,10 +68,8 @@ CREATE FUNCTION F_GetNumberOfProblems(@EvalId INT, @SessionId INT)
     RETURN @NumberOfRows
   END
 GO
--- SELECT dbo.F_GetNumberOfProblems(2, 3) AS NumberOfProblems;
-GO
 
-CREATE FUNCTION F_GetNumberOfTreatments(@EvalId INT, @SessionId INT)
+CREATE FUNCTION CluSys.F_GetNumberOfTreatments(@EvalId INT, @SessionId INT)
   RETURNS INT AS
   BEGIN
     DECLARE @NumberOfRows INT;
@@ -93,6 +80,6 @@ CREATE FUNCTION F_GetNumberOfTreatments(@EvalId INT, @SessionId INT)
   END
 GO
 
-CREATE FUNCTION F_GetOpenObservations(@EvalId INT) RETURNS TABLE AS
+CREATE FUNCTION CluSys.F_GetOpenObservations(@EvalId INT) RETURNS TABLE AS
   RETURN (SELECT * FROM SessionObservation WHERE EvalId = @EvalId AND DateClosed IS NULL);
 GO

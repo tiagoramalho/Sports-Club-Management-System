@@ -1,32 +1,29 @@
-USE master;
-GO
-DROP DATABASE CluSys;
-GO
-CREATE DATABASE CluSys;
-GO
-USE CluSys;
+USE p1g2;
 GO
 
-CREATE TABLE Modality (
+CREATE SCHEMA CluSys;
+GO
+
+CREATE TABLE CluSys.Modality (
   Name            NVARCHAR(25) NOT NULL,
   RecognitionYear SMALLINT     NOT NULL,
 
   PRIMARY KEY (Name)
 );
 
-CREATE TABLE Class (
+CREATE TABLE CluSys.Class (
   ModalityId NVARCHAR(25) NOT NULL,
   Name       NVARCHAR(25) NOT NULL,
   InitialAge TINYINT      NOT NULL,
   FinalAge   TINYINT      NOT NULL,
 
   PRIMARY KEY (ModalityId, Name),
-  FOREIGN KEY (ModalityId) REFERENCES Modality (Name)
+  FOREIGN KEY (ModalityId) REFERENCES CluSys.Modality (Name)
     ON UPDATE CASCADE,
   CHECK (FinalAge > InitialAge)
 );
 
-CREATE TABLE Athlete (
+CREATE TABLE CluSys.Athlete (
   CC           CHAR(12)     NOT NULL,
   FirstName    NVARCHAR(25) NOT NULL,
   MiddleName   NVARCHAR(25),
@@ -43,11 +40,11 @@ CREATE TABLE Athlete (
   PRIMARY KEY (CC),
   UNIQUE (Phone),
   UNIQUE (Email),
-  FOREIGN KEY (ModalityId) REFERENCES Modality (Name)
+  FOREIGN KEY (ModalityId) REFERENCES CluSys.Modality (Name)
     ON UPDATE CASCADE
 );
 
-CREATE TABLE Physiotherapist (
+CREATE TABLE CluSys.Physiotherapist (
   CC         CHAR(12)     NOT NULL,
   FirstName  NVARCHAR(25) NOT NULL,
   MiddleName NVARCHAR(25),
@@ -63,7 +60,7 @@ CREATE TABLE Physiotherapist (
   UNIQUE (Email)
 );
 
-CREATE TABLE Coach (
+CREATE TABLE CluSys.Coach (
   CC         CHAR(12)     NOT NULL,
   FirstName  NVARCHAR(25) NOT NULL,
   MiddleName NVARCHAR(25),
@@ -80,21 +77,21 @@ CREATE TABLE Coach (
   UNIQUE (Email)
 );
 
-CREATE TABLE Trains (
+CREATE TABLE CluSys.Trains (
   ModalityId NVARCHAR(25) NOT NULL,
   ClassName  NVARCHAR(25) NOT NULL,
   CoachCC    CHAR(12)     NOT NULL,
   Edition    SMALLINT     NOT NULL,
 
   PRIMARY KEY (ModalityId, ClassName, CoachCC, Edition),
-  FOREIGN KEY (ModalityId, ClassName) REFERENCES Class (ModalityId, Name)
+  FOREIGN KEY (ModalityId, ClassName) REFERENCES CluSys.Class (ModalityId, Name)
     ON UPDATE CASCADE,
-  FOREIGN KEY (CoachCC) REFERENCES Coach (CC)
+  FOREIGN KEY (CoachCC) REFERENCES CluSys.Coach (CC)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
 
-CREATE TABLE MedicalHistory (
+CREATE TABLE CluSys.MedicalHistory (
   Id                INT IDENTITY (1, 1) NOT NULL,
   Obs               NVARCHAR(MAX),
   Date              DATE                NOT NULL,
@@ -102,29 +99,29 @@ CREATE TABLE MedicalHistory (
   PhysiotherapistCC CHAR(12)            NOT NULL,
 
   PRIMARY KEY (ID),
-  FOREIGN KEY (AthleteCC) REFERENCES Athlete (CC)
+  FOREIGN KEY (AthleteCC) REFERENCES CluSys.Athlete (CC)
     ON UPDATE CASCADE,
-  FOREIGN KEY (PhysiotherapistCC) REFERENCES Physiotherapist (CC)
+  FOREIGN KEY (PhysiotherapistCC) REFERENCES CluSys.Physiotherapist (CC)
     ON UPDATE CASCADE
 );
 
-CREATE TABLE MedicalHistoryExams (
+CREATE TABLE CluSys.MedicalHistoryExams (
   MHId INT           NOT NULL,
   Exam NVARCHAR(100) NOT NULL,
 
   PRIMARY KEY (MHId, Exam),
-  FOREIGN KEY (MHId) REFERENCES MedicalHistory (Id)
+  FOREIGN KEY (MHId) REFERENCES CluSys.MedicalHistory (Id)
 );
 
-CREATE TABLE MedicalHistoryMedication (
+CREATE TABLE CluSys.MedicalHistoryMedication (
   MHId       INT           NOT NULL,
   Medication NVARCHAR(100) NOT NULL,
 
   PRIMARY KEY (MHId, Medication),
-  FOREIGN KEY (MHId) REFERENCES MedicalHistory (Id)
+  FOREIGN KEY (MHId) REFERENCES CluSys.MedicalHistory (Id)
 );
 
-CREATE TABLE MedicalEvaluation (
+CREATE TABLE CluSys.MedicalEvaluation (
   Id                INT IDENTITY (1, 1) NOT NULL,
   Weight            DECIMAL(5, 2),
   Height            DECIMAL(3, 2),
@@ -136,10 +133,10 @@ CREATE TABLE MedicalEvaluation (
   PhysiotherapistCC CHAR(12)            NOT NULL,
 
   PRIMARY KEY (Id),
-  FOREIGN KEY (AthleteCC) REFERENCES Athlete (CC)
+  FOREIGN KEY (AthleteCC) REFERENCES CluSys.Athlete (CC)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-  FOREIGN KEY (PhysiotherapistCC) REFERENCES Physiotherapist (CC)
+  FOREIGN KEY (PhysiotherapistCC) REFERENCES CluSys.Physiotherapist (CC)
     ON UPDATE CASCADE,
   CHECK (Weight IS NULL OR Weight > 0),
   CHECK (Height IS NULL OR Height > 0),
@@ -147,23 +144,23 @@ CREATE TABLE MedicalEvaluation (
   CHECK (ExpectedRecovery IS NULL OR ExpectedRecovery >= OpeningDate)
 );
 
-CREATE TABLE EvaluationSession (
+CREATE TABLE CluSys.EvaluationSession (
   EvalId INT            NOT NULL,
   Id     INT DEFAULT -1 NOT NULL, -- sequential within the evaluation
   Date   DATETIME       NOT NULL,
 
   PRIMARY KEY (EvalId, Id),
-  FOREIGN KEY (EvalId) REFERENCES MedicalEvaluation (Id)
+  FOREIGN KEY (EvalId) REFERENCES CluSys.MedicalEvaluation (Id)
 );
 
-CREATE TABLE Annotation (
+CREATE TABLE CluSys.Annotation (
   Symbol  VARCHAR(25) NOT NULL,
   Meaning NVARCHAR(50),
 
   PRIMARY KEY (Symbol)
 );
 
-CREATE TABLE BodyChartView (
+CREATE TABLE CluSys.BodyChartView (
   Id      INT IDENTITY (1, 1) NOT NULL,
   Image   VARCHAR(100)        NOT NULL, -- Path
   [Order] TINYINT             NOT NULL,
@@ -171,7 +168,7 @@ CREATE TABLE BodyChartView (
   PRIMARY KEY (Id)
 );
 
-CREATE TABLE BodyChartMark (
+CREATE TABLE CluSys.BodyChartMark (
   Id          INT IDENTITY (1, 1) NOT NULL,
   x           FLOAT               NOT NULL,
   y           FLOAT               NOT NULL,
@@ -182,28 +179,28 @@ CREATE TABLE BodyChartMark (
   ViewId      INT                 NOT NULL,
 
   PRIMARY KEY (Id),
-  FOREIGN KEY (EvalId, SEssionId) REFERENCES EvaluationSession (EvalId, Id),
-  FOREIGN KEY (ViewId) REFERENCES BodyChartView (Id)
+  FOREIGN KEY (EvalId, SEssionId) REFERENCES CluSys.EvaluationSession (EvalId, Id),
+  FOREIGN KEY (ViewId) REFERENCES CluSys.BodyChartView (Id)
 );
 
-CREATE TABLE BodyAnnotation (
+CREATE TABLE CluSys.BodyAnnotation (
   BodyId   INT         NOT NULL,
   AnnotSym VARCHAR(25) NOT NULL,
 
   PRIMARY KEY (BodyId, AnnotSym),
-  FOREIGN KEY (BodyId) REFERENCES BodyChartMark (Id),
-  FOREIGN KEY (AnnotSym) REFERENCES Annotation (Symbol)
+  FOREIGN KEY (BodyId) REFERENCES CluSys.BodyChartMark (Id),
+  FOREIGN KEY (AnnotSym) REFERENCES CluSys.Annotation (Symbol)
     ON UPDATE CASCADE
 );
 
-CREATE TABLE FunctionalTestSet (
+CREATE TABLE CluSys.FunctionalTestSet (
   Name        NVARCHAR(25) NOT NULL,
   Description NVARCHAR(MAX),
 
   PRIMARY KEY (Name)
 );
 
-CREATE TABLE FunctionalTestResult (
+CREATE TABLE CluSys.FunctionalTestResult (
   Id        INT IDENTITY (1, 1) NOT NULL,
   Result    NVARCHAR(MAX),
   EvalId    INT                 NOT NULL,
@@ -211,22 +208,22 @@ CREATE TABLE FunctionalTestResult (
   TestName  NVARCHAR(25)        NOT NULL,
 
   PRIMARY KEY (Id),
-  FOREIGN KEY (EvalId, SessionId) REFERENCES EvaluationSession (EvalId, Id),
-  FOREIGN KEY (TestName) REFERENCES FunctionalTestSet (Name)
+  FOREIGN KEY (EvalId, SessionId) REFERENCES CluSys.EvaluationSession (EvalId, Id),
+  FOREIGN KEY (TestName) REFERENCES CluSys.FunctionalTestSet (Name)
     ON UPDATE CASCADE
 );
 
-CREATE TABLE MajorProblem (
+CREATE TABLE CluSys.MajorProblem (
   Id          INT IDENTITY (1, 1) NOT NULL,
   Description NVARCHAR(MAX)       NOT NULL,
   EvalId      INT                 NOT NULL,
   SessionId   INT                 NOT NULL,
 
   PRIMARY KEY (Id),
-  FOREIGN KEY (EvalId, SessionId) REFERENCES EvaluationSession (EvalId, Id)
+  FOREIGN KEY (EvalId, SessionId) REFERENCES CluSys.EvaluationSession (EvalId, Id)
 );
 
-CREATE TABLE TreatmentPlan (
+CREATE TABLE CluSys.TreatmentPlan (
   Id          INT IDENTITY (1, 1) NOT NULL,
   Description NVARCHAR(MAX),
   Objective   NVARCHAR(MAX),
@@ -235,11 +232,11 @@ CREATE TABLE TreatmentPlan (
   ProbId      INT,
 
   PRIMARY KEY (Id),
-  FOREIGN KEY (EvalId, SessionId) REFERENCES EvaluationSession (EvalId, Id),
-  FOREIGN KEY (ProbId) REFERENCES MajorProblem (Id)
+  FOREIGN KEY (EvalId, SessionId) REFERENCES CluSys.EvaluationSession (EvalId, Id),
+  FOREIGN KEY (ProbId) REFERENCES CluSys.MajorProblem (Id)
 );
 
-CREATE TABLE SessionObservation (
+CREATE TABLE CluSys.SessionObservation (
   Id         INT IDENTITY (1, 1) NOT NULL,
   Obs        NVARCHAR(MAX)       NOT NULL,
   DateClosed DATETIME,
@@ -247,5 +244,5 @@ CREATE TABLE SessionObservation (
   SessionId  INT                 NOT NULL,
 
   PRIMARY KEY (Id),
-  FOREIGN KEY (EvalId, SessionId) REFERENCES EvaluationSession (EvalId, Id)
+  FOREIGN KEY (EvalId, SessionId) REFERENCES CluSys.EvaluationSession (EvalId, Id)
 );
