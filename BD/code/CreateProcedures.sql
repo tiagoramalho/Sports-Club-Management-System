@@ -44,3 +44,55 @@ CREATE PROC CluSys.P_UpdateEvaluation(@EvalId INT, @Weight DECIMAL(5, 2) = NULL,
     WHERE Id = @EvalId
   END
 GO
+
+CREATE PROC CluSys.P_AddBodyChartMark(@X FLOAT, @Y FLOAT, @PainLevel TINYINT = NULL, @Description NVARCHAR(MAX) = NULL, @EvalId INT, @SessionId INT, @ViewId INT, @MarkId INT OUTPUT) AS
+  BEGIN
+    INSERT INTO BodyChartMark (x, y, PainLevel, Description, EvalId, SessionId, ViewId) VALUES (@X, @Y, @PainLevel, @Description, @EvalId, @SessionId, @ViewId);
+    SET @MarkId = SCOPE_IDENTITY();
+  END
+GO
+
+CREATE PROC CluSys.P_RmBodyChartMark(@MarkId INT) AS
+  BEGIN
+    DELETE FROM BodyChartMark WHERE Id = @MarkId;
+  END
+GO
+
+CREATE PROC CluSys.P_AddProblem(@Description NVARCHAR(MAX), @EvalId INT, @SessionId INT, @ProbId INT OUTPUT) AS
+  BEGIN
+    INSERT INTO MajorProblem (Description, EvalId, SessionId) VALUES (@Description, @EvalId, @SessionId);
+    SET @ProbId = SCOPE_IDENTITY();
+  END
+GO
+
+CREATE PROC CluSys.P_RmProblem(@ProbId INT) AS
+  BEGIN
+    DELETE FROM MajorProblem WHERE Id = @ProbId;
+  END
+GO
+
+CREATE PROC CluSys.P_AddTreatment(@Description NVARCHAR(MAX) = NULL, @Objective NVARCHAR(MAX) = NULL, @EvalId INT, @SessionId INT, @ProbId INT = NULL, @TreatmentId INT OUTPUT) AS
+  BEGIN
+    INSERT INTO TreatmentPlan (Description, Objective, EvalId, SessionId, ProbId) VALUES (@Description, @Objective, @EvalId, @SessionId, @ProbId);
+    SET @TreatmentId = SCOPE_IDENTITY();
+  END
+GO
+
+CREATE PROC CluSys.P_RmTreatment(@TreatmentId INT) AS
+  BEGIN
+    DELETE FROM TreatmentPlan WHERE Id = @TreatmentId;
+  END
+GO
+
+CREATE PROC CluSys.P_AddObservation(@Obs NVARCHAR(MAX), @DateClosed DATETIME = NULL, @EvalId INT, @SessionId INT, @ObsId INT OUTPUT) AS
+  BEGIN
+    INSERT INTO SessionObservation (Obs, DateClosed, EvalId, SessionId) VALUES (@Obs, @DateClosed, @EvalId, @SessionId);
+    SET @ObsId = SCOPE_IDENTITY();
+  END
+GO
+
+CREATE PROC CluSys.P_SetObservation(@ObsId INT, @Obs NVARCHAR(MAX) = NULL, @DateClosed DATETIME = NULL) AS
+  BEGIN
+    UPDATE SessionObservation SET Obs=ISNULL(@Obs, Obs), DateClosed = ISNULL(@DateClosed, DateClosed) WHERE Id = @ObsId;
+  END
+GO

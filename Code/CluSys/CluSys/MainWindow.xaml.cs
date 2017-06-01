@@ -400,8 +400,6 @@ namespace CluSys
 
             var treatment = new TreatmentPlan { Description = NewTreatmentDescription.Text, Objective = NewTreatmentObjective.Text, RefProblem = problem};
 
-            // Call the value checker...
-
             if (ms.Treatments.Contains(treatment))
                 return;
 

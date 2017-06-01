@@ -32,16 +32,19 @@ namespace CluSys.lib
                 cn.Open();
 
                 var bodyViews = new ObservableCollection<BodyChartView>();
-                var cmd = new SqlCommand("SELECT * FROM BodyChartView", cn);
-                var reader = cmd.ExecuteReader();
-
-                while (reader.Read())
-                    bodyViews.Add(new BodyChartView
+                using (var cmd = new SqlCommand("SELECT * FROM CluSys.F_GetBodyViews();", cn))
+                {
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        Id = int.Parse(reader["Id"].ToString()),
-                        Image = reader["Image"].ToString(),
-                        Order = int.Parse(reader["Order"].ToString()),
-                    });
+                        while (reader.Read())
+                            bodyViews.Add(new BodyChartView
+                            {
+                                Id = int.Parse(reader["Id"].ToString()),
+                                Image = reader["Image"].ToString(),
+                                Order = int.Parse(reader["Order"].ToString()),
+                            });
+                    }
+                }
 
                 return bodyViews;
             }

@@ -19,7 +19,7 @@ namespace CluSys.lib
                 {
                     conn.Open();
 
-                    using (var cmd = new SqlCommand($"SELECT dbo.F_GetNumberOfProblems ({EvalId}, {Id}) AS NumberOfProblems;", conn))
+                    using (var cmd = new SqlCommand($"SELECT CluSys.F_GetNumberOfProblems ({EvalId}, {Id}) AS NumberOfProblems;", conn))
                     {
                         using (var reader = cmd.ExecuteReader())
                         {
@@ -38,7 +38,7 @@ namespace CluSys.lib
                 {
                     conn.Open();
 
-                    using (var cmd = new SqlCommand($"SELECT dbo.F_GetNumberOfTreatments ({EvalId}, {Id}) AS NumberOfTreatments;", conn))
+                    using (var cmd = new SqlCommand($"SELECT CluSys.F_GetNumberOfTreatments ({EvalId}, {Id}) AS NumberOfTreatments;", conn))
                     {
                         using (var reader = cmd.ExecuteReader())
                         {
@@ -68,7 +68,7 @@ namespace CluSys.lib
                 cn.Open();
 
                 MedicalEvaluation evaluation;
-                using (var cmd = new SqlCommand($"SELECT * FROM MedicalEvaluation WHERE Id={EvalId}", cn))
+                using (var cmd = new SqlCommand($"SELECT * FROM CluSys.F_GetEvaluation ({EvalId});", cn))
                 {
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -101,7 +101,7 @@ namespace CluSys.lib
                 cn.Open();
 
                 var bodyMarks = new ObservableCollection<BodyChartMark>();
-                using (var cmd = new SqlCommand($"SELECT * FROM BodyChartMark WHERE EvalId={EvalId} AND SessionId={Id}", cn))
+                using (var cmd = new SqlCommand($"SELECT * FROM CluSys.F_GetBodyChartMarks ({EvalId}, {Id})", cn))
                 {
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -131,7 +131,7 @@ namespace CluSys.lib
                 cn.Open();
 
                 var problems = new ObservableCollection<MajorProblem>();
-                using (var cmd = new SqlCommand($"SELECT * FROM MajorProblem WHERE EvalId={EvalId} AND SessionId={Id}", cn))
+                using (var cmd = new SqlCommand($"SELECT * FROM CluSys.F_GetProblems ({EvalId}, {Id});", cn))
                 {
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -157,7 +157,7 @@ namespace CluSys.lib
                 cn.Open();
 
                 var treatments = new ObservableCollection<TreatmentPlan>();
-                using (var cmd = new SqlCommand($"SELECT * FROM TreatmentPlan WHERE EvalId={EvalId} AND SessionId={Id}", cn))
+                using (var cmd = new SqlCommand($"SELECT * FROM CluSys.F_GetTreatments ({EvalId}, {Id});", cn))
                 {
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -169,16 +169,16 @@ namespace CluSys.lib
                                 Objective = reader["Objective"].ToString(),
                                 EvalId = int.Parse(reader["EvalId"].ToString()),
                                 SessionId = int.Parse(reader["SessionId"].ToString()),
-                                ProbId = int.Parse(reader["ProbId"].ToString()),
+                                ProbId = int.TryParse(reader["ProbId"].ToString(), out int probId) ? (int?)probId : null,
                             });
                     }
                 }
 
-                cn.Close();
                 return treatments;
             }
         }
 
+        /*
         public ObservableCollection<SessionObservation> GetObservations()
         {
             using (var cn = ClusysUtils.GetConnection())
@@ -203,7 +203,8 @@ namespace CluSys.lib
                 }
 
                 return observations;
-            }
+            }           
         }
+        */
     }
 }

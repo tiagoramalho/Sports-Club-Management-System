@@ -10,10 +10,10 @@ namespace CluSys.lib
         public int EvalId { get; set; }
         public int SessionId { get; set; }
 
-        private readonly ObservableCollection<MajorProblem> _container;
-        public int CountId { get { return _container?.IndexOf(this) + 1 ?? Id; } }
+        public ObservableCollection<MajorProblem> Container;
+        public int CountId => Container?.IndexOf(this) + 1 ?? Id;
 
-        public MajorProblem(ObservableCollection<MajorProblem> container = null) { _container = container; }
+        public MajorProblem(ObservableCollection<MajorProblem> container = null) { Container = container; }
 
         private bool Equals(MajorProblem other)
         {

@@ -230,27 +230,43 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <ItemsControl x:Name="EvaluationsList">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <WrapPanel IsItemsHost="True" />
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate DataType="lib:MedicalEvaluation">
-                                            <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueDarkBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
-                                                <Button Height="Auto" Click="OpenSessions">
-                                                    <StackPanel Margin="-80 0 -80 0" >
-                                                        <TextBlock Margin="4" Text="{Binding Path=CountId, StringFormat={}Lesão #{0}}" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" />
-                                                        <Separator Style="{StaticResource MaterialDesignLightSeparator}"/>
-                                                        <TextBlock Text="{Binding Path=OpeningDate, StringFormat=D, ConverterCulture=pt-PT}" Margin="4" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignBody2TextBlock}" />
-                                                        <materialDesign:PackIcon HorizontalAlignment="Center" Kind="InformationVariant" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
-                                                    </StackPanel>
-                                                </Button>
-                                            </materialDesign:Card>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+                                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Hidden">
+                                    <ItemsControl x:Name="EvaluationsList">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel IsItemsHost="True" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate DataType="lib:MedicalEvaluation">
+                                                <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueDarkBrush}" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+                                                    <Button Height="Auto" Click="OpenSessions">
+                                                        <StackPanel Margin="-80 0 -80 0">
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="Auto" />
+                                                                    <ColumnDefinition Width="*" />
+                                                                    <ColumnDefinition Width="Auto" />
+                                                                </Grid.ColumnDefinitions>
+                                                                <TextBlock Margin="4" Text="Lesão" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" />
+                                                                <TextBlock Grid.Column="2" Margin="4" Text="{Binding Path=CountId, StringFormat={}#{0}}" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" />
+                                                            </Grid>
+                                                            <Separator Style="{StaticResource MaterialDesignLightSeparator}"/>
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="*" />
+                                                                    <ColumnDefinition Width="Auto" />
+                                                                </Grid.ColumnDefinitions>
+                                                                <TextBlock Text="{Binding Path=OpeningDate, StringFormat=D, ConverterCulture=pt-PT}" Margin="4" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignBody2TextBlock}" />
+                                                                <materialDesign:PackIcon Grid.Column="1" HorizontalAlignment="Center" Kind="InformationVariant" Margin="4" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" />
+                                                            </Grid>
+                                                        </StackPanel>
+                                                    </Button>
+                                                </materialDesign:Card>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
                                 <Button Grid.Column="1" Style="{DynamicResource MaterialDesignFloatingActionMiniDarkButton}"
                                         Margin="8" HorizontalAlignment="Center" ToolTip="Nova avaliação/sessão"
                                         Click="NewSession">
@@ -270,37 +286,47 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
 
-                                    <ItemsControl x:Name="SessionsList">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <WrapPanel IsItemsHost="True" />
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate DataType="lib:EvaluationSession">
-                                                <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource PrimaryHueLightForegroundBrush}">
-                                                    <Button Height="Auto" Click="OpenSession">
-                                                        <StackPanel Margin="-80 0 -80 0">
-                                                            <TextBlock Margin="4" Text="{Binding Path=Id, StringFormat={}Sessão #{0}}" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" />
-                                                            <TextBlock Text="{Binding Path=Date, StringFormat=D, ConverterCulture=pt-PT}" Margin="4 0 4 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignBody2TextBlock}" />
-                                                            <Separator Style="{StaticResource MaterialDesignLightSeparator}"/>
-                                                            <Grid>
-                                                                <Grid.ColumnDefinitions>
-                                                                    <ColumnDefinition Width="*" />
-                                                                    <ColumnDefinition Width="Auto" />
-                                                                </Grid.ColumnDefinitions>
-                                                                <StackPanel>
-                                                                    <TextBlock Margin="4 0 4 0" Text="{Binding Path=NumberOfProblems, StringFormat={}Problemas: {0}}" />
-                                                                    <TextBlock Margin="4" Text="{Binding Path=NumberOfTreatments, StringFormat={}Tratamentos: {0}}" />
-                                                                </StackPanel>
-                                                                <materialDesign:PackIcon Grid.Column="1" Margin="0 0 4 0" Kind="Eye" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                                            </Grid>
-                                                        </StackPanel>
-                                                    </Button>
-                                                </materialDesign:Card>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
+                                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Hidden">
+                                        <ItemsControl x:Name="SessionsList">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel IsItemsHost="True" />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate DataType="lib:EvaluationSession">
+                                                    <materialDesign:Card Margin="8" Width="200" Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource PrimaryHueLightForegroundBrush}">
+                                                        <Button Height="Auto" Click="OpenSession">
+                                                            <StackPanel Margin="-80 0 -80 0">
+                                                                <Grid>
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="Auto" />
+                                                                        <ColumnDefinition Width="*" />
+                                                                        <ColumnDefinition Width="Auto" />
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <TextBlock Margin="4" Text="Sessão" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" />
+                                                                    <TextBlock Grid.Column="2" Margin="4" Text="{Binding Path=Id, StringFormat={}#{0}}" Style="{DynamicResource MaterialDesignHeadlineTextBlock}" />
+                                                                </Grid>
+                                                                <TextBlock Text="{Binding Path=Date, StringFormat=D, ConverterCulture=pt-PT}" Margin="4 0 4 0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{DynamicResource MaterialDesignBody2TextBlock}" />
+                                                                <Separator Style="{StaticResource MaterialDesignLightSeparator}"/>
+                                                                <Grid>
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="*" />
+                                                                        <ColumnDefinition Width="Auto" />
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <StackPanel>
+                                                                        <TextBlock Margin="4 4 4 0" Text="{Binding Path=NumberOfProblems, StringFormat={}Problemas: {0}}" />
+                                                                        <TextBlock Margin="4" Text="{Binding Path=NumberOfTreatments, StringFormat={}Tratamentos: {0}}" />
+                                                                    </StackPanel>
+                                                                    <materialDesign:PackIcon Grid.Column="1" Margin="4" Kind="Eye" Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                                </Grid>
+                                                            </StackPanel>
+                                                        </Button>
+                                                    </materialDesign:Card>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
                                     <Button Grid.Column="1" Visibility="{Binding Converter={StaticResource NewSessionVisibilityConverter}}" Style="{DynamicResource MaterialDesignFloatingActionMiniButton}"
                                         Margin="8" HorizontalAlignment="Center" ToolTip="Nova sessão"
                                         Click="NewSession">

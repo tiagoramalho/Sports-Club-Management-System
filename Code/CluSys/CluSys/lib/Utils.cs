@@ -10,7 +10,8 @@ namespace CluSys.lib
 {
     internal static class ClusysUtils
     {
-        public static SqlConnection GetConnection() { return new SqlConnection("data source= RJ-JESUS\\SQLEXPRESS2014;integrated security=true;initial catalog=CluSys"); }
+        //public static SqlConnection GetConnection() { return new SqlConnection("data source= RJ-JESUS\\SQLEXPRESS2014;integrated security=true;initial catalog=CluSys"); }
+        public static SqlConnection GetConnection() { return new SqlConnection(@"Data Source=193.136.175.33\SQLEXPRESS2012,8293;Initial Catalog=p1g2;User ID=p1g2;Password=sqluaricardotiago;"); }
 
         public static T FindByType<T>(Visual v)
         {

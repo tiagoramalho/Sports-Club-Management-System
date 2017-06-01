@@ -28,7 +28,7 @@ namespace CluSys.lib
                 {
                     cn.Open();
 
-                    using (var cmd = new SqlCommand($"SELECT dbo.F_HasActiveEvaluation ('{CC}') AS Result;", cn))
+                    using (var cmd = new SqlCommand($"SELECT CluSys.F_HasActiveEvaluation ('{CC}') AS Result;", cn))
                     {
                         using (var reader = cmd.ExecuteReader())
                         {
@@ -47,7 +47,7 @@ namespace CluSys.lib
                 {
                     cn.Open();
 
-                    using (var cmd = new SqlCommand($"SELECT * FROM F_GetHeight ('{CC}');", cn))
+                    using (var cmd = new SqlCommand($"SELECT CluSys.F_GetHeight ('{CC}') AS Height;", cn))
                     {
                         using (var reader = cmd.ExecuteReader())
                         {
@@ -68,7 +68,7 @@ namespace CluSys.lib
                 {
                     cn.Open();
 
-                    using (var cmd = new SqlCommand($"SELECT * FROM F_GetWeight ('{CC}');", cn))
+                    using (var cmd = new SqlCommand($"SELECT CluSys.F_GetWeight ('{CC}') AS Weight;", cn))
                     {
                         using (var reader = cmd.ExecuteReader())
                         {
@@ -99,7 +99,7 @@ namespace CluSys.lib
                 cn.Open();
 
                 var evaluations = new ObservableCollection<MedicalEvaluation>();
-                using (var cmd = new SqlCommand($"SELECT * FROM MedicalEvaluation WHERE AthleteCC='{CC}';", cn))
+                using (var cmd = new SqlCommand($"SELECT * FROM CluSys.F_GetEvaluations ('{CC}');", cn))
                 {
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -146,7 +146,7 @@ namespace CluSys.lib
 
                 var athletes = new ObservableCollection<Athlete>();
 
-                using (var cmd = new SqlCommand("SELECT * FROM F_GetAthletesWithOpenEvaluations ();", cn))
+                using (var cmd = new SqlCommand("SELECT * FROM CluSys.F_GetAthletesWithOpenEvaluations ();", cn))
                 {
                     using (var reader = cmd.ExecuteReader())
                     {

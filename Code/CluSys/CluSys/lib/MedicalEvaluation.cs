@@ -31,7 +31,7 @@ namespace CluSys.lib
                     conn.Open();
 
                     var sessions = new ObservableCollection<EvaluationSession>();
-                    using (var cmd = new SqlCommand($"SELECT * FROM EvaluationSession WHERE EvalId={Id};", conn))
+                    using (var cmd = new SqlCommand($"SELECT * FROM CluSys.F_GetSessions ({Id});", conn))
                     {
                         using (var reader = cmd.ExecuteReader())
                         {
@@ -58,7 +58,7 @@ namespace CluSys.lib
             {
                 conn.Open();
 
-                using (var cmd = new SqlCommand($"SELECT * FROM dbo.F_GetOpenObservations ({Id});", conn))
+                using (var cmd = new SqlCommand($"SELECT * FROM CluSys.F_GetOpenObservations ({Id});", conn))
                 {
                     using (var reader = cmd.ExecuteReader())
                     {

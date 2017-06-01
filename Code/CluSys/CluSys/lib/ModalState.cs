@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace CluSys.lib
 {
@@ -57,8 +58,8 @@ namespace CluSys.lib
             if (evaluation != null && session != null)
             {
                 Marks = session.GetMarks();
-                Problems = session.GetProblems();
-                Treatments = session.GetTreatments();
+                Problems = session.GetProblems(); foreach (var prob in Problems) prob.Container = Problems;
+                Treatments = session.GetTreatments(); foreach (var treatment in Treatments) treatment.RefProblem = Problems.SingleOrDefault(prob => prob.Id == treatment.ProbId);
                 Observations = evaluation.GetObservations();
                 MedicalDischarge = evaluation.ClosingDate == session.Date;
                 CanBeEdited = false;
@@ -144,7 +145,7 @@ namespace CluSys.lib
 
         private void GetEvalId(SqlConnection cn, SqlTransaction transaction)
         {
-            using (var cmd = new SqlCommand("P_GetOrCreateEvaluation", cn, transaction) {CommandType = CommandType.StoredProcedure})
+            using (var cmd = new SqlCommand("CluSys.P_GetOrCreateEvaluation", cn, transaction) {CommandType = CommandType.StoredProcedure})
             {
                 cmd.Parameters.Add(new SqlParameter("@AthleteCC", Athlete.CC));
                 cmd.Parameters.Add(new SqlParameter("@PhysiotherapistCC", PhysiotherapistCC));
@@ -158,7 +159,7 @@ namespace CluSys.lib
 
         private void GetSessionId(SqlConnection cn, SqlTransaction transaction)
         {
-            using (var cmd = new SqlCommand("P_GetOrCreateSession", cn, transaction) {CommandType = CommandType.StoredProcedure})
+            using (var cmd = new SqlCommand("CluSys.P_GetOrCreateSession", cn, transaction) {CommandType = CommandType.StoredProcedure})
             {
                 cmd.Parameters.Add(new SqlParameter("@AthleteCC", Athlete.CC));
                 cmd.Parameters.Add(new SqlParameter("@PhysiotherapistCC", PhysiotherapistCC));
@@ -173,7 +174,7 @@ namespace CluSys.lib
 
         private void UpdateEvaluation(SqlConnection cn, SqlTransaction transaction)
         {
-            using (var cmd = new SqlCommand("P_UpdateEvaluation", cn, transaction) {CommandType = CommandType.StoredProcedure})
+            using (var cmd = new SqlCommand("CluSys.P_UpdateEvaluation", cn, transaction) {CommandType = CommandType.StoredProcedure})
             {
                 cmd.Parameters.Add(new SqlParameter("@EvalId", Evaluation.Id));
                 if(Evaluation.Weight != null && Evaluation.Weight > 0) cmd.Parameters.Add(new SqlParameter("@Weight", Evaluation.Weight));
@@ -187,7 +188,7 @@ namespace CluSys.lib
 
         private void SaveMarks(SqlConnection cn, SqlTransaction transaction)
         {
-            using (var cmd = new SqlCommand("INSERT INTO BodyChartMark (X, Y, PainLevel, Description, EvalId, SessionId, ViewId) VALUES (@X, @Y, @PainLevel, @Description, @EvalId, @SessionId, @ViewId); SELECT SCOPE_IDENTITY();", cn, transaction))
+            using (var cmd = new SqlCommand("CluSys.P_AddBodyChartMark", cn, transaction) { CommandType = CommandType.StoredProcedure })
             {
                 cmd.Parameters.Add(new SqlParameter("@X", SqlDbType.Float));
                 cmd.Parameters.Add(new SqlParameter("@Y", SqlDbType.Float));
@@ -196,12 +197,12 @@ namespace CluSys.lib
                 cmd.Parameters.Add(new SqlParameter("@EvalId", SqlDbType.Int));
                 cmd.Parameters.Add(new SqlParameter("@SessionId", SqlDbType.Int));
                 cmd.Parameters.Add(new SqlParameter("@ViewId", SqlDbType.Int));
+                cmd.Parameters.Add(new SqlParameter("@MarkId", SqlDbType.Int) { Direction = ParameterDirection.Output });
 
                 foreach (var mark in Marks)
                 {
                     if (mark.Id == -1)
                     {
-                        Console.WriteLine(mark.X + @" " + mark.Y);
                         cmd.Parameters["@X"].Value = mark.X;
                         cmd.Parameters["@Y"].Value = mark.Y;
                         cmd.Parameters["@PainLevel"].Value = mark.PainLevel;
@@ -209,19 +210,21 @@ namespace CluSys.lib
                         cmd.Parameters["@EvalId"].Value = mark.EvalId = Evaluation.Id;
                         cmd.Parameters["@SessionId"].Value = mark.SessionId = Session.Id;
                         cmd.Parameters["@ViewId"].Value = mark.ViewId;
-                        mark.Id = int.Parse(cmd.ExecuteScalar().ToString());
+                        cmd.ExecuteNonQuery();
+
+                        mark.Id = int.Parse(cmd.Parameters["@MarkId"].Value.ToString());
                     }
                 }
             }
-            using (var cmd = new SqlCommand("DELETE FROM BodyChartMark WHERE Id = @Id", cn, transaction))
+            using (var cmd = new SqlCommand("CluSys.P_RmBodyChartMark", cn, transaction) { CommandType = CommandType.StoredProcedure })
             {
-                cmd.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int));
+                cmd.Parameters.Add(new SqlParameter("@MarkId", SqlDbType.Int));
 
                 foreach (var mark in DeletedMarks)
                 {
                     if (mark.Id != -1)
                     {
-                        cmd.Parameters["@Id"].Value = mark.Id;
+                        cmd.Parameters["@MarkId"].Value = mark.Id;
                         cmd.ExecuteNonQuery();
                     }
                 }
@@ -230,11 +233,12 @@ namespace CluSys.lib
 
         private void SaveProblems(SqlConnection cn, SqlTransaction transaction)
         {
-            using (var cmd = new SqlCommand("INSERT INTO MajorProblem (Description, EvalId, SessionId) VALUES (@Description, @EvalId, @SessionId); SELECT SCOPE_IDENTITY();", cn, transaction))
+            using (var cmd = new SqlCommand("CluSys.P_AddProblem", cn, transaction) { CommandType = CommandType.StoredProcedure })
             {
                 cmd.Parameters.Add(new SqlParameter("@Description", SqlDbType.NVarChar));
                 cmd.Parameters.Add(new SqlParameter("@EvalId", SqlDbType.Int));
                 cmd.Parameters.Add(new SqlParameter("@SessionId", SqlDbType.Int));
+                cmd.Parameters.Add(new SqlParameter("@ProbId", SqlDbType.Int) { Direction = ParameterDirection.Output });
 
                 foreach (var prob in Problems)
                 {
@@ -243,19 +247,20 @@ namespace CluSys.lib
                         cmd.Parameters["@Description"].Value = prob.Description;
                         cmd.Parameters["@EvalId"].Value = prob.EvalId = Evaluation.Id;
                         cmd.Parameters["@SessionId"].Value = prob.SessionId = Session.Id;
-                        prob.Id = int.Parse(cmd.ExecuteScalar().ToString());
+                        cmd.ExecuteNonQuery();
+                        prob.Id = int.Parse(cmd.Parameters["@ProbId"].Value.ToString());
                     }
                 }
             }
-            using (var cmd = new SqlCommand("DELETE FROM MajorProblem WHERE Id = @Id", cn, transaction))
+            using (var cmd = new SqlCommand("CluSys.P_RmProblem", cn, transaction) { CommandType = CommandType.StoredProcedure })
             {
-                cmd.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int));
+                cmd.Parameters.Add(new SqlParameter("@ProbId", SqlDbType.Int));
 
                 foreach (var prob in DeletedProblems)
                 {
                     if (prob.Id != -1)
                     {
-                        cmd.Parameters["@Id"].Value = prob.Id;
+                        cmd.Parameters["@ProbId"].Value = prob.Id;
                         cmd.ExecuteNonQuery();
                     }
                 }
@@ -264,13 +269,14 @@ namespace CluSys.lib
 
         private void SaveTreatments(SqlConnection cn, SqlTransaction transaction)
         {
-            using (var cmd = new SqlCommand("INSERT INTO TreatmentPlan (Description, Objective, EvalId, SessionId, ProbId) VALUES (@Description, @Objective, @EvalId, @SessionId, @ProbId); SELECT SCOPE_IDENTITY();", cn, transaction))
+            using (var cmd = new SqlCommand("CluSys.P_AddTreatment", cn, transaction) { CommandType = CommandType.StoredProcedure })
             {
                 cmd.Parameters.Add(new SqlParameter("@Description", SqlDbType.NVarChar));
                 cmd.Parameters.Add(new SqlParameter("@Objective", SqlDbType.NVarChar));
                 cmd.Parameters.Add(new SqlParameter("@EvalId", SqlDbType.Int));
                 cmd.Parameters.Add(new SqlParameter("@SessionId", SqlDbType.Int));
                 cmd.Parameters.Add(new SqlParameter("@ProbId", SqlDbType.Int));
+                cmd.Parameters.Add(new SqlParameter("@TreatmentId", SqlDbType.Int) { Direction = ParameterDirection.Output });
 
                 foreach (var treatment in Treatments)
                 {
@@ -280,20 +286,21 @@ namespace CluSys.lib
                         cmd.Parameters["@Objective"].Value = (object) treatment.Objective ?? DBNull.Value;
                         cmd.Parameters["@EvalId"].Value = treatment.EvalId = Evaluation.Id;
                         cmd.Parameters["@SessionId"].Value = treatment.SessionId = Session.Id;
-                        cmd.Parameters["@ProbId"].Value = (object) treatment.ProbId ?? DBNull.Value;
-                        treatment.Id = int.Parse(cmd.ExecuteScalar().ToString());
+                        cmd.Parameters["@ProbId"].Value = (object) treatment.RefProblem?.Id ?? DBNull.Value;
+                        cmd.ExecuteNonQuery();
+                        treatment.Id = int.Parse(cmd.Parameters["@TreatmentId"].Value.ToString());
                     }
                 }
             }
-            using (var cmd = new SqlCommand("DELETE FROM TreatmentPlan WHERE Id = @Id", cn, transaction))
+            using (var cmd = new SqlCommand("CluSys.P_RmTreatment", cn, transaction) { CommandType = CommandType.StoredProcedure })
             {
-                cmd.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int));
+                cmd.Parameters.Add(new SqlParameter("@TreatmentId", SqlDbType.Int));
 
                 foreach (var treatment in DeletedTreatments)
                 {
                     if (treatment.Id != -1)
                     {
-                        cmd.Parameters["@Id"].Value = treatment.Id;
+                        cmd.Parameters["@TreatmentId"].Value = treatment.Id;
                         cmd.ExecuteNonQuery();
                     }
                 }
@@ -302,11 +309,12 @@ namespace CluSys.lib
 
         private void SaveObservations(SqlConnection cn, SqlTransaction transaction)
         {
-            using (var cmd = new SqlCommand("INSERT INTO SessionObservation (Obs, EvalId, SessionId) VALUES (@Obs, @EvalId, @SessionId); SELECT SCOPE_IDENTITY();", cn, transaction))
+            using (var cmd = new SqlCommand("CluSys.P_SetObservation", cn, transaction) { CommandType = CommandType.StoredProcedure })
             {
                 cmd.Parameters.Add(new SqlParameter("@Obs", SqlDbType.NVarChar));
                 cmd.Parameters.Add(new SqlParameter("@EvalId", SqlDbType.Int));
                 cmd.Parameters.Add(new SqlParameter("@SessionId", SqlDbType.Int));
+                cmd.Parameters.Add(new SqlParameter("@ObsId", SqlDbType.Int) { Direction = ParameterDirection.Output });
 
                 foreach (var obs in Observations)
                 {
@@ -315,21 +323,22 @@ namespace CluSys.lib
                         cmd.Parameters["@Obs"].Value = obs.Obs;
                         cmd.Parameters["@EvalId"].Value = obs.EvalId = Evaluation.Id;
                         cmd.Parameters["@SessionId"].Value = obs.SessionId = Session.Id;
-                        obs.Id = int.Parse(cmd.ExecuteScalar().ToString());
+                        cmd.ExecuteNonQuery();
+                        obs.Id = int.Parse(cmd.Parameters["@ObsId"].Value.ToString());
                     }
                 }
             }
-            using (var cmd = new SqlCommand("UPDATE SessionObservation SET DateClosed = @DateClosed WHERE Id = @Id", cn, transaction))
+            using (var cmd = new SqlCommand("CluSys.P_SetObservation", cn, transaction) { CommandType = CommandType.StoredProcedure })
             {
                 cmd.Parameters.Add(new SqlParameter("@DateClosed", SqlDbType.DateTime));
-                cmd.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int));
+                cmd.Parameters.Add(new SqlParameter("@ObsId", SqlDbType.Int));
 
                 foreach (var obs in DeletedObservations)
                 {
                     if (obs.Id != -1)
                     {
                         cmd.Parameters["@DateClosed"].Value = Session.Date;
-                        cmd.Parameters["@Id"].Value = obs.Id;
+                        cmd.Parameters["@ObsId"].Value = obs.Id;
                         cmd.ExecuteNonQuery();
                     }
                 }

@@ -24,22 +24,25 @@ namespace CluSys.lib
 
     internal static class Annotations
     {
-        public static ObservableCollection<Annotation> GetAnnotations(SqlConnection cn2 = null)
+        public static ObservableCollection<Annotation> GetAnnotations()
         {
             using (var cn = ClusysUtils.GetConnection())
             {
                 cn.Open();
 
                 var annotations = new ObservableCollection<Annotation>();
-                var cmd = new SqlCommand("SELECT * FROM Annotation", cn);
-                var reader = cmd.ExecuteReader();
-
-                while (reader.Read())
-                    annotations.Add(new Annotation
+                using (var cmd = new SqlCommand("SELECT * FROM CluSys.F_GetAnnotations();", cn))
+                {
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        Symbol = reader["Symbol"].ToString(),
-                        Meaning = reader["Meaning"].ToString(),
-                    });
+                        while (reader.Read())
+                            annotations.Add(new Annotation
+                            {
+                                Symbol = reader["Symbol"].ToString(),
+                                Meaning = reader["Meaning"].ToString(),
+                            });
+                    }
+                }
 
                 return annotations;
             }

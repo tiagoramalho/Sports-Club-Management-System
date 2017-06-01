@@ -12,6 +12,7 @@ namespace CluSys.lib
         public string Name { get; set; }
         public int RecognitionYear { get; set; }
 
+        /* This function is used! It is called using reflection. */
         public ObservableCollection<Athlete> GetAthletes()
         {
             using (var cn = ClusysUtils.GetConnection())
@@ -19,25 +20,28 @@ namespace CluSys.lib
                 cn.Open();
 
                 var athletes = new ObservableCollection<Athlete>();
-                var cmd = new SqlCommand($"SELECT * FROM Athlete WHERE ModalityId='{Name}'", cn);
-                var reader = cmd.ExecuteReader();
-
-                while (reader.Read())
-                    athletes.Add(new Athlete
+                using (var cmd = new SqlCommand($"SELECT * FROM CluSys.F_GetAthletes ('{Name}');", cn))
+                {
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        CC = reader["CC"].ToString(),
-                        FirstName = reader["FirstName"].ToString(),
-                        MiddleName = reader["MiddleName"].ToString(),
-                        LastName = reader["LastName"].ToString(),
-                        Birthdate = DateTime.Parse(reader["Birthdate"].ToString()),
-                        Photo = reader["Photo"].ToString(),
-                        Phone = reader["Phone"].ToString(),
-                        Email = reader["Email"].ToString(),
-                        Password = reader["Password"] as byte[],
-                        Job = reader["Job"].ToString(),
-                        DominantSide = reader["DominantSide"].ToString(),
-                        ModalityId = reader["ModalityId"].ToString(),
-                    });
+                        while (reader.Read())
+                            athletes.Add(new Athlete
+                            {
+                                CC = reader["CC"].ToString(),
+                                FirstName = reader["FirstName"].ToString(),
+                                MiddleName = reader["MiddleName"].ToString(),
+                                LastName = reader["LastName"].ToString(),
+                                Birthdate = DateTime.Parse(reader["Birthdate"].ToString()),
+                                Photo = reader["Photo"].ToString(),
+                                Phone = reader["Phone"].ToString(),
+                                Email = reader["Email"].ToString(),
+                                Password = reader["Password"] as byte[],
+                                Job = reader["Job"].ToString(),
+                                DominantSide = reader["DominantSide"].ToString(),
+                                ModalityId = reader["ModalityId"].ToString(),
+                            });
+                    }
+                }
 
                 return athletes;
             }
@@ -53,15 +57,18 @@ namespace CluSys.lib
                 cn.Open();
 
                 var modalities = new ObservableCollection<Modality>();
-                var cmd = new SqlCommand("SELECT * FROM Modality", cn);
-                var reader = cmd.ExecuteReader();
-
-                while (reader.Read())
-                    modalities.Add(new Modality
+                using (var cmd = new SqlCommand("SELECT * FROM CluSys.F_GetModalities ()", cn))
+                {
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        Name = reader["Name"].ToString(),
-                        RecognitionYear = int.Parse(reader["RecognitionYear"].ToString()),
-                    });
+                        while (reader.Read())
+                            modalities.Add(new Modality
+                            {
+                                Name = reader["Name"].ToString(),
+                                RecognitionYear = int.Parse(reader["RecognitionYear"].ToString()),
+                            });
+                    }
+                }
 
                 return modalities;
             }
