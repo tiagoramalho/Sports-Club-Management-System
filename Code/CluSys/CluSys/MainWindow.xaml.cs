@@ -465,5 +465,10 @@ namespace CluSys
         }
 
         private void CloseDrawerAndModal(object sender, RoutedEventArgs e) { EvaluationModal.IsTopDrawerOpen = SessionModal.IsOpen = false; }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            new Management().Show();
+        }
     }
 }
