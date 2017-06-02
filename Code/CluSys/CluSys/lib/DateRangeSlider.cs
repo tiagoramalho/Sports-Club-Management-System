@@ -20,30 +20,18 @@ namespace CluSys.lib
 
         public double LowerDateAsDouble
         {
-            get
-            {
-                return DateRangeConverter.ProportionalDate2Double(LowerDate, MinimumDate, MaximumDate, Minimum,
-                    Maximum);
-            }
-            set
-            {
-                LowerDate = DateRangeConverter.ProportionalDouble2Date(value, Minimum, Maximum, MinimumDate,
-                    MaximumDate);
-            }
+            get => DateRangeConverter.ProportionalDate2Double(LowerDate, MinimumDate, MaximumDate, Minimum,
+                Maximum);
+            set => LowerDate = DateRangeConverter.ProportionalDouble2Date(value, Minimum, Maximum, MinimumDate,
+                MaximumDate);
         }
 
         public double UpperDateAsDouble
         {
-            get
-            {
-                return DateRangeConverter.ProportionalDate2Double(UpperDate, MinimumDate, MaximumDate, Minimum,
-                    Maximum);
-            }
-            set
-            {
-                UpperDate = DateRangeConverter.ProportionalDouble2Date(value, Minimum, Maximum, MinimumDate,
-                    MaximumDate);
-            }
+            get => DateRangeConverter.ProportionalDate2Double(UpperDate, MinimumDate, MaximumDate, Minimum,
+                Maximum);
+            set => UpperDate = DateRangeConverter.ProportionalDouble2Date(value, Minimum, Maximum, MinimumDate,
+                MaximumDate);
         }
 
         public DateRangeSlider()

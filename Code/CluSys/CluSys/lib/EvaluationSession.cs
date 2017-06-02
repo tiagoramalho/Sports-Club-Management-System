@@ -106,9 +106,8 @@ namespace CluSys.lib
                     using (var reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
-                            bodyMarks.Add(new BodyChartMark
+                            bodyMarks.Add(new BodyChartMark(int.Parse(reader["Id"].ToString()))
                             {
-                                Id = int.Parse(reader["Id"].ToString()),
                                 X = double.Parse(reader["X"].ToString()),
                                 Y = double.Parse(reader["Y"].ToString()),
                                 PainLevel = int.Parse(reader["PainLevel"].ToString()),

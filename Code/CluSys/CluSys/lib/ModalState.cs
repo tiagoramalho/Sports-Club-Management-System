@@ -17,7 +17,10 @@ namespace CluSys.lib
         // Body chart
         public int ActiveViewIdx { get; set; }
         public readonly ObservableCollection<BodyChartView> Views;
-        public BodyChartView ActiveView { get { return Views[ActiveViewIdx]; } set { ActiveViewIdx = Views.IndexOf(value); } }
+        public BodyChartView ActiveView {
+            get => Views[ActiveViewIdx];
+            set => ActiveViewIdx = Views.IndexOf(value);
+        }
 
         public readonly ObservableCollection<BodyChartMark> Marks;
         public readonly ObservableCollection<BodyChartMark> DeletedMarks;
@@ -59,7 +62,7 @@ namespace CluSys.lib
             {
                 Marks = session.GetMarks();
                 Problems = session.GetProblems(); foreach (var prob in Problems) prob.Container = Problems;
-                Treatments = session.GetTreatments(); foreach (var treatment in Treatments) treatment.RefProblem = Problems.SingleOrDefault(prob => prob.Id == treatment.ProbId);
+                Treatments = session.GetTreatments(); foreach (var treatment in Treatments) treatment.RefProblem = Problems.FirstOrDefault(prob => prob.Id == treatment.ProbId);
                 Observations = evaluation.GetObservations();
                 MedicalDischarge = evaluation.ClosingDate == session.Date;
                 CanBeEdited = false;
@@ -188,7 +191,7 @@ namespace CluSys.lib
 
         private void SaveMarks(SqlConnection cn, SqlTransaction transaction)
         {
-            using (var cmd = new SqlCommand("CluSys.P_AddBodyChartMark", cn, transaction) { CommandType = CommandType.StoredProcedure })
+            using (var cmd = new SqlCommand("CluSys.P_AddBodyChartMark", cn, transaction) {CommandType = CommandType.StoredProcedure} )
             {
                 cmd.Parameters.Add(new SqlParameter("@X", SqlDbType.Float));
                 cmd.Parameters.Add(new SqlParameter("@Y", SqlDbType.Float));
@@ -197,7 +200,7 @@ namespace CluSys.lib
                 cmd.Parameters.Add(new SqlParameter("@EvalId", SqlDbType.Int));
                 cmd.Parameters.Add(new SqlParameter("@SessionId", SqlDbType.Int));
                 cmd.Parameters.Add(new SqlParameter("@ViewId", SqlDbType.Int));
-                cmd.Parameters.Add(new SqlParameter("@MarkId", SqlDbType.Int) { Direction = ParameterDirection.Output });
+                cmd.Parameters.Add(new SqlParameter("@MarkId", SqlDbType.Int) {Direction = ParameterDirection.Output});
 
                 foreach (var mark in Marks)
                 {
@@ -213,6 +216,19 @@ namespace CluSys.lib
                         cmd.ExecuteNonQuery();
 
                         mark.Id = int.Parse(cmd.Parameters["@MarkId"].Value.ToString());
+
+                        using (var cmd2 = new SqlCommand("CluSys.P_AddBodyAnnotation", cn, transaction) { CommandType = CommandType.StoredProcedure })
+                        {
+                            cmd2.Parameters.Add(new SqlParameter("@MarkId", SqlDbType.Int));
+                            cmd2.Parameters.Add(new SqlParameter("@AnnotSym", SqlDbType.NVarChar));
+
+                            foreach (var annot in mark.Annotations)
+                            {
+                                cmd2.Parameters["@MarkId"].Value = mark.Id;
+                                cmd2.Parameters["@AnnotSym"].Value = annot.Symbol;
+                                cmd2.ExecuteNonQuery();
+                            }
+                        }
                     }
                 }
             }

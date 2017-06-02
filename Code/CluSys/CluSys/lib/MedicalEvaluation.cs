@@ -18,7 +18,7 @@ namespace CluSys.lib
         public string PhysiotherapistCC { get; set; }
 
         private readonly ObservableCollection<MedicalEvaluation> _container;
-        public int CountId { get { return _container?.IndexOf(this) + 1 ?? Id; } }
+        public int CountId => _container?.IndexOf(this) + 1 ?? Id;
 
         public MedicalEvaluation(ObservableCollection<MedicalEvaluation> container = null) { _container = container; }
 

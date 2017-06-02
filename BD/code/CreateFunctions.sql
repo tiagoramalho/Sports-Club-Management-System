@@ -127,3 +127,8 @@ GO
 CREATE FUNCTION CluSys.F_GetTreatments(@EvalId INT, @SessionId INT = NULL) RETURNS TABLE AS
   RETURN (SELECT Id, Description, Objective, EvalId, SessionId, ProbId FROM TreatmentPlan WHERE EvalId = @EvalId AND SessionId = ISNULL(@SessionId, SessionId));
 GO
+
+CREATE FUNCTION CluSys.F_GetBodyAnnotations(@BodyId INT) RETURNS TABLE AS
+  RETURN (SELECT Symbol, Meaning
+          FROM Annotation JOIN BodyAnnotation ON Annotation.Symbol = BodyAnnotation.AnnotSym WHERE BodyId = @BodyId)
+GO

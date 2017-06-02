@@ -80,7 +80,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="lib\Annotation.cs" />
-    <Compile Include="lib\BodyAnnotation.cs" />
     <Compile Include="lib\BodyChartMark.cs" />
     <Compile Include="lib\BodyChartView.cs" />
     <Compile Include="lib\DateRangeSlider.cs" />

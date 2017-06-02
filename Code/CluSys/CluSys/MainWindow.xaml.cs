@@ -251,10 +251,7 @@ namespace CluSys
             var activeView = ms.ActiveView;
             var point = new Point(e.GetPosition(BodyChart).X - BodyChartMark.DrawRadius, e.GetPosition(BodyChart).Y - BodyChartMark.DrawRadius);
 
-            var mark = ms.Marks.FirstOrDefault(delegate(BodyChartMark m)
-            {
-                return Point.Subtract(point, new Point(m.X, m.Y)).Length < 4 * BodyChartMark.DrawRadius;
-            });
+            var mark = ms.Marks.FirstOrDefault(m => Point.Subtract(point, new Point(m.X, m.Y)).Length < 4 * BodyChartMark.DrawRadius);
 
             if (mark == null)
             {

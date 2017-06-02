@@ -96,3 +96,9 @@ CREATE PROC CluSys.P_SetObservation(@ObsId INT, @Obs NVARCHAR(MAX) = NULL, @Date
     UPDATE SessionObservation SET Obs=ISNULL(@Obs, Obs), DateClosed = ISNULL(@DateClosed, DateClosed) WHERE Id = @ObsId;
   END
 GO
+
+CREATE PROC CluSys.P_AddBodyAnnotation(@MarkId INT, @AnnotSym VARCHAR(25)) AS
+  BEGIN
+    INSERT BodyAnnotation (BodyId, AnnotSym) VALUES (@MarkId, @AnnotSym);
+  END
+GO

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Data.SqlClient;
 using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -14,7 +15,7 @@ namespace CluSys.lib
     {
         public const double DrawRadius = 2;
 
-        public int Id { get; set; } = -1;
+        public int Id { get; set; }
         public int EvalId { get; set; }
         public int SessionId { get; set; }
         public int ViewId { get; set; }
@@ -23,7 +24,9 @@ namespace CluSys.lib
         public double Y { get; set; }
         public string Description { get; set; }
 
-        public ObservableCollection<Annotation> Annotations { get; } = new ObservableCollection<Annotation>();
+        public ObservableCollection<Annotation> Annotations { get; }
+
+        public BodyChartMark(int id = -1) { Id = id; Annotations = GetAnnotations(); }
 
         public static Color ColorForIndex(int i)
         {
@@ -42,6 +45,30 @@ namespace CluSys.lib
             };
 
             return i >= 0 && i < colors.Length ? colors[i] : Color.FromArgb(255, 0, 150, 136);
+        }
+
+        public ObservableCollection<Annotation> GetAnnotations()
+        {
+            using (var cn = ClusysUtils.GetConnection())
+            {
+                cn.Open();
+
+                var annotations = new ObservableCollection<Annotation>();
+                using (var cmd = new SqlCommand($"SELECT * FROM CluSys.F_GetBodyAnnotations ('{Id}');", cn))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                            annotations.Add(new Annotation
+                            {
+                                Symbol = reader["Symbol"].ToString(),
+                                Meaning = reader["Meaning"]?.ToString(),
+                            });
+                    }
+                }
+
+                return annotations;
+            }
         }
 
         private bool Equals(BodyChartMark other)
