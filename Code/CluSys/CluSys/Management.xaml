@@ -61,7 +61,7 @@
                     <TextBox x:Name="RecognitionYear" Grid.Row="0" Grid.Column="3" Margin="0 0 10 0" materialDesign:HintAssist.Hint="Ano de Reconhecimento">
 
                     </TextBox>
-                    <Button Grid.Row="1" Grid.Column="3" Margin="0 20 5 0" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="Adicionar nova modalidade">Adicionar</Button>
+                    <Button Grid.Row="1" Grid.Column="3" Margin="0 20 5 0" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="Adicionar nova modalidade" Click="InsertModality">Adicionar</Button>
                 </Grid>
 
             </GroupBox>
@@ -96,7 +96,7 @@
                     <TextBox x:Name="FinalAge" Grid.Row="1" Grid.Column="3" Margin="0 0 10 0" materialDesign:HintAssist.Hint="Idade Final">
 
                     </TextBox>
-                    <Button Grid.Row="2" Grid.Column="3" Margin="0 20 5 0" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="Adicionar novo escalão">Adicionar</Button>
+                    <Button Grid.Row="2" Grid.Column="3" Margin="0 20 5 0" Click="InsertClass" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="Adicionar novo escalão">Adicionar</Button>
                 </Grid>
 
             </GroupBox>

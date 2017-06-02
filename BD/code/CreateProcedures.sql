@@ -102,3 +102,16 @@ CREATE PROC CluSys.P_AddBodyAnnotation(@MarkId INT, @AnnotSym VARCHAR(25)) AS
     INSERT BodyAnnotation (BodyId, AnnotSym) VALUES (@MarkId, @AnnotSym);
   END
 GO
+ 
+CREATE PROC Clusys.P_AddModality(@Name VARCHAR(25), @Year SMALLINT) AS
+    BEGIN
+        INSERT Modality (Name, RecognitionYear) VALUES (@Name, @Year);
+    END
+GO
+
+CREATE PROC Clusys.P_AddClass(@ModalityId VARCHAR(25), @Name VARCHAR(25), @InitialAge TINYINT, @FinalAge TINYINT) AS
+    BEGIN
+        INSERT Class (ModalityId, Name, InitialAge, FinalAge) VALUES (@ModalityId , @Name, @InitialAge, @FinalAge);
+    END
+GO
+
