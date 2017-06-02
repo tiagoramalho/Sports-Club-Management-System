@@ -52,6 +52,7 @@
                     <materialDesign:PackIcon Kind="HomeVariant" Width="24" Height="24" />
                 </Button>
                 <Button Height="48" DockPanel.Dock="Bottom"
+                        Click="Button_Click"
                         Style="{DynamicResource MaterialDesignToolButton}" materialDesign:RippleAssist.IsCentered="True">
                     <StackPanel>
                         <Ellipse Width="24" Height="24">

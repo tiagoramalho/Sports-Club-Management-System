@@ -1,0 +1,172 @@
+﻿<metro:MetroWindow x:Class="CluSys.Management"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+
+        mc:Ignorable="d"
+        xmlns:lib="clr-namespace:CluSys.lib"
+
+        Icon="App.ico"
+        MinHeight="720"
+        MinWidth="1024"
+        xml:lang="pt-PT"
+        WindowState="Maximized"
+        WindowStartupLocation="CenterScreen"
+        Title="CluSys" TitleCharacterCasing="Normal"
+
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal" 
+        TextOptions.TextRenderingMode="Auto"        
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+
+        xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+        GlowBrush="{DynamicResource AccentColorBrush}"
+        BorderThickness="1">
+    <ScrollViewer>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="80"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="80"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="80"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <GroupBox Header="Modalidades" Grid.Row="1" HorizontalAlignment="Center"  VerticalAlignment="Stretch">
+                <Grid>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <materialDesign:PackIcon Grid.Row="0" Grid.Column="0" Margin="0 20 5 0" Kind="Football" Foreground="{Binding ElementName=CC, Path=BorderBrush}"/>
+                    <TextBox x:Name="ModalityName" Grid.Row="0" Grid.Column="1" Margin="0 0 10 0" materialDesign:HintAssist.Hint="Nome da Modalidade">
+
+                    </TextBox>
+                    <materialDesign:PackIcon Grid.Row="0" Grid.Column="2" Margin="0 20 5 0" Kind="Calendar" Foreground="{Binding ElementName=CC, Path=BorderBrush}"/>
+                    <TextBox x:Name="RecognitionYear" Grid.Row="0" Grid.Column="3" Margin="0 0 10 0" materialDesign:HintAssist.Hint="Ano de Reconhecimento">
+
+                    </TextBox>
+                    <Button Grid.Row="1" Grid.Column="3" Margin="0 20 5 0" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="Adicionar nova modalidade">Adicionar</Button>
+                </Grid>
+
+            </GroupBox>
+            <GroupBox Header="Escalões" Grid.Row="3" HorizontalAlignment="Center"  VerticalAlignment="Stretch">
+                <Grid>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <materialDesign:PackIcon Grid.Row="0" Grid.Column="0" Margin="0 20 5 0" Kind="Football" Foreground="{Binding ElementName=CC, Path=BorderBrush}"/>
+                    <ComboBox x:Name="ModalityID" Grid.Row="0" Grid.Column="1" Margin="0 0 10 0" materialDesign:HintAssist.Hint="Nome da Modalidade">
+
+                    </ComboBox>
+                    <materialDesign:PackIcon Grid.Row="0" Grid.Column="2" Margin="0 20 5 0" Kind="Calendar" Foreground="{Binding ElementName=CC, Path=BorderBrush}"/>
+                    <TextBox x:Name="ClassName" Grid.Row="0" Grid.Column="3" Margin="0 0 10 0" materialDesign:HintAssist.Hint="Nome do Escalão">
+
+                    </TextBox>
+                    <materialDesign:PackIcon Grid.Row="1" Grid.Column="0" Margin="0 20 5 0" Kind="HumanChild" Foreground="{Binding ElementName=CC, Path=BorderBrush}"/>
+                    <TextBox x:Name="InitialAge" Grid.Row="1" Grid.Column="1" Margin="0 0 10 0" materialDesign:HintAssist.Hint="Idade Inicial">
+
+                    </TextBox>
+                    <materialDesign:PackIcon Grid.Row="1" Grid.Column="2" Margin="0 20 5 0" Kind="HumanHandsdown" Foreground="{Binding ElementName=CC, Path=BorderBrush}"/>
+                    <TextBox x:Name="FinalAge" Grid.Row="1" Grid.Column="3" Margin="0 0 10 0" materialDesign:HintAssist.Hint="Idade Final">
+
+                    </TextBox>
+                    <Button Grid.Row="2" Grid.Column="3" Margin="0 20 5 0" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="Adicionar novo escalão">Adicionar</Button>
+                </Grid>
+
+            </GroupBox>
+            <GroupBox Header="Atleta" Grid.Row="5" HorizontalAlignment="Center"  VerticalAlignment="Stretch">
+                <Grid>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <materialDesign:PackIcon Grid.Row="0" Grid.Column="0" Margin="0 20 5 0" Kind="Star" Foreground="{Binding ElementName=CC, Path=BorderBrush}"/>
+                    <TextBox x:Name="CC" Grid.Row="0" Grid.Column="1" Margin="0 0 10 0" materialDesign:HintAssist.Hint="CC">
+
+                    </TextBox>
+                    <!--<materialDesign:PackIcon Grid.Row="0" Grid.Column="2" Kind="Calendar" Foreground="{Binding ElementName=BirthDate, Path=BorderBrusH}"/>-->
+                    <DatePicker x:Name="BirthDate" Grid.Row="0" Grid.Column="3" materialDesign:HintAssist.Hint="Data de Nascimento"/>
+
+                    <materialDesign:PackIcon Grid.Row="1" Grid.Column="0" Margin="0 20 5 0" Kind="Account" Foreground="{Binding ElementName=CC, Path=BorderBrush}"/>
+                    <DockPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Margin="0 0 10 0" >
+                        <TextBox x:Name="F_Name" Margin="0 0 20 0"  materialDesign:HintAssist.Hint="Primeiro Nome">
+
+                        </TextBox>
+                        <TextBox x:Name="M_Name" Margin="0 0 20 0" materialDesign:HintAssist.Hint="Nome do Meio">
+
+                        </TextBox>
+                        <TextBox x:Name="L_Name" materialDesign:HintAssist.Hint="Último Nome">
+
+                        </TextBox>
+                    </DockPanel>
+                    <materialDesign:PackIcon Grid.Row="2" Grid.Column="0" Margin="0 20 5 0" Kind="Football" Foreground="{Binding ElementName=CC, Path=BorderBrush}"/>
+                    <ComboBox x:Name="Modality" Grid.Row="2" Grid.Column="1"  Margin="0 0 10 0" IsEditable="True" materialDesign:HintAssist.Hint="Modalidade">
+                        <!--<ComboBoxItem>Futebol</ComboBoxItem>
+                    <ComboBoxItem>Andebol</ComboBoxItem>
+                    <ComboBoxItem>Basquetebol</ComboBoxItem>-->
+                    </ComboBox>
+                    <materialDesign:PackIcon Grid.Row="2" Grid.Column="2"  Margin="0 20 5 0" Kind="Instagram" Foreground="{Binding ElementName=CC, Path=BorderBrush}"/>
+                    <TextBox x:Name="Photo" Grid.Row="2" Grid.Column="3" Margin="0 0 10 0" materialDesign:HintAssist.Hint="Fotografia">
+
+                    </TextBox>
+                    <materialDesign:PackIcon Grid.Row="3" Grid.Column="0" Margin="0 20 5 0" Kind="Email" Foreground="{Binding ElementName=CC, Path=BorderBrush}"/>
+                    <TextBox x:Name="Mail" Grid.Row="3" Grid.Column="1" Margin="0 0 10 0" materialDesign:HintAssist.Hint="Email">
+
+                    </TextBox>
+                    <materialDesign:PackIcon Grid.Row="3" Grid.Column="2" Margin="0 20 5 0" Kind="Key" Foreground="{Binding ElementName=CC, Path=BorderBrush}"/>
+                    <TextBox x:Name="Password" Grid.Row="3" Grid.Column="3" Margin="0 0 10 0" materialDesign:HintAssist.Hint="Password">
+
+                    </TextBox>
+                    <materialDesign:PackIcon Grid.Row="4" Grid.Column="0" Margin="0 20 5 0" Kind="Briefcase" Foreground="{Binding ElementName=CC, Path=BorderBrush}"/>
+                    <TextBox x:Name="Job" Grid.Row="4" Grid.Column="1" Margin="0 0 10 0" materialDesign:HintAssist.Hint="Profissão">
+
+                    </TextBox>
+                    <materialDesign:PackIcon Grid.Row="4" Grid.Column="2" Margin="0 20 5 0" Kind="Phone" Foreground="{Binding ElementName=CC, Path=BorderBrush}"/>
+                    <TextBox x:Name="Phone" Grid.Row="4" Grid.Column="3" Margin="0 0 10 0" materialDesign:HintAssist.Hint="Número de telefone">
+
+                    </TextBox>
+                    <Button Grid.Row="5" Grid.Column="3" Margin="0 20 5 0" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="Adicionar novo atleta">Adicionar</Button>
+                </Grid>
+
+            </GroupBox>
+        </Grid>
+    </ScrollViewer>
+</metro:MetroWindow>
