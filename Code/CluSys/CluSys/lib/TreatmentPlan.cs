@@ -4,7 +4,7 @@ using System.Windows.Data;
 
 namespace CluSys.lib
 {
-    internal class TreatmentPlan
+    public class TreatmentPlan
     {
         public int Id { get; set; } = -1;
         public string Description { get; set; }

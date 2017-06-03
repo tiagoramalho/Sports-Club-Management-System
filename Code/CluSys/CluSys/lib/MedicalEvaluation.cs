@@ -5,7 +5,7 @@ using System.Data.SqlClient;
 namespace CluSys.lib
 {
     [Serializable]
-    internal class MedicalEvaluation
+    public class MedicalEvaluation
     {
         public int Id { get; set; } = -1;
         public double? Weight { get; set; }

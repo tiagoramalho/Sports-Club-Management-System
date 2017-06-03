@@ -5,7 +5,7 @@ using System.Data.SqlClient;
 namespace CluSys.lib
 {
     [Serializable]
-    internal class Athlete
+    public class Athlete
     {
         public string CC { get; set; }
         public string FirstName { get; set; }

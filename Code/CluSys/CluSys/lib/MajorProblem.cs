@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 
 namespace CluSys.lib
 {
-    internal class MajorProblem
+    public class MajorProblem
     {
         public int Id { get; set; } = -1;
         public string Description { get; set; }
