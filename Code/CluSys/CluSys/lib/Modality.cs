@@ -7,7 +7,7 @@ using System.Windows.Data;
 namespace CluSys.lib
 {
     [Serializable]
-    internal class Modality
+    public class Modality
     {
         public string Name { get; set; }
         public int RecognitionYear { get; set; }
@@ -46,6 +46,8 @@ namespace CluSys.lib
                 return athletes;
             }
         }
+
+        public override string ToString() => $"{Name}, {RecognitionYear}";
     }
 
     internal static class Modalities

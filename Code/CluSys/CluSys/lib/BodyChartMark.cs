@@ -11,7 +11,7 @@ using System.Windows.Shapes;
 namespace CluSys.lib
 {
     [Serializable]
-    internal class BodyChartMark
+    public class BodyChartMark
     {
         public const double DrawRadius = 2;
 

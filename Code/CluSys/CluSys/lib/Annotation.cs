@@ -5,7 +5,7 @@ using System.Data.SqlClient;
 namespace CluSys.lib
 {
     [Serializable]
-    internal class Annotation
+    public class Annotation
     {
         public string Symbol { get; set; }
         public string Meaning { get; set; }

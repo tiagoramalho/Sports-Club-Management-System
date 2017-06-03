@@ -27,9 +27,9 @@
 
         xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
         GlowBrush="{DynamicResource AccentColorBrush}"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
         BorderThickness="1">
     <ScrollViewer>
-
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="80"/>
@@ -138,7 +138,7 @@
                         </TextBox>
                     </DockPanel>
                     <materialDesign:PackIcon Grid.Row="2" Grid.Column="0" Margin="0 20 5 0" Kind="Football" Foreground="{Binding ElementName=CC, Path=BorderBrush}"/>
-                    <ComboBox x:Name="Modality" Grid.Row="2" Grid.Column="1"  Margin="0 0 10 0" IsEditable="True" materialDesign:HintAssist.Hint="Modalidade">
+                    <ComboBox x:Name="Modality" ItemsSource="{Binding Path=CollectionOfModalities}" Grid.Row="2" Grid.Column="1"  Margin="0 0 10 0" IsEditable="True" materialDesign:HintAssist.Hint="Modalidade">
                         <!--<ComboBoxItem>Futebol</ComboBoxItem>
                     <ComboBoxItem>Andebol</ComboBoxItem>
                     <ComboBoxItem>Basquetebol</ComboBoxItem>-->
@@ -163,7 +163,7 @@
                     <TextBox x:Name="Phone" Grid.Row="4" Grid.Column="3" Margin="0 0 10 0" materialDesign:HintAssist.Hint="Número de telefone">
 
                     </TextBox>
-                    <Button Grid.Row="5" Grid.Column="3" Margin="0 20 5 0" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="Adicionar novo atleta">Adicionar</Button>
+                    <Button Grid.Row="5" Grid.Column="3" Margin="0 20 5 0" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignFlatButton}" Click="InsertAthlete" ToolTip="Adicionar novo atleta">Adicionar</Button>
                 </Grid>
 
             </GroupBox>

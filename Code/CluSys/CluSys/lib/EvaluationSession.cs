@@ -5,7 +5,7 @@ using System.Data.SqlClient;
 namespace CluSys.lib
 {
     [Serializable]
-    internal class EvaluationSession
+    public class EvaluationSession
     {
         public int Id { get; set; } = -1;
         public int EvalId { get; set; }

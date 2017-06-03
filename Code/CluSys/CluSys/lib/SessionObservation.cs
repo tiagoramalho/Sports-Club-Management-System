@@ -3,7 +3,7 @@
 namespace CluSys.lib
 {
     [Serializable]
-    internal class SessionObservation
+    public class SessionObservation
     {
         public int Id { get; set; }
         public string Obs { get; set; }
