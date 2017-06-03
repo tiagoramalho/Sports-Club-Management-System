@@ -1,4 +1,4 @@
-﻿<metro:MetroWindow x:Class="CluSys.Management"
+﻿<metro:MetroWindow x:Class="CluSys.Management" x:Name="ManagementWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -29,7 +29,6 @@
         GlowBrush="{DynamicResource AccentColorBrush}"
         BorderThickness="1">
     <ScrollViewer>
-
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="80"/>
@@ -138,7 +137,7 @@
                         </TextBox>
                     </DockPanel>
                     <materialDesign:PackIcon Grid.Row="2" Grid.Column="0" Margin="0 20 5 0" Kind="Football" Foreground="{Binding ElementName=CC, Path=BorderBrush}"/>
-                    <ComboBox x:Name="Modality" Grid.Row="2" Grid.Column="1"  Margin="0 0 10 0" IsEditable="True" materialDesign:HintAssist.Hint="Modalidade">
+                    <ComboBox x:Name="Modality" ItemsSource="{Binding ElementName=ManagementWindow, Path=ListOfModalities}" Grid.Row="2" Grid.Column="1"  Margin="0 0 10 0" IsEditable="True" materialDesign:HintAssist.Hint="Modalidade">
                         <!--<ComboBoxItem>Futebol</ComboBoxItem>
                     <ComboBoxItem>Andebol</ComboBoxItem>
                     <ComboBoxItem>Basquetebol</ComboBoxItem>-->
@@ -163,7 +162,7 @@
                     <TextBox x:Name="Phone" Grid.Row="4" Grid.Column="3" Margin="0 0 10 0" materialDesign:HintAssist.Hint="Número de telefone">
 
                     </TextBox>
-                    <Button Grid.Row="5" Grid.Column="3" Margin="0 20 5 0" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="Adicionar novo atleta">Adicionar</Button>
+                    <Button Grid.Row="5" Grid.Column="3" Margin="0 20 5 0" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignFlatButton}" Click="InsertAthlete" ToolTip="Adicionar novo atleta">Adicionar</Button>
                 </Grid>
 
             </GroupBox>
