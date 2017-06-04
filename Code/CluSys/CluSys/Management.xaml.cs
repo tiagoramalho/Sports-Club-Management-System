@@ -49,7 +49,8 @@ namespace CluSys
             }
 
             OnPropertyChanged(nameof(CollectionOfModalities));
-            Console.WriteLine(ModalityName.Text);
+            ModalityName.Text = String.Empty;
+            RecognitionYear.Text = String.Empty;
         }
 
         private void InsertClass(object sender, RoutedEventArgs e){
@@ -69,6 +70,10 @@ namespace CluSys
                     cmd.ExecuteNonQuery();
                 }
             }
+            ModalityID.SelectedIndex = -1;
+            ClassName.Text = String.Empty;
+            InitialAge.Text = String.Empty;
+            FinalAge.Text = String.Empty;
         }
         
         private void InsertAthlete(object sender, RoutedEventArgs e){
@@ -102,11 +107,23 @@ namespace CluSys
                     cmd.Parameters["@DominantSide"].Value = (DominantSide.SelectedItem as ComboBoxItem).Content;
                     cmd.Parameters["@ModalityId"].Value = (Modality.SelectedItem as Modality)? .Name;
                     using (var shaM = new SHA512Managed())
-                        cmd.Parameters["@Password"].Value = shaM.ComputeHash(Encoding.UTF8.GetBytes(Password.Text));
+                        cmd.Parameters["@Password"].Value = shaM.ComputeHash(Encoding.UTF8.GetBytes(Password.Password.ToString()));
                     cmd.ExecuteNonQuery();
                     
                 }
             }
+            CC.Text = String.Empty;
+            F_Name.Text = String.Empty;
+            L_Name.Text = String.Empty;
+            M_Name.Text = String.Empty;
+            BirthDate.SelectedDate = null;
+            Photo.Text = String.Empty;
+            Phone.Text = String.Empty;
+            Mail.Text = String.Empty;
+            Job.Text= String.Empty;
+            DominantSide.SelectedIndex = -1;
+            Password.Password = String.Empty;
+            Modality.SelectedIndex = -1;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
