@@ -178,7 +178,7 @@
                 </Grid>
             </GroupBox>
             <ScrollViewer Grid.Row="1" Grid.RowSpan="5" Grid.Column="3">
-                <DataGrid x:Name="AthetesEvaluation"  Margin="0 8 0 0" ItemsSource="{Binding Path=CollectionOfAthletes}"/>
+                <DataGrid x:Name="AthetesEvaluation"  Margin="0 8 0 0" ItemsSource="{Binding Path=CollectionOfAthletes}" CanUserAddRows="False" CanUserDeleteRows="False" />
             </ScrollViewer>
         </Grid>
     </ScrollViewer>

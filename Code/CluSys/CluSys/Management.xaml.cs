@@ -107,6 +107,7 @@ namespace CluSys
 
                 }
             }
+            Console.WriteLine("passou aqui");
             OnPropertyChanged(nameof(CollectionOfAthletes));
             CC.Text = string.Empty;
             F_Name.Text = string.Empty;
