@@ -40,7 +40,14 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="80"/>
             </Grid.RowDefinitions>
-            <GroupBox Header="Modalidades" Grid.Row="1" HorizontalAlignment="Center"  VerticalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="160"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="160"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="160"/>
+            </Grid.ColumnDefinitions>
+            <GroupBox Header="Modalidades" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center"  VerticalAlignment="Stretch">
                 <Grid>
 
                     <Grid.RowDefinitions>
@@ -66,7 +73,7 @@
                 </Grid>
 
             </GroupBox>
-            <GroupBox Header="Escalões" Grid.Row="3" HorizontalAlignment="Center"  VerticalAlignment="Stretch">
+            <GroupBox Header="Escalões" Grid.Row="3" Grid.Column="1"  HorizontalAlignment="Center"  VerticalAlignment="Stretch">
                 <Grid>
 
                     <Grid.RowDefinitions>
@@ -101,7 +108,7 @@
                 </Grid>
 
             </GroupBox>
-            <GroupBox Header="Atleta" Grid.Row="5" HorizontalAlignment="Center"  VerticalAlignment="Stretch">
+            <GroupBox Header="Atleta" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Center"  VerticalAlignment="Stretch">
                 <Grid>
 
                     <Grid.RowDefinitions>
@@ -170,8 +177,8 @@
                     </ComboBox>
                     <Button Grid.Row="5" Grid.Column="3" Margin="0 20 5 0" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignFlatButton}" Click="InsertAthlete" ToolTip="Adicionar novo atleta">Adicionar</Button>
                 </Grid>
-
             </GroupBox>
+            <DataGrid x:Name="AthetesEvaluation" Margin="0 8 0 0" ItemsSource="{Binding }"/>
         </Grid>
     </ScrollViewer>
 </metro:MetroWindow>

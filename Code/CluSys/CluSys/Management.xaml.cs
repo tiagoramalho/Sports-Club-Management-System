@@ -26,15 +26,17 @@ namespace CluSys
     /// <summary>
     /// Interaction logic for Management.xaml
     /// </summary>
-    public sealed partial class Management  : INotifyPropertyChanged
+    public sealed partial class Management : INotifyPropertyChanged
     {
         public ObservableCollection<Modality> CollectionOfModalities => Modalities.GetModalities();
+
         public Management()
         {
             InitializeComponent();
         }
         [ComVisibleAttribute(true)]
-        private void InsertModality(object sender, RoutedEventArgs e){
+        private void InsertModality(object sender, RoutedEventArgs e)
+        {
             using (var cn = ClusysUtils.GetConnection())
             {
                 cn.Open();
@@ -53,7 +55,8 @@ namespace CluSys
             RecognitionYear.Text = String.Empty;
         }
 
-        private void InsertClass(object sender, RoutedEventArgs e){
+        private void InsertClass(object sender, RoutedEventArgs e)
+        {
             using (var cn = ClusysUtils.GetConnection())
             {
                 cn.Open();
@@ -75,8 +78,9 @@ namespace CluSys
             InitialAge.Text = String.Empty;
             FinalAge.Text = String.Empty;
         }
-        
-        private void InsertAthlete(object sender, RoutedEventArgs e){
+
+        private void InsertAthlete(object sender, RoutedEventArgs e)
+        {
             Console.WriteLine(DominantSide.SelectedValue);
             using (var cn = ClusysUtils.GetConnection())
             {
@@ -105,11 +109,11 @@ namespace CluSys
                     cmd.Parameters["@Email"].Value = Mail.Text;
                     cmd.Parameters["@Job"].Value = Job.Text;
                     cmd.Parameters["@DominantSide"].Value = (DominantSide.SelectedItem as ComboBoxItem).Content;
-                    cmd.Parameters["@ModalityId"].Value = (Modality.SelectedItem as Modality)? .Name;
+                    cmd.Parameters["@ModalityId"].Value = (Modality.SelectedItem as Modality)?.Name;
                     using (var shaM = new SHA512Managed())
                         cmd.Parameters["@Password"].Value = shaM.ComputeHash(Encoding.UTF8.GetBytes(Password.Password.ToString()));
                     cmd.ExecuteNonQuery();
-                    
+
                 }
             }
             CC.Text = String.Empty;
@@ -120,11 +124,12 @@ namespace CluSys
             Photo.Text = String.Empty;
             Phone.Text = String.Empty;
             Mail.Text = String.Empty;
-            Job.Text= String.Empty;
+            Job.Text = String.Empty;
             DominantSide.SelectedIndex = -1;
             Password.Password = String.Empty;
             Modality.SelectedIndex = -1;
         }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -133,5 +138,59 @@ namespace CluSys
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+
+    }
+
+    public class AtheleteInfo
+    {
+        public string CC { get; set; }
+        public string Name { get; set; }
+        public DateTime Birthdate { get; set; }
+        public int Age { get; set; }
+        public string Phone { get; set; }
+        public string Email { get; set; }
+        public string DominantSide { get; set; }
+        public string ModalityName { get; set; }
+        public string ClassName { get; set; }
+        public int? EvalId { get; set; }
+        public DateTime? ExpectedRecovery { get; set; }
+        public string PhysioterapistName { get; set; }
+
+
+
+        public void getAthleteInfo()
+        {
+
+            using (var cn = ClusysUtils.GetConnection())
+            {
+                cn.Open();
+                var listInfo = new ObservableCollection<AtheleteInfo>();
+                using (var cmd = new SqlCommand("SELECT CluSys.F_GetAthleteInfo", cn))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                            listInfo.Add(new AtheleteInfo
+                            {
+                                CC = reader["CC"].ToString(),
+                                Name = reader["Name"].ToString(),
+                                Birthdate = DateTime.Parse(reader["Birthdate"].ToString()),
+                                Age = int.Parse(reader["Age"].ToString()),
+                                Phone = reader["Phone"].ToString(),
+                                Email = reader["Email"].ToString(),
+                                DominantSide = reader["DominantSide"].ToString(),
+                                ModalityName = reader["ModalityName"].ToString(),
+                                ClassName = reader["ClassName"].ToString(),
+                                EvalId = reader["EvalId"].ToString() != "" ? (int?)int.Parse(reader["EvalId"].ToString()) : null,
+                                ExpectedRecovery = reader["ExpectedRecovery"].ToString() != "" ? (DateTime?)DateTime.Parse(reader["ExpectedRecovery"].ToString()) : null,
+                                PhysioterapistName = reader["PhysioterapistName"].ToString()
+                            });
+                    }
+                }
+            }
+        }
     }
 }
+
+
