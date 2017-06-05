@@ -29,7 +29,7 @@
         GlowBrush="{DynamicResource AccentColorBrush}"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         BorderThickness="1">
-    <ScrollViewer>
+    <ScrollViewer HorizontalScrollBarVisibility="Visible">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="80"/>
@@ -41,11 +41,10 @@
                 <RowDefinition Height="80"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="160"/>
+                <ColumnDefinition Width="70"/>
                 <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="160"/>
+                <ColumnDefinition Width="70"/>
                 <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="160"/>
             </Grid.ColumnDefinitions>
             <GroupBox Header="Modalidades" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center"  VerticalAlignment="Stretch">
                 <Grid>
@@ -178,7 +177,9 @@
                     <Button Grid.Row="5" Grid.Column="3" Margin="0 20 5 0" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignFlatButton}" Click="InsertAthlete" ToolTip="Adicionar novo atleta">Adicionar</Button>
                 </Grid>
             </GroupBox>
-            <DataGrid x:Name="AthetesEvaluation" Margin="0 8 0 0" ItemsSource="{Binding }"/>
+            <ScrollViewer Grid.Row="1" Grid.RowSpan="5" Grid.Column="3">
+                <DataGrid x:Name="AthetesEvaluation"  Margin="0 8 0 0" ItemsSource="{Binding Path=CollectionOfAthletes}"/>
+            </ScrollViewer>
         </Grid>
     </ScrollViewer>
 </metro:MetroWindow>

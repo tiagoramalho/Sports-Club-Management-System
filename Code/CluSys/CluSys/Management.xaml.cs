@@ -20,7 +20,7 @@ namespace CluSys
     public sealed partial class Management : INotifyPropertyChanged
     {
         public ObservableCollection<Modality> CollectionOfModalities => Modalities.GetModalities();
-
+        public ObservableCollection<AtheleteInfo> CollectionOfAthletes => AtheleteInfo.GetAthleteInfo();
         public Management()
         {
             InitializeComponent();
@@ -107,6 +107,7 @@ namespace CluSys
 
                 }
             }
+            OnPropertyChanged(nameof(CollectionOfAthletes));
             CC.Text = string.Empty;
             F_Name.Text = string.Empty;
             L_Name.Text = string.Empty;
@@ -146,18 +147,18 @@ namespace CluSys
         public string ClassName { get; set; }
         public int? EvalId { get; set; }
         public DateTime? ExpectedRecovery { get; set; }
-        public string PhysioterapistName { get; set; }
+        public string PhysiotherapistName { get; set; }
 
 
 
-        public void getAthleteInfo()
+        public static ObservableCollection<AtheleteInfo> GetAthleteInfo()
         {
 
             using (var cn = ClusysUtils.GetConnection())
             {
                 cn.Open();
                 var listInfo = new ObservableCollection<AtheleteInfo>();
-                using (var cmd = new SqlCommand("SELECT CluSys.F_GetAthleteInfo", cn))
+                using (var cmd = new SqlCommand("SELECT * FROM CluSys.F_GetAthletesInfo();", cn))
                 {
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -173,12 +174,13 @@ namespace CluSys
                                 DominantSide = reader["DominantSide"].ToString(),
                                 ModalityName = reader["ModalityName"].ToString(),
                                 ClassName = reader["ClassName"].ToString(),
-                                EvalId = reader["EvalId"].ToString() != "" ? (int?)int.Parse(reader["EvalId"].ToString()) : null,
+                                EvalId = reader["EvaluationId"].ToString() != "" ? (int?)int.Parse(reader["EvaluationId"].ToString()) : null,
                                 ExpectedRecovery = reader["ExpectedRecovery"].ToString() != "" ? (DateTime?)DateTime.Parse(reader["ExpectedRecovery"].ToString()) : null,
-                                PhysioterapistName = reader["PhysioterapistName"].ToString()
+                                PhysiotherapistName = reader["PhysiotherapistName"].ToString()
                             });
                     }
                 }
+            return listInfo;
             }
         }
     }
