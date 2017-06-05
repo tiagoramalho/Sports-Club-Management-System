@@ -1,22 +1,13 @@
 ﻿using CluSys.lib;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using CluSys.Annotations;
 using System.Security.Cryptography;
 using System.Runtime.InteropServices;
@@ -33,7 +24,8 @@ namespace CluSys
         {
             InitializeComponent();
         }
-        [ComVisibleAttribute(true)]
+
+        [ComVisible(true)]
         private void InsertModality(object sender, RoutedEventArgs e){
             using (var cn = ClusysUtils.GetConnection())
             {
@@ -49,8 +41,8 @@ namespace CluSys
             }
 
             OnPropertyChanged(nameof(CollectionOfModalities));
-            ModalityName.Text = String.Empty;
-            RecognitionYear.Text = String.Empty;
+            ModalityName.Text = string.Empty;
+            RecognitionYear.Text = string.Empty;
         }
 
         private void InsertClass(object sender, RoutedEventArgs e){
@@ -71,9 +63,9 @@ namespace CluSys
                 }
             }
             ModalityID.SelectedIndex = -1;
-            ClassName.Text = String.Empty;
-            InitialAge.Text = String.Empty;
-            FinalAge.Text = String.Empty;
+            ClassName.Text = string.Empty;
+            InitialAge.Text = string.Empty;
+            FinalAge.Text = string.Empty;
         }
         
         private void InsertAthlete(object sender, RoutedEventArgs e){
@@ -104,25 +96,25 @@ namespace CluSys
                     cmd.Parameters["@Phone"].Value = Phone.Text;
                     cmd.Parameters["@Email"].Value = Mail.Text;
                     cmd.Parameters["@Job"].Value = Job.Text;
-                    cmd.Parameters["@DominantSide"].Value = (DominantSide.SelectedItem as ComboBoxItem).Content;
+                    cmd.Parameters["@DominantSide"].Value = (DominantSide.SelectedItem as ComboBoxItem)?.Content;
                     cmd.Parameters["@ModalityId"].Value = (Modality.SelectedItem as Modality)? .Name;
                     using (var shaM = new SHA512Managed())
-                        cmd.Parameters["@Password"].Value = shaM.ComputeHash(Encoding.UTF8.GetBytes(Password.Password.ToString()));
+                        cmd.Parameters["@Password"].Value = shaM.ComputeHash(Encoding.UTF8.GetBytes(Password.Password));
                     cmd.ExecuteNonQuery();
                     
                 }
             }
-            CC.Text = String.Empty;
-            F_Name.Text = String.Empty;
-            L_Name.Text = String.Empty;
-            M_Name.Text = String.Empty;
+            CC.Text = string.Empty;
+            F_Name.Text = string.Empty;
+            L_Name.Text = string.Empty;
+            M_Name.Text = string.Empty;
             BirthDate.SelectedDate = null;
-            Photo.Text = String.Empty;
-            Phone.Text = String.Empty;
-            Mail.Text = String.Empty;
-            Job.Text= String.Empty;
+            Photo.Text = string.Empty;
+            Phone.Text = string.Empty;
+            Mail.Text = string.Empty;
+            Job.Text= string.Empty;
             DominantSide.SelectedIndex = -1;
-            Password.Password = String.Empty;
+            Password.Password = string.Empty;
             Modality.SelectedIndex = -1;
         }
 
