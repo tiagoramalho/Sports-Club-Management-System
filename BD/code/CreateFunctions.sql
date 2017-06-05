@@ -1,4 +1,4 @@
-USE p1g2
+i SE p1g2
 GO
 
 CREATE FUNCTION CluSys.F_ActiveEvaluation(@CC CHAR(12))
@@ -132,3 +132,13 @@ CREATE FUNCTION CluSys.F_GetBodyAnnotations(@BodyId INT) RETURNS TABLE AS
   RETURN (SELECT Symbol, Meaning
           FROM Annotation JOIN BodyAnnotation ON Annotation.Symbol = BodyAnnotation.AnnotSym WHERE BodyId = @BodyId)
 GO
+CREATE FUNCTION CluSys.F_GetClass(@CC) RETURNS TABLE AS
+    RETURN ( SELECT Class.ModalityId, Class.Name FROM Athlete JOIN Class ON Athlete.ModalityId = Class.ModalityId WHERE Athlete.CC = @CC and datediff(day, Athlete.Birthdate, getdate()) between Class.InitialAge and Class.FinalAge )
+
+GO
+CREATE FUNCTION CluSys.F_GetAthMedi RETURNS TABLE AS
+    RETURN (SELECT * FROM (Athlete JOIN Class ON Athlete.ModalityId = Class.ModalityId WHERE Class.Name in SELECT Name FROM F_GetClass(Athlete.CC) ) as T1 
+        LEFT OUTER JOIN
+            (SELECT Id, ExpectedRecovery, PhysiotherapistCC FROM MedicalEvaluation ON T1.CC = MedicalEvaluation.AthleteCC WHERE MedicalEvaluation.Id in SELECT Id FROM F_ActiveEvaluation(T1.CC)) as T2
+        JOIN 
+            (SELECT FirstName + " " + LastName as PhysioName FROM Physiotherapist ON Physiotherapist.CC = T2.PhysiotherapistCC)  
