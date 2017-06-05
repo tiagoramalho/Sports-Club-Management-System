@@ -86,36 +86,33 @@ namespace CluSys.lib
             {
                 cn.Open();
 
+                int saveIdx = -1;
                 SqlTransaction transaction = null;
 
                 try
                 {
                     using (transaction = cn.BeginTransaction())
                     {
+                        saveIdx = 0;
+                        transaction.Save($"Save{saveIdx}"); saveIdx += 1;
+
                         GetEvalId(cn, transaction);
                         GetSessionId(cn, transaction);
                         UpdateEvaluation(cn, transaction);
-                        transaction.Commit();
-                    }
+                        transaction.Save($"Save{saveIdx}"); saveIdx += 1;
 
-                    using (transaction = cn.BeginTransaction())
-                    {
                         SaveMarks(cn, transaction);
-                        transaction.Commit();
-                    }
-                    using (transaction = cn.BeginTransaction())
-                    {
+                        transaction.Save($"Save{saveIdx}"); saveIdx += 1;
+
                         SaveProblems(cn, transaction);
-                        transaction.Commit();
-                    }
-                    using (transaction = cn.BeginTransaction())
-                    {
+                        transaction.Save($"Save{saveIdx}"); saveIdx += 1;
+
                         SaveTreatments(cn, transaction);
-                        transaction.Commit();
-                    }
-                    using (transaction = cn.BeginTransaction())
-                    {
+                        transaction.Save($"Save{saveIdx}"); saveIdx += 1;
+
                         SaveObservations(cn, transaction);
+                        transaction.Save($"Save{saveIdx}");
+
                         transaction.Commit();
                     }
                 }
@@ -127,7 +124,8 @@ namespace CluSys.lib
                     // Attempt to roll back the transaction.
                     try
                     {
-                        transaction?.Rollback();
+                        if (saveIdx <= 0) transaction?.Rollback();
+                        else transaction?.Rollback($"Save{saveIdx-1}");
                     }
                     catch (Exception ex2)
                     {
