@@ -38,6 +38,7 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="80"/>
                 <RowDefinition Height="auto"/>
+                <RowDefinition Height="80"/>
             </Grid.RowDefinitions>
             <GroupBox Header="Modalidades" Grid.Row="1" HorizontalAlignment="Center"  VerticalAlignment="Stretch">
                 <Grid>
@@ -81,7 +82,7 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <materialDesign:PackIcon Grid.Row="0" Grid.Column="0" Margin="0 20 5 0" Kind="Football" Foreground="{Binding ElementName=CC, Path=BorderBrush}"/>
-                    <ComboBox x:Name="ModalityID" Grid.Row="0" Grid.Column="1" Margin="0 0 10 0" materialDesign:HintAssist.Hint="Nome da Modalidade">
+                    <ComboBox x:Name="ModalityID" Grid.Row="0" ItemsSource="{Binding Path=CollectionOfModalities}" Grid.Column="1" Margin="0 0 10 0" materialDesign:HintAssist.Hint="Nome da Modalidade">
 
                     </ComboBox>
                     <materialDesign:PackIcon Grid.Row="0" Grid.Column="2" Margin="0 20 5 0" Kind="Calendar" Foreground="{Binding ElementName=CC, Path=BorderBrush}"/>
@@ -122,8 +123,7 @@
                     <TextBox x:Name="CC" Grid.Row="0" Grid.Column="1" Margin="0 0 10 0" materialDesign:HintAssist.Hint="CC">
 
                     </TextBox>
-                    <!--<materialDesign:PackIcon Grid.Row="0" Grid.Column="2" Kind="Calendar" Foreground="{Binding ElementName=BirthDate, Path=BorderBrusH}"/>-->
-                    <DatePicker x:Name="BirthDate" Grid.Row="0" Grid.Column="3" materialDesign:HintAssist.Hint="Data de Nascimento"/>
+                    <DatePicker x:Name="BirthDate" Grid.Row="0" Grid.Column="3" Margin="0 10 0 0" materialDesign:HintAssist.Hint="Data de Nascimento"/>
 
                     <materialDesign:PackIcon Grid.Row="1" Grid.Column="0" Margin="0 20 5 0" Kind="Account" Foreground="{Binding ElementName=CC, Path=BorderBrush}"/>
                     <DockPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Margin="0 0 10 0" >
@@ -152,9 +152,9 @@
 
                     </TextBox>
                     <materialDesign:PackIcon Grid.Row="3" Grid.Column="2" Margin="0 20 5 0" Kind="Key" Foreground="{Binding ElementName=CC, Path=BorderBrush}"/>
-                    <TextBox x:Name="Password" Grid.Row="3" Grid.Column="3" Margin="0 0 10 0" materialDesign:HintAssist.Hint="Password">
+                    <PasswordBox x:Name="Password" Grid.Row="3" Grid.Column="3" Margin="0 0 10 0" materialDesign:HintAssist.Hint="Password">
 
-                    </TextBox>
+                    </PasswordBox>
                     <materialDesign:PackIcon Grid.Row="4" Grid.Column="0" Margin="0 20 5 0" Kind="Briefcase" Foreground="{Binding ElementName=CC, Path=BorderBrush}"/>
                     <TextBox x:Name="Job" Grid.Row="4" Grid.Column="1" Margin="0 0 10 0" materialDesign:HintAssist.Hint="Profissão">
 
@@ -163,6 +163,11 @@
                     <TextBox x:Name="Phone" Grid.Row="4" Grid.Column="3" Margin="0 0 10 0" materialDesign:HintAssist.Hint="Número de telefone">
 
                     </TextBox>
+                    <ComboBox x:Name="DominantSide" Grid.Row="5" Grid.Column="1" Margin="0 0 10 0" materialDesign:HintAssist.Hint="Lado dominante">
+                        <ComboBoxItem>Destro</ComboBoxItem>
+                        <ComboBoxItem>Esquerdino</ComboBoxItem>
+                        <ComboBoxItem>Ambidestro</ComboBoxItem>
+                    </ComboBox>
                     <Button Grid.Row="5" Grid.Column="3" Margin="0 20 5 0" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignFlatButton}" Click="InsertAthlete" ToolTip="Adicionar novo atleta">Adicionar</Button>
                 </Grid>
 
