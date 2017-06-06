@@ -115,7 +115,7 @@ CREATE PROC CluSys.P_AddClass(@ModalityId NVARCHAR(25), @Name NVARCHAR(25), @Ini
     END
 GO
 
-CREATE PROC CluSys.P_AddAthlete(@CC CHAR(8), @FirstName NVARCHAR(25), @MiddleName NVARCHAR(25) = NULL, @LastName NVARCHAR(25), @Birthdate DATE, @Photo VARCHAR(100) = NULL, @Phone CHAR(9) = NULL, @Email VARCHAR(50), @Password BINARY(64), @Job VARCHAR(25) = NULL, @DominantSide VARCHAR(10), @ModalityId NVARCHAR(25) = NULL) AS
+CREATE PROC CluSys.P_AddAthlete(@CC CHAR(12), @FirstName NVARCHAR(25), @MiddleName NVARCHAR(25) = NULL, @LastName NVARCHAR(25), @Birthdate DATE, @Photo VARCHAR(100) = NULL, @Phone CHAR(9) = NULL, @Email VARCHAR(50), @Password BINARY(64), @Job VARCHAR(25) = NULL, @DominantSide VARCHAR(10), @ModalityId NVARCHAR(25) = NULL) AS
     BEGIN
         INSERT Athlete (CC, FirstName, MiddleName, LastName , Birthdate, Photo, Phone, Email, Password, Job, DominantSide, ModalityId) VALUES (@CC, @FirstName, @MiddleName, @LastName, @Birthdate, @Photo, @Phone, @Email, @Password, @Job, @DominantSide, @ModalityId);
     END

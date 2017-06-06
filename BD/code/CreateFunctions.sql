@@ -217,7 +217,7 @@ CREATE FUNCTION CluSys.F_GetBodyAnnotations(@BodyId INT)
          WHERE BodyId = @BodyId)
 GO
 
-CREATE FUNCTION CluSys.F_GetClass(@CC CHAR(8))
+CREATE FUNCTION CluSys.F_GetClass(@CC CHAR(12))
   RETURNS TABLE AS
   RETURN(SELECT
            Class.ModalityId,
@@ -273,4 +273,4 @@ CREATE FUNCTION CluSys.F_GetAthletesInfo ()
          WHERE T2.Id IS NULL OR T2.Id IN (SELECT CluSys.F_ActiveEvaluation(T1.CC)));
 GO
 
-SELECT * FROM CluSys.F_GetAthletesInfo()
+-- SELECT * FROM CluSys.F_GetAthletesInfo()
