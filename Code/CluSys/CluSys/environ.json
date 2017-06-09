@@ -1,0 +1,9 @@
+﻿{
+  "db": {
+    "DataSource": "193.136.175.33\\SQLEXPRESS2012",
+    "Port": 8293,
+    "InitialCatalog": "p1g2",
+    "User": "p1g2",
+    "Password": "sqluaricardotiago"
+  }
+}

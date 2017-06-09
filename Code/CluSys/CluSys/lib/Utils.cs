@@ -1,17 +1,26 @@
 ﻿using System;
 using System.Data.SqlClient;
 using System.Globalization;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
+using Newtonsoft.Json;
 
 namespace CluSys.lib
 {
     internal static class ClusysUtils
     {
+        private static readonly dynamic Environ = JsonConvert.DeserializeObject(File.ReadAllText(@"environ.json"));
+
         //public static SqlConnection GetConnection() { return new SqlConnection("data source= RJ-JESUS\\SQLEXPRESS2014;integrated security=true;initial catalog=CluSys"); }
-        public static SqlConnection GetConnection() { return new SqlConnection(@"Data Source=193.136.175.33\SQLEXPRESS2012,8293;Initial Catalog=p1g2;User ID=p1g2;Password=sqluaricardotiago;"); }
+        //public static SqlConnection GetConnection() { return new SqlConnection(@"Data Source=193.136.175.33\SQLEXPRESS2012,8293;Initial Catalog=p1g2;User ID=p1g2;Password=sqluaricardotiago;"); }
+        public static SqlConnection GetConnection()
+        {
+            var db = Environ.db;
+            return new SqlConnection($"Data Source={db.DataSource},{db.Port};Initial Catalog={db.InitialCatalog};User ID={db.User};Password={db.Password};");
+        }
 
         public static T FindByType<T>(Visual v)
         {
