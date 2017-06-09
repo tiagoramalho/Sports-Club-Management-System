@@ -1,7 +1,7 @@
 USE p1g2
 GO
 --Índices criados porque a Historia Médica de um atleta e filtrada por data e por numero do cartão do cidadão
---	do atleta
+--	do atleta, contundo na utilização atual da base de dados não estamos a usar a Historia Médica
 CREATE INDEX Idx_MedicalHistoryDate ON CluSys.MedicalHistory (Date);
 CREATE INDEX Idx_MedicalHistoryAthlete ON CluSys.MedicalHistory (AthleteCC);
 GO
