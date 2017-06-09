@@ -29,7 +29,7 @@
         GlowBrush="{DynamicResource AccentColorBrush}"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         BorderThickness="1">
-    <ScrollViewer>
+    <ScrollViewer HorizontalScrollBarVisibility="Visible">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="80"/>
@@ -40,7 +40,13 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="80"/>
             </Grid.RowDefinitions>
-            <GroupBox Header="Modalidades" Grid.Row="1" HorizontalAlignment="Center"  VerticalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="70"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="70"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <GroupBox Header="Modalidades" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center"  VerticalAlignment="Stretch">
                 <Grid>
 
                     <Grid.RowDefinitions>
@@ -66,7 +72,7 @@
                 </Grid>
 
             </GroupBox>
-            <GroupBox Header="Escalões" Grid.Row="3" HorizontalAlignment="Center"  VerticalAlignment="Stretch">
+            <GroupBox Header="Escalões" Grid.Row="3" Grid.Column="1"  HorizontalAlignment="Center"  VerticalAlignment="Stretch">
                 <Grid>
 
                     <Grid.RowDefinitions>
@@ -101,7 +107,7 @@
                 </Grid>
 
             </GroupBox>
-            <GroupBox Header="Atleta" Grid.Row="5" HorizontalAlignment="Center"  VerticalAlignment="Stretch">
+            <GroupBox Header="Atleta" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Center"  VerticalAlignment="Stretch">
                 <Grid>
 
                     <Grid.RowDefinitions>
@@ -170,8 +176,10 @@
                     </ComboBox>
                     <Button Grid.Row="5" Grid.Column="3" Margin="0 20 5 0" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignFlatButton}" Click="InsertAthlete" ToolTip="Adicionar novo atleta">Adicionar</Button>
                 </Grid>
-
             </GroupBox>
+            <ScrollViewer Grid.Row="1" Grid.RowSpan="5" Grid.Column="3">
+                <DataGrid x:Name="AthetesEvaluation"  Margin="0 8 0 0" ItemsSource="{Binding Path=CollectionOfAthletes}" CanUserAddRows="False" CanUserDeleteRows="False" />
+            </ScrollViewer>
         </Grid>
     </ScrollViewer>
 </metro:MetroWindow>

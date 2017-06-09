@@ -103,21 +103,20 @@ CREATE PROC CluSys.P_AddBodyAnnotation(@MarkId INT, @AnnotSym VARCHAR(25)) AS
   END
 GO
  
-CREATE PROC Clusys.P_AddModality(@Name VARCHAR(25), @Year SMALLINT) AS
+CREATE PROC CluSys.P_AddModality(@Name NVARCHAR(25), @Year SMALLINT) AS
     BEGIN
         INSERT Modality (Name, RecognitionYear) VALUES (@Name, @Year);
     END
 GO
 
-CREATE PROC Clusys.P_AddClass(@ModalityId VARCHAR(25), @Name VARCHAR(25), @InitialAge TINYINT, @FinalAge TINYINT) AS
+CREATE PROC CluSys.P_AddClass(@ModalityId NVARCHAR(25), @Name NVARCHAR(25), @InitialAge TINYINT, @FinalAge TINYINT) AS
     BEGIN
         INSERT Class (ModalityId, Name, InitialAge, FinalAge) VALUES (@ModalityId , @Name, @InitialAge, @FinalAge);
     END
 GO
 
-
-CREATE PROC Clusys.P_AddAthlete(@CC CHAR(12), @FirstName NVARCHAR(25), @MiddleName NVARCHAR(25), @LastName NVARCHAR(25), @Birthdate DATE, @Photo VARCHAR(100), @Phone CHAR(9), @Email VARCHAR(50), @Password BINARY(64), @Job VARCHAR(25), @DominantSide VARCHAR(10), @ModalityId NVARCHAR(25))
+CREATE PROC CluSys.P_AddAthlete(@CC CHAR(12), @FirstName NVARCHAR(25), @MiddleName NVARCHAR(25) = NULL, @LastName NVARCHAR(25), @Birthdate DATE, @Photo VARCHAR(100) = NULL, @Phone CHAR(9) = NULL, @Email VARCHAR(50), @Password BINARY(64), @Job VARCHAR(25) = NULL, @DominantSide VARCHAR(10), @ModalityId NVARCHAR(25) = NULL) AS
     BEGIN
-        INSERT Athlete (CC, FirstName, MiddleName, LastName , Birthdate, Photo, Phone, Email, Password, Job, DominantSide, ModalityId) VALUES (@CC, @FirstName, @MiddleName, @LastName, @Birthdate, @Photo, @Phone, @Email, @Password, @Job, @DominantSide, @ModalityId)
+        INSERT Athlete (CC, FirstName, MiddleName, LastName , Birthdate, Photo, Phone, Email, Password, Job, DominantSide, ModalityId) VALUES (@CC, @FirstName, @MiddleName, @LastName, @Birthdate, @Photo, @Phone, @Email, @Password, @Job, @DominantSide, @ModalityId);
     END
 GO
