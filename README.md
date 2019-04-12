@@ -7,3 +7,14 @@ We divide the athletes in modalities and the system permit different users with 
 
 At the end of the class, we did usabilities tests for the system and we had really nice feedback. 
 
+## Screenshots
+<p align="center">
+<img align="center" src="readmeImgs/20190412_122741.png" width="600">
+</p>
+<p align="center">
+<img align="center" src="readmeImgs/20190412_121535.png" width="600">
+</p>
+<p align="center">
+<img align="center" src="readmeImgs/20190412_163647.png" width="600">
+</p>
+ 
